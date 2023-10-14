@@ -4,7 +4,7 @@ REM Get Champollion from https://github.com/Orvid/Champollion
 
 set SOURCE=D:\SteamLibrary\steamapps\common\Starfield\Data\Scripts\Source\Base
 set DESTINATION=D:\SteamLibrary\steamapps\common\Starfield\Data\Scripts\Source\Base
-set TOOLSPATH=C:\Repositories\Public\Starfield Mods\starfield-level-based-scaling\Tools
+set TOOLSPATH=C:\Repositories\Public\Starfield Mods\starfield-experience-control\Tools
 
 REM Notepad++ needs current working directory to be where Champollion.exe is 
 cd "%TOOLSPATH%"
