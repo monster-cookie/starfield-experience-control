@@ -4,7 +4,7 @@
 ;;; eventually the leveling curve. You need to link this to your 
 ;;; player actor using the command below:
 ;;;
-;;; player.aps VPI_ExperenceControl
+;;; player.aps VPI_ExperienceControl
 ;;;
 ScriptName VPI_ExperienceControl Extends ReferenceAlias
 
@@ -135,9 +135,13 @@ EndFunction
 
 
 ;; ****************************************************************************
-;; Grab current XP Settings for later restore
+;; Backup current XP Settings for later restore with EnableXP
+;;
+;; Use: player.cf "VPI_ExperienceControl.StoreCurrentXPSettings"
 ;;
 Function StoreCurrentXPSettings()
+  Debug.MessageBox("Current Game XP settings (except quest values) hav been backed up to your save and can be restored by using EnableXP")
+
   ;; Base XP Settings
   OriginalXPStart=Game.GetGameSettingFloat("fXPStart")
   OriginalXPBase=Game.GetGameSettingFloat("fXPBase")
@@ -194,8 +198,6 @@ EndFunction
 ;;
 Function DisableXP()
   XPEnabled=false
-
-  StoreCurrentXPSettings()
 
   ;; Base XP Settings
   SetGameSettingFloat("fXPStart", 999999999.00)
@@ -326,8 +328,6 @@ EndFunction
 ;;
 Function EnableXP()
   XPEnabled=false
-
-  StoreCurrentXPSettings()
 
   ;; Base XP Settings
   SetGameSettingFloat("fXPStart", OriginalXPStart)
