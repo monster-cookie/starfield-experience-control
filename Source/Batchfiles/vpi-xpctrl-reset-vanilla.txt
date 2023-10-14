@@ -1,6 +1,8 @@
 ;; 
 ;; Use this script to reset everything to Starfield defaults before uninstalling
 ;;
+;; Run using "bat vpi-xpctrl-reset-vanilla" in the console
+;;
 setgs fXPStart 200.00                   ;; Base XP needed for every level (Default 200 Max 999999999)
 setgs fXPBase 75.00                     ;; Base ammount XP goes up by every level (Default 75)
 setgs fXPExpMult 0.0015                 ;; XP Multiplier for each level up (Default 0.0015)
