@@ -1,0 +1,122 @@
+;; 
+;; Use this script to reset everything to Starfield defaults before uninstalling
+;;
+;; Run using "bat vpi-xpctrl-reset-vanilla" in the console
+;;
+setgs fXPStart 200.00                   ;; Base XP needed for every level (Default 200 Max 10000000 can go higher but some functions/UI give negative results 999999999 is the actual max) 
+setgs fXPBase 75.00                     ;; Base ammount XP goes up by every level (Default 75)
+setgs fXPExpMult 0.0015                 ;; XP Multiplier for each level up (Default 0.0015)
+setgs fXPModBase 1.00                   ;; XP Gain Multiplier (Default 1)
+
+setgs fCookingExpBase 1.00              ;; Base XP gain from cooking (Default 1)
+setgs fCookingExpMult 0.01              ;; Cooking XP Gain Multiplier (Default 0.01)
+setgs fCookingExpMin 1.00               ;; Min XP gain from cooking (Default 1)
+setgs fCookingExpMax 10.00              ;; Max XP gain from cooking (Default 10)
+
+setgs fResearchExpBase 8.00             ;; Base XP gain from research (Default 8)
+setgs fResearchExpMult 0.10             ;; Research XP Gain Multiplier (Default 0.1)
+setgs fResearchExpMax 200.00            ;; Max XP gain from research (Default 200)
+
+setgs fWorkbenchExperienceBase 1.00     ;; Base XP gain from crafting (Default 1)
+setgs fWorkbenchExperienceMult 0.01     ;; Crafting XP Gain Multiplier (Default 0.01)
+setgs fWorkbenchExperienceMin 1.00      ;; Min XP gain from crafting (Default 1)
+setgs fWorkbenchExperienceMax 20.00     ;; Max XP gain from crafting (Default 20)
+
+setgs fLockpickXPRewardEasy 5.00        ;; XP gain from an novice lock (Default 5)
+setgs fLockpickXPRewardAverage 10.00    ;; XP gain from an advanced lock (Default 10)
+setgs fLockpickXPRewardHard 15.00       ;; XP gain from an expert lock (Default 15)
+setgs fLockpickXPRewardVeryHard 20.00   ;; XP gain from an master lock (Default 20)
+
+setgs iXPRewardDiscoverMapMarker 20     ;; XP gain from map marker discovery (Default 20)
+setgs iXPRewardDiscoverSecretArea 20    ;; XP gain from discovering a secret area (Default 20)
+setgs fScanCompleteXPReward 20.00       ;; XP gain from completing scans (Default 20)
+
+setgs fSpeechChallengeSuccessXP 10.00   ;; XP Gain from speechcraft success (Default 10)
+
+setgs iXPRewardKillOpponent 20          ;; XP Gain from killing an opponent (Default 20)
+
+;; The Remaining Settings WILL HAVE TO BE REVERSED IF UNINSTALLED OR WILL NEED TO START A NEW GAME
+
+;;;;; Main Story Quests ;;;;;
+Set 000DF3E1 to 300  ;; XP Reward Main Quest Act 1 Small (Default 300)
+Set 0023DF3D to 350  ;; XP Reward Main Quest Act 1 Medium (Default 350)
+Set 000DF3E0 to 400  ;; XP Reward Main Quest Act 1 Large (Default 400)
+Set 0011C0E1 to 700  ;; XP Reward Main Quest Act 2 Small (Default 700)
+Set 0011C0E0 to 750  ;; XP Reward Main Quest Act 2 Medium (Default 750)
+Set 0011C0DF to 800  ;; XP Reward Main Quest Act 2 Large (Default 800)
+Set 0011C0EA to 4500 ;; XP Reward Main Quest Act 3 Medium (Default 4500)
+Set 0011C0E3 to 5000 ;; XP Reward Main Quest Act 3 Large (Default 5000)
+
+;;;;; Faction Quests ;;;;;
+Set 000DF3DE to 150  ;; XP Reward Faction Quest Small (Default 150)
+Set 0023DF3B to 250  ;; XP Reward Faction Quest Medium (Default 250)
+Set 000DF3DD to 350  ;; XP Reward Faction Quest Large (Default 350)
+
+;;;;; Radiant Quests ;;;;;
+Set 000DF3E5 to 100  ;; XP Reward Radiant Quests Small (Default 100)
+Set 00100AB6 to 100  ;; XP Reward Radiant Quests Small (Default 100)
+Set 00100ABC to 100  ;; XP Reward Radiant Quests Small (Default 100)
+Set 0016D9A6 to 100  ;; XP Reward Radiant Quests Small (Default 100)
+Set 001AF650 to 100  ;; XP Reward Radiant Quests Small (Default 100)
+Set 0022B890 to 100  ;; XP Reward Radiant Quests Small (Default 100)
+Set 0022B943 to 100  ;; XP Reward Radiant Quests Small (Default 100)
+Set 0022B947 to 100  ;; XP Reward Radiant Quests Small (Default 100)
+Set 0022B94B to 100  ;; XP Reward Radiant Quests Small (Default 100)
+Set 00255B55 to 100  ;; XP Reward Radiant Quests Small (Default 100)
+Set 00255B60 to 100  ;; XP Reward Radiant Quests Small (Default 100)
+Set 00255B6B to 100  ;; XP Reward Radiant Quests Small (Default 100)
+Set 00255B75 to 100  ;; XP Reward Radiant Quests Small (Default 100)
+Set 00269A65 to 100  ;; XP Reward Radiant Quests Small (Default 100)
+Set 00269BF3 to 100  ;; XP Reward Radiant Quests Small (Default 100)
+Set 001AB4F3 to 125  ;; XP Reward Radiant Quests Medium (Default 125)
+Set 0023DF35 to 150  ;; XP Reward Radiant Quests Large (Default 150)
+Set 000023A2 to 150  ;; XP Reward Radiant Quests Large (Default 150)
+Set 000023A3 to 150  ;; XP Reward Radiant Quests Large (Default 150)
+Set 00002690 to 150  ;; XP Reward Radiant Quests Large (Default 150)
+Set 00003DDC to 150  ;; XP Reward Radiant Quests Large (Default 150)
+Set 001AEA62 to 150  ;; XP Reward Radiant Quests Large (Default 150)
+
+;;;;; Misc Quests ;;;;;
+Set 002685E7 to 50   ;; XP Reward Misc Quests Tiny (Default 50)
+Set 000DF3E4 to 100  ;; XP Reward Misc Quests Small (Default 100)
+Set 0023DF3C to 200  ;; XP Reward Misc Quests Medium (Default 200)
+Set 000DF3E2 to 300  ;; XP Reward Misc Quests Large (Default 300)
+
+;;;;; Other ;;;;;
+Set 000FD332 to 250  ;; XP Reward Companion Quests (Default 250)
+Set 00167860 to 100  ;; XP Reward Quest Optional Objective (Default 100)
+Set 002E0EC4 to 100  ;; XP Reward Red Mile Run (Default 100)
+Set 0006B510 to 200  ;; Not Sure Small Version (Default 200)
+Set 000F3CF9 to 300  ;; Not Sure Medium Version (Default 300)
+Set 000F19CC to 400  ;; Not Sure Large Version (Default 400)
+Set 00246AD7 to 200  ;; Starborn Temple (Default 200)
+
+;;;;; Planet/System Surveys ;;;;;
+Set 00245AB9 to 100  ;; Planetary Trait Discovery (Default 100)
+Set 001AEB4E to 100  ;; Planetary Trait Discovery (Default 100)
+Set 0030A8C5 to 50   ;; Survey Planet (Default 50)
+Set 0030A8C6 to 100  ;; Survey Planet (Default 100)
+Set 0030A8C7 to 200  ;; Survey Planet (Default 200)
+Set 00056E62 to 300  ;; Survey Planet (Default 300)
+Set 0023842C to 500  ;; Survey Planet (Default 500)
+Set 0030A8C8 to 50   ;; Survey System (Default 50)
+Set 0030A8C9 to 100  ;; Survey System (Default 100)
+Set 0030A8CA to 200  ;; Survey System (Default 200)
+Set 0030A8CB to 300  ;; Survey System (Default 300)
+
+;;;;; Settlement Quests ;;;;;
+Set 000DF3E7 to 50   ;; XP Reward for Small Settlement Quest (Default 50)
+Set 0010DF00 to 50   ;; XP Reward for Small Settlement Quest (Default 50)
+Set 0010DF0E to 50   ;; XP Reward for Small Settlement Quest (Default 50)
+Set 0010DF12 to 50   ;; XP Reward for Small Settlement Quest (Default 50)
+Set 0010DF16 to 50   ;; XP Reward for Small Settlement Quest (Default 50)
+Set 001AB4F2 to 75   ;; XP Reward for Medium Settlement Quest (Default 75)
+Set 0023DF34 to 100  ;; XP Reward for Large Settlement Quest (Default 100)
+
+;;;;; Mission Board Survey missions ;;;;;
+Set 0009E153 to 100  ;; XP Reward Mission Board Survey Planet Mission (Default 100)
+Set 0016AB84 to 100  ;; XP Reward Mission Board Survey Planet Mission (Default 100)
+Set 0016AB85 to 150  ;; XP Reward Mission Board Survey Planet Mission (Default 150)
+Set 0016AB86 to 200  ;; XP Reward Mission Board Survey Planet Mission (Default 200)
+Set 0016AB87 to 300  ;; XP Reward Mission Board Survey Planet Mission (Default 300)
+Set 0016AB88 to 500  ;; XP Reward Mission Board Survey Planet Mission (Default 500)
