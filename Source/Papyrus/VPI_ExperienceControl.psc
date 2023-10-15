@@ -20,7 +20,7 @@ ScriptName VPI_ExperienceControl Extends ReferenceAlias
 ;;; Properties
 ;;;
 
-String Property Version="1.0.1" Auto
+String Property Version="1.0.2" Auto
 
 Actor Property PlayerRef Auto
 ActorValue Property Experience Auto
@@ -61,6 +61,7 @@ Float Property OriginalXPLockpickingNovice Auto
 Float Property OriginalXPLockpickingAdvanced Auto
 Float Property OriginalXPLockpickingExpert Auto
 Float Property OriginalXPLockpickingMaster Auto
+Float Property OriginalXPHackingExperienceBase Auto
 
 ;; Discovery XP Original Settings
 Int Property OriginalXPDiscoveryMapMarker Auto
@@ -72,6 +73,11 @@ Float Property OriginalXPSpeechcraftSuccess Auto
 
 ;; Combat XP Original Settings
 Int Property OriginalXPKillOpponent Auto
+Float Property OriginalXPDiffMultXPVE Auto
+Float Property OriginalXPDiffMultXPE Auto
+Float Property OriginalXPDiffMultXPN Auto
+Float Property OriginalXPDiffMultXPH Auto
+Float Property OriginalXPDiffMultXPVH Auto
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -238,6 +244,7 @@ Function StoreCurrentXPSettings()
   OriginalXPLockpickingAdvanced=Game.GetGameSettingFloat("fLockpickXPRewardAverage")
   OriginalXPLockpickingExpert=Game.GetGameSettingFloat("fLockpickXPRewardHard")
   OriginalXPLockpickingMaster=Game.GetGameSettingFloat("fLockpickXPRewardVeryHard")
+  OriginalXPHackingExperienceBase=Game.GetGameSettingFloat("fHackingExperienceBase")
   
   ;; Discovery XP Settings
   OriginalXPDiscoveryMapMarker=Game.GetGameSettingInt("iXPRewardDiscoverMapMarker")
@@ -249,6 +256,11 @@ Function StoreCurrentXPSettings()
 
   ;; Combat XP Settings
   OriginalXPKillOpponent=Game.GetGameSettingInt("iXPRewardKillOpponent")
+  OriginalXPDiffMultXPVE=Game.GetGameSettingFloat("fDiffMultXPVE")
+  OriginalXPDiffMultXPE=Game.GetGameSettingFloat("fDiffMultXPE")
+  OriginalXPDiffMultXPN=Game.GetGameSettingFloat("fDiffMultXPN")
+  OriginalXPDiffMultXPH=Game.GetGameSettingFloat("fDiffMultXPH")
+  OriginalXPDiffMultXPVH=Game.GetGameSettingFloat("fDiffMultXPVH")
 
   ;;
   ;; Will not store quest XP too much of a pain and not very likely they were changed from defaults
@@ -288,6 +300,11 @@ Function DisableLevelingXP()
 
   ;; Combat XP Settings
   SetGameSettingInt("iXPRewardKillOpponent", 0)
+  SetGameSettingFloat("fDiffMultXPVE", 0.00)
+  SetGameSettingFloat("fDiffMultXPE", 0.00)
+  SetGameSettingFloat("fDiffMultXPN", 0.00)
+  SetGameSettingFloat("fDiffMultXPH", 0.00)
+  SetGameSettingFloat("fDiffMultXPVH", 0.00)
 EndFunction
 
 ;; ****************************************************************************
@@ -338,6 +355,7 @@ Function DisableLockpickingXP()
   SetGameSettingFloat("fLockpickXPRewardAverage", 0.00)
   SetGameSettingFloat("fLockpickXPRewardHard", 0.00)
   SetGameSettingFloat("fLockpickXPRewardVeryHard", 0.00)
+  SetGameSettingFloat("fHackingExperienceBase", 0.00)
 EndFunction
 
 ;; ****************************************************************************
@@ -489,7 +507,12 @@ Function EnableLevelingXP()
   SetGameSettingFloat("fXPModBase", OriginalXPModBase)
 
   ;; Combat XP Settings
-  SetGameSettingInt("iXPRewardKillOpponent", 20)
+  SetGameSettingInt("iXPRewardKillOpponent", OriginalXPKillOpponent)
+  SetGameSettingFloat("fDiffMultXPVE", OriginalXPDiffMultXPVE)
+  SetGameSettingFloat("fDiffMultXPE", OriginalXPDiffMultXPE)
+  SetGameSettingFloat("fDiffMultXPN", OriginalXPDiffMultXPN)
+  SetGameSettingFloat("fDiffMultXPH", OriginalXPDiffMultXPH)
+  SetGameSettingFloat("fDiffMultXPVH", OriginalXPDiffMultXPVH)
 EndFunction
 
 ;; ****************************************************************************
