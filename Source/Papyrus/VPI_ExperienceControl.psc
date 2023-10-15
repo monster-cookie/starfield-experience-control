@@ -155,6 +155,11 @@ Function SetFormSettingInt(String formID, Int value)
 EndFunction
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;; Public Member Functions
+;;;
+
 ;; ****************************************************************************
 ;; Backup current XP Settings for later restore with EnableXP
 ;;
@@ -208,12 +213,6 @@ Function StoreCurrentXPSettings()
   ;;
 
 EndFunction
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;
-;;; Public Member Functions
-;;;
 
 ;; ****************************************************************************
 ;; Disable Experience Gain
