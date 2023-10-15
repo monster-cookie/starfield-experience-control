@@ -20,12 +20,18 @@ ScriptName VPI_ExperienceControl Extends ReferenceAlias
 ;;; Properties
 ;;;
 
-String Property Version="1.0.0" Auto
+String Property Version="1.0.1" Auto
 
 Actor Property PlayerRef Auto
 ActorValue Property Experience Auto
 
-Bool Property XPEnabled=true Auto
+Bool Property LevelingXPEnabled=true Auto
+Bool Property ResearchXPEnabled=true Auto
+Bool Property CraftingXPEnabled=true Auto
+Bool Property LockpickingXPEnabled=true Auto
+Bool Property DiscoveryXPEnabled=true Auto
+Bool Property QuestXPEnabled=true Auto
+Bool Property SpeechcraftXPEnabled=true Auto
 
 ;; Base XP Original Settings
 Float Property OriginalXPStart Auto
@@ -84,7 +90,7 @@ Event OnInit()
   ;; Store Current XP Settings
   StoreCurrentXPSettings()
 
-  EnableXP()
+  EnableAllXP()
 EndEvent
 
 ;; Event called when the player loads a save game. This event is only sent to the player actor. If 
@@ -101,10 +107,46 @@ Event OnPlayerLoadGame()
 
   ;; DO NOT STORE CURRENT SETTINGS THEY WILL WIPE OLD SETTINGS with game defaults and/or garbage
 
-  If (XPEnabled == true)
-    EnableXP()
+  If (CraftingXPEnabled == true)
+    EnableCraftingXP()
   Else 
-    DisableXP()
+    DisableCraftingXP()
+  EndIf
+
+  If (DiscoveryXPEnabled == true)
+    EnableDiscoveryXP()
+  Else 
+    DisableDiscoveryXP()
+  EndIf
+
+  If (LevelingXPEnabled == true)
+    EnableLevelingXP()
+  Else 
+    DisableLevelingXP()
+  EndIf
+
+  If (LockpickingXPEnabled == true)
+    EnableLockpickingXP()
+  Else 
+    DisableLockpickingXP()
+  EndIf
+
+  If (QuestXPEnabled == true)
+    EnableQuestXP()
+  Else 
+    DisableQuestXP()
+  EndIf
+
+  If (ResearchXPEnabled == true)
+    EnableResearchXP()
+  Else 
+    DisableResearchXP()
+  EndIf
+
+  If (SpeechcraftXPEnabled == true)
+    EnableSpeechcraftXP()
+  Else 
+    DisableSpeechcraftXP()
   EndIf
 EndEvent
 
@@ -215,52 +257,122 @@ Function StoreCurrentXPSettings()
 EndFunction
 
 ;; ****************************************************************************
-;; Disable Experience Gain
+;; Disable All Experience Gain
 ;;
-;; Use: player.cf "VPI_ExperienceControl.DisableXP"
+;; Use: player.cf "VPI_ExperienceControl.DisableAllXP"
 ;;
-Function DisableXP()
-  XPEnabled=false
+Function DisableAllXP()
+  DisableCraftingXP()
+  DisableDiscoveryXP()
+  DisableLevelingXP()
+  DisableLockpickingXP()
+  DisableQuestXP()
+  DisableResearchXP()
+  DisableSpeechcraftXP()
+EndFunction
+
+
+;; ****************************************************************************
+;; Disable Leveling Experience Gain
+;;
+;; Use: player.cf "VPI_ExperienceControl.DisableLevelingXP"
+;;
+Function DisableLevelingXP()
+  LevelingXPEnabled=false
 
   ;; Base XP Settings
   SetGameSettingFloat("fXPStart", 100000000.00)
   SetGameSettingFloat("fXPBase", 0.00)
   SetGameSettingFloat("fXPExpMult", 0.00)
   SetGameSettingFloat("fXPModBase", 0.00)
-  
+
+  ;; Combat XP Settings
+  SetGameSettingInt("iXPRewardKillOpponent", 0)
+EndFunction
+
+;; ****************************************************************************
+;; Disable Crafting Experience Gain
+;;
+;; Use: player.cf "VPI_ExperienceControl.DisableCraftingXP"
+;;
+Function DisableCraftingXP()
+  CraftingXPEnabled=false
+ 
   ;; Cooking XP Settings
   SetGameSettingFloat("fCookingExpBase", 0.00)
   SetGameSettingFloat("fCookingExpMult", 0.00)
   SetGameSettingFloat("fCookingExpMin", 0.00)
   SetGameSettingFloat("fCookingExpMax", 0.00)
   
-  ;; Research XP Settings
-  SetGameSettingFloat("fResearchExpBase", 0.00)
-  SetGameSettingFloat("fResearchExpMult", 0.00)
-  SetGameSettingFloat("fResearchExpMax", 0.00)
-  
   ;; Crafting XP Settings
   SetGameSettingFloat("fWorkbenchExperienceBase", 0.00)
   SetGameSettingFloat("fWorkbenchExperienceMult", 0.00)
   SetGameSettingFloat("fWorkbenchExperienceMin", 0.00)
   SetGameSettingFloat("fWorkbenchExperienceMax", 0.00)
+EndFunction
+
+;; ****************************************************************************
+;; Disable Research Experience Gain
+;;
+;; Use: player.cf "VPI_ExperienceControl.DisableResearchXP"
+;;
+Function DisableResearchXP()
+  ResearchXPEnabled=false
+ 
+  ;; Research XP Settings
+  SetGameSettingFloat("fResearchExpBase", 0.00)
+  SetGameSettingFloat("fResearchExpMult", 0.00)
+  SetGameSettingFloat("fResearchExpMax", 0.00)
+EndFunction
+
+;; ****************************************************************************
+;; Disable Lockpicking/Hacking Experience Gain
+;;
+;; Use: player.cf "VPI_ExperienceControl.DisableLockpickingXP"
+;;
+Function DisableLockpickingXP()
+  LockpickingXPEnabled=false
   
   ;; Lockpicking/Hacking XP Settings
   SetGameSettingFloat("fLockpickXPRewardEasy", 0.00)
   SetGameSettingFloat("fLockpickXPRewardAverage", 0.00)
   SetGameSettingFloat("fLockpickXPRewardHard", 0.00)
   SetGameSettingFloat("fLockpickXPRewardVeryHard", 0.00)
+EndFunction
+
+;; ****************************************************************************
+;; Disable Discovery Experience Gain
+;;
+;; Use: player.cf "VPI_ExperienceControl.DisableDiscoveryXP"
+;;
+Function DisableDiscoveryXP()
+  DiscoveryXPEnabled=false
   
   ;; Discovery XP Settings
   SetGameSettingInt("iXPRewardDiscoverMapMarker", 0)
   SetGameSettingInt("iXPRewardDiscoverSecretArea", 0)
   SetGameSettingFloat("fScanCompleteXPReward", 0.00)
+EndFunction
+
+;; ****************************************************************************
+;; Disable Speechcraft Experience Gain
+;;
+;; Use: player.cf "VPI_ExperienceControl.DisableSpeechcraftXP"
+;;
+Function DisableSpeechcraftXP()
+  SpeechcraftXPEnabled=false
 
   ;; Speechcraft XP Settings
   SetGameSettingFloat("fSpeechChallengeSuccessXP", 0.00)
+EndFunction
 
-  ;; Combat XP Settings
-  SetGameSettingInt("iXPRewardKillOpponent", 0)
+;; ****************************************************************************
+;; Disable Quest Experience Gain
+;;
+;; Use: player.cf "VPI_ExperienceControl.DisableDiscoveryXP"
+;;
+Function DisableQuestXP()
+  QuestXPEnabled=false
 
   ;; Main Story Quests
   SetFormSettingFloat("000DF3E1", 0.00)
@@ -348,18 +460,45 @@ Function DisableXP()
 EndFunction
 
 ;; ****************************************************************************
-;; Enable Experience Gain
+;; Enable All Experience Gain
 ;;
-;; Use: player.cf "VPI_ExperienceControl.EnableXP"
+;; Use: player.cf "VPI_ExperienceControl.EnableAllXP"
 ;;
-Function EnableXP()
-  XPEnabled=false
+Function EnableAllXP()
+  EnableCraftingXP()
+  EnableDiscoveryXP()
+  EnableLevelingXP()
+  EnableLockpickingXP()
+  EnableQuestXP()
+  EnableResearchXP()
+  EnableSpeechcraftXP()
+EndFunction
+
+;; ****************************************************************************
+;; Enable Leveling Experience Gain
+;;
+;; Use: player.cf "VPI_ExperienceControl.EnableLevelingXP"
+;;
+Function EnableLevelingXP()
+  LevelingXPEnabled=true
 
   ;; Base XP Settings
   SetGameSettingFloat("fXPStart", OriginalXPStart)
   SetGameSettingFloat("fXPBase", OriginalXPBase)
   SetGameSettingFloat("fXPExpMult", OriginalXPMult)
   SetGameSettingFloat("fXPModBase", OriginalXPModBase)
+
+  ;; Combat XP Settings
+  SetGameSettingInt("iXPRewardKillOpponent", 20)
+EndFunction
+
+;; ****************************************************************************
+;; Enable Crafting Experience Gain
+;;
+;; Use: player.cf "VPI_ExperienceControl.EnableCraftingXP"
+;;
+Function EnableCraftingXP()
+  CraftingXPEnabled=true
   
   ;; Cooking XP Settings
   SetGameSettingFloat("fCookingExpBase", OriginalXPCookingBase)
@@ -367,33 +506,75 @@ Function EnableXP()
   SetGameSettingFloat("fCookingExpMin", OriginalXPCookingMin)
   SetGameSettingFloat("fCookingExpMax", OriginalXPCookingMax)
   
-  ;; Research XP Settings
-  SetGameSettingFloat("fResearchExpBase", OriginalXPResearchBase)
-  SetGameSettingFloat("fResearchExpMult", OriginalXPResearchMult)
-  SetGameSettingFloat("fResearchExpMax", OriginalXPResearchMax)
-  
   ;; Crafting XP Settings
   SetGameSettingFloat("fWorkbenchExperienceBase", OriginalXPCraftingBase)
   SetGameSettingFloat("fWorkbenchExperienceMult", OriginalXPCraftingMult)
   SetGameSettingFloat("fWorkbenchExperienceMin", OriginalXPCraftingMin)
   SetGameSettingFloat("fWorkbenchExperienceMax", OriginalXPCraftingMax)
+EndFunction
+
+;; ****************************************************************************
+;; Enable Research Experience Gain
+;;
+;; Use: player.cf "VPI_ExperienceControl.EnableResearchXP"
+;;
+Function EnableResearchXP()
+  ResearchXPEnabled=true
+  
+  ;; Research XP Settings
+  SetGameSettingFloat("fResearchExpBase", OriginalXPResearchBase)
+  SetGameSettingFloat("fResearchExpMult", OriginalXPResearchMult)
+  SetGameSettingFloat("fResearchExpMax", OriginalXPResearchMax)
+EndFunction
+
+;; ****************************************************************************
+;; Enable Lockpicking Experience Gain
+;;
+;; Use: player.cf "VPI_ExperienceControl.EnableLockpickingXP"
+;;
+Function EnableLockpickingXP()
+  LockpickingXPEnabled=true
   
   ;; Lockpicking/Hacking XP Settings
   SetGameSettingFloat("fLockpickXPRewardEasy", OriginalXPLockpickingNovice)
   SetGameSettingFloat("fLockpickXPRewardAverage", OriginalXPLockpickingAdvanced)
   SetGameSettingFloat("fLockpickXPRewardHard", OriginalXPLockpickingExpert)
   SetGameSettingFloat("fLockpickXPRewardVeryHard", OriginalXPLockpickingMaster)
+EndFunction
+
+;; ****************************************************************************
+;; Enable Discovery Experience Gain
+;;
+;; Use: player.cf "VPI_ExperienceControl.EnableDiscoveryXP"
+;;
+Function EnableDiscoveryXP()
+  DiscoveryXPEnabled=true
   
   ;; Discovery XP Settings
   SetGameSettingInt("iXPRewardDiscoverMapMarker", OriginalXPDiscoveryMapMarker)
   SetGameSettingInt("iXPRewardDiscoverSecretArea", OriginalXPDiscoverySecretArea)
   SetGameSettingFloat("fScanCompleteXPReward", OriginalXPScanCompletiong)
+EndFunction
+
+;; ****************************************************************************
+;; Enable Speechcraft Experience Gain
+;;
+;; Use: player.cf "VPI_ExperienceControl.EnableSpeechcraftXP"
+;;
+Function EnableSpeechcraftXP()
+  SpeechcraftXPEnabled=true
 
   ;; Speechcraft XP Settings
   SetGameSettingFloat("fSpeechChallengeSuccessXP", OriginalXPSpeechcraftSuccess)
+EndFunction
 
-  ;; Combat XP Settings
-  SetGameSettingInt("iXPRewardKillOpponent", 20)
+;; ****************************************************************************
+;; Enable Quest Experience Gain
+;;
+;; Use: player.cf "VPI_ExperienceControl.EnableQuestXP"
+;;
+Function EnableQuestXP()
+  QuestXPEnabled=true
 
   ;; Main Story Quests -- Too complicated to store this much so resetting to game defaults
   SetFormSettingFloat("000DF3E1", 300)
@@ -508,19 +689,52 @@ Function CurrentXPStatus()
   Int gameXPKillOpponent=Game.GetGameSettingInt("iXPRewardKillOpponent")
 
   String message = "Using Experience Control v" + Version + ".\n"
-  if (XPEnabled)
-    message += "XP Gain is currently enabled.\n"
-  Else 
-    message += "XP Gain is currently disabled.\n"
-  EndIf
+
+  message += "XP Status:  "
+  If (LevelingXPEnabled)
+    message += "Leveling Enabled, "
+  Else
+    message += "Leveling Disabled, "
+  EndIf    
+  If (CraftingXPEnabled)
+    message += "Crafting Enabled, "
+  Else
+    message += "Crafting Disabled, "
+  EndIf    
+  If (ResearchXPEnabled)
+    message += "Research Enabled, "
+  Else
+    message += "Research Disabled, "
+  EndIf    
+  If (DiscoveryXPEnabled)
+    message += "Discovery Enabled, "
+  Else
+    message += "Discovery Disabled, "
+  EndIf    
+  If (LockpickingXPEnabled)
+    message += "Lockpicking/Hacking Enabled, "
+  Else
+    message += "Lockpicking/Hacking Disabled, "
+  EndIf    
+  If (SpeechcraftXPEnabled)
+    message += "Speechcraft Enabled, "
+  Else
+    message += "Speechcraft Disabled, "
+  EndIf    
+  If (QuestXPEnabled)
+    message += "Quest Enabled"
+  Else
+    message += "Quest Disabled"
+  EndIf    
+  message += ".\n"
 
   message += "XP per level is set to " + gameXPStart + " and the XP multiplier is set to " + gameXPMultiplier + ".\n"
+  message += "Combat Kill XP is set to " + gameXPKillOpponent + ".\n"
   message += "Cooking XP is set to " + gameXPCookingBase + " and the cooking multiplier is set too " + gameXPCookingMult + ".\n"
   message += "Research XP is set to " + gameXPResearchBase + " and the research multiplier is set too " + gameXPResearchMult + ".\n"
   message += "Crafting XP is set to " + gameXPCraftingBase + " and the crafting multiplier is set too " + gameXPCraftingMult + ".\n"
   message += "Lockpicking XP is set to " + gameXPLockpickingNovice + " for novice, " + gameXPLockpickingAdvanced + " for advanced, " + gameXPLockpickingExpert + " for expert, and finally " + gameXPLockpickingMaster + " for master.\n"
   message += "Speechcraft XP is set to " + gameXPSpeechcraftSuccess + ".\n"
-  message += "Combat Kill XP is set to " + gameXPKillOpponent + ".\n"
   
   Debug.Trace(message, 1)
   Debug.MessageBox(message)
