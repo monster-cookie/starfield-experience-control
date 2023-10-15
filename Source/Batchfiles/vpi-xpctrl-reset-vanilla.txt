@@ -26,6 +26,7 @@ setgs fLockpickXPRewardEasy 5.00        ;; XP gain from an novice lock (Default 
 setgs fLockpickXPRewardAverage 10.00    ;; XP gain from an advanced lock (Default 10)
 setgs fLockpickXPRewardHard 15.00       ;; XP gain from an expert lock (Default 15)
 setgs fLockpickXPRewardVeryHard 20.00   ;; XP gain from an master lock (Default 20)
+setgs fHackingExperienceBase 10.00      ;; Base XP gain from hacking not sure it is really used (Default 10)
 
 setgs iXPRewardDiscoverMapMarker 20     ;; XP gain from map marker discovery (Default 20)
 setgs iXPRewardDiscoverSecretArea 20    ;; XP gain from discovering a secret area (Default 20)
@@ -34,6 +35,11 @@ setgs fScanCompleteXPReward 20.00       ;; XP gain from completing scans (Defaul
 setgs fSpeechChallengeSuccessXP 10.00   ;; XP Gain from speechcraft success (Default 10)
 
 setgs iXPRewardKillOpponent 20          ;; XP Gain from killing an opponent (Default 20)
+setgs fDiffMultXPVE 1                   ;; XP Gain from combat success in Very Easy difficulty (Default 1)
+setgs fDiffMultXPE 1                    ;; XP Gain from combat success in Easy difficulty (Default 1)
+setgs fDiffMultXPN 1                    ;; XP Gain from combat success in Normal difficulty (Default 1)
+setgs fDiffMultXPH 1                    ;; XP Gain from combat success in Hard difficulty (Default 1)
+setgs fDiffMultXPVH 1                   ;; XP Gain from combat success in Very Hard difficulty (Default 1)
 
 ;; The Remaining Settings WILL HAVE TO BE REVERSED IF UNINSTALLED OR WILL NEED TO START A NEW GAME
 
