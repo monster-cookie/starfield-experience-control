@@ -3,7 +3,7 @@
 ;;
 ;; Run using "bat vpi-xpctrl-reset-vanilla" in the console
 ;;
-setgs fXPStart 200.00                   ;; Base XP needed for every level (Default 200 Max 999999999)
+setgs fXPStart 200.00                   ;; Base XP needed for every level (Default 200 Max 10000000 can go higher but some functions/UI give negative results 999999999 is the actual max) 
 setgs fXPBase 75.00                     ;; Base ammount XP goes up by every level (Default 75)
 setgs fXPExpMult 0.0015                 ;; XP Multiplier for each level up (Default 0.0015)
 setgs fXPModBase 1.00                   ;; XP Gain Multiplier (Default 1)
@@ -27,11 +27,13 @@ setgs fLockpickXPRewardAverage 10.00    ;; XP gain from an advanced lock (Defaul
 setgs fLockpickXPRewardHard 15.00       ;; XP gain from an expert lock (Default 15)
 setgs fLockpickXPRewardVeryHard 20.00   ;; XP gain from an master lock (Default 20)
 
-setgs iXPRewardDiscoverMapMarker 20.00  ;; XP gain from map marker discovery (Default 20)
-setgs iXPRewardDiscoverSecretArea 20.00 ;; XP gain from discovering a secret area (Default 20)
+setgs iXPRewardDiscoverMapMarker 20     ;; XP gain from map marker discovery (Default 20)
+setgs iXPRewardDiscoverSecretArea 20    ;; XP gain from discovering a secret area (Default 20)
 setgs fScanCompleteXPReward 20.00       ;; XP gain from completing scans (Default 20)
 
 setgs fSpeechChallengeSuccessXP 10.00   ;; XP Gain from speechcraft success (Default 10)
+
+setgs iXPRewardKillOpponent 20          ;; XP Gain from killing an opponent (Default 20)
 
 ;; The Remaining Settings WILL HAVE TO BE REVERSED IF UNINSTALLED OR WILL NEED TO START A NEW GAME
 

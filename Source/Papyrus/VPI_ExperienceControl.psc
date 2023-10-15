@@ -23,6 +23,7 @@ ScriptName VPI_ExperienceControl Extends ReferenceAlias
 String Property Version="1.0.0" Auto
 
 Actor Property PlayerRef Auto
+ActorValue Property Experience Auto
 
 Bool Property XPEnabled=true Auto
 
@@ -56,12 +57,15 @@ Float Property OriginalXPLockpickingExpert Auto
 Float Property OriginalXPLockpickingMaster Auto
 
 ;; Discovery XP Original Settings
-Float Property OriginalXPDiscoveryMapMarker Auto
-Float Property OriginalXPDiscoverySecretArea Auto
+Int Property OriginalXPDiscoveryMapMarker Auto
+Int Property OriginalXPDiscoverySecretArea Auto
 Float Property OriginalXPScanCompletiong Auto
 
 ;; Speechcraft XP Original Settings
 Float Property OriginalXPSpeechcraftSuccess Auto
+
+;; Combat XP Original Settings
+Int Property OriginalXPKillOpponent Auto
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -117,6 +121,9 @@ Function UpdateBindings()
   if (PlayerRef == None) 
     PlayerRef = Game.GetPlayer()
   EndIf
+  if (Experience == None) 
+    Experience = Game.GetForm(0x000002C9) as ActorValue
+  EndIf
 EndFunction
 
 ;; ****************************************************************************
@@ -127,9 +134,23 @@ Function SetGameSettingFloat(String gameSetting, Float value)
 EndFunction
 
 ;; ****************************************************************************
+;; Set a integer based game setting 
+;;
+Function SetGameSettingInt(String gameSetting, Int value)
+  Debug.ExecuteConsole("setgs " + gameSetting + " " + value)
+EndFunction
+
+;; ****************************************************************************
 ;; Set a float based form setting 
 ;;
 Function SetFormSettingFloat(String formID, Float value)
+  Debug.ExecuteConsole("set " + formID + " to " + value)
+EndFunction
+
+;; ****************************************************************************
+;; Set a integer based form setting 
+;;
+Function SetFormSettingInt(String formID, Int value)
   Debug.ExecuteConsole("set " + formID + " to " + value)
 EndFunction
 
@@ -172,12 +193,15 @@ Function StoreCurrentXPSettings()
   OriginalXPLockpickingMaster=Game.GetGameSettingFloat("fLockpickXPRewardVeryHard")
   
   ;; Discovery XP Settings
-  OriginalXPDiscoveryMapMarker=Game.GetGameSettingFloat("iXPRewardDiscoverMapMarker")
-  OriginalXPDiscoverySecretArea=Game.GetGameSettingFloat("iXPRewardDiscoverSecretArea")
+  OriginalXPDiscoveryMapMarker=Game.GetGameSettingInt("iXPRewardDiscoverMapMarker")
+  OriginalXPDiscoverySecretArea=Game.GetGameSettingInt("iXPRewardDiscoverSecretArea")
   OriginalXPScanCompletiong=Game.GetGameSettingFloat("fScanCompleteXPReward")
 
   ;; Speechcraft XP Settings
   OriginalXPSpeechcraftSuccess=Game.GetGameSettingFloat("fSpeechChallengeSuccessXP")
+
+  ;; Combat XP Settings
+  OriginalXPKillOpponent=Game.GetGameSettingInt("iXPRewardKillOpponent")
 
   ;;
   ;; Will not store quest XP too much of a pain and not very likely they were changed from defaults
@@ -200,7 +224,7 @@ Function DisableXP()
   XPEnabled=false
 
   ;; Base XP Settings
-  SetGameSettingFloat("fXPStart", 999999999.00)
+  SetGameSettingFloat("fXPStart", 100000000.00)
   SetGameSettingFloat("fXPBase", 0.00)
   SetGameSettingFloat("fXPExpMult", 0.00)
   SetGameSettingFloat("fXPModBase", 0.00)
@@ -229,12 +253,15 @@ Function DisableXP()
   SetGameSettingFloat("fLockpickXPRewardVeryHard", 0.00)
   
   ;; Discovery XP Settings
-  SetGameSettingFloat("iXPRewardDiscoverMapMarker", 0.00)
-  SetGameSettingFloat("iXPRewardDiscoverSecretArea", 0.00)
+  SetGameSettingInt("iXPRewardDiscoverMapMarker", 0)
+  SetGameSettingInt("iXPRewardDiscoverSecretArea", 0)
   SetGameSettingFloat("fScanCompleteXPReward", 0.00)
 
   ;; Speechcraft XP Settings
   SetGameSettingFloat("fSpeechChallengeSuccessXP", 0.00)
+
+  ;; Combat XP Settings
+  SetGameSettingInt("iXPRewardKillOpponent", 0)
 
   ;; Main Story Quests
   SetFormSettingFloat("000DF3E1", 0.00)
@@ -359,12 +386,15 @@ Function EnableXP()
   SetGameSettingFloat("fLockpickXPRewardVeryHard", OriginalXPLockpickingMaster)
   
   ;; Discovery XP Settings
-  SetGameSettingFloat("iXPRewardDiscoverMapMarker", OriginalXPDiscoveryMapMarker)
-  SetGameSettingFloat("iXPRewardDiscoverSecretArea", OriginalXPDiscoverySecretArea)
+  SetGameSettingInt("iXPRewardDiscoverMapMarker", OriginalXPDiscoveryMapMarker)
+  SetGameSettingInt("iXPRewardDiscoverSecretArea", OriginalXPDiscoverySecretArea)
   SetGameSettingFloat("fScanCompleteXPReward", OriginalXPScanCompletiong)
 
   ;; Speechcraft XP Settings
   SetGameSettingFloat("fSpeechChallengeSuccessXP", OriginalXPSpeechcraftSuccess)
+
+  ;; Combat XP Settings
+  SetGameSettingInt("iXPRewardKillOpponent", 20)
 
   ;; Main Story Quests -- Too complicated to store this much so resetting to game defaults
   SetFormSettingFloat("000DF3E1", 300)
@@ -449,6 +479,52 @@ Function EnableXP()
   SetFormSettingFloat("0016AB86", 200)
   SetFormSettingFloat("0016AB87", 300)
   SetFormSettingFloat("0016AB88", 500)
+EndFunction
+
+;; ****************************************************************************
+;; Check status of current XP gain settings
+;;
+;; Use: player.cf "VPI_ExperienceControl.CurrentXPStatus"
+;;
+Function CurrentXPStatus()
+  Float gameXPStart=Game.GetGameSettingFloat("fXPStart")
+  Float gameXPMultiplier=Game.GetGameSettingFloat("fXPExpMult")
+
+  Float gameXPCookingBase=Game.GetGameSettingFloat("fCookingExpBase")
+  Float gameXPCookingMult=Game.GetGameSettingFloat("fCookingExpMult")
+
+  Float gameXPResearchBase=Game.GetGameSettingFloat("fResearchExpBase")
+  Float gameXPResearchMult=Game.GetGameSettingFloat("fResearchExpMult")
+
+  Float gameXPCraftingBase=Game.GetGameSettingFloat("fWorkbenchExperienceBase")
+  Float gameXPCraftingMult=Game.GetGameSettingFloat("fWorkbenchExperienceMult")
+
+  Float gameXPLockpickingNovice=Game.GetGameSettingFloat("fLockpickXPRewardEasy")
+  Float gameXPLockpickingAdvanced=Game.GetGameSettingFloat("fLockpickXPRewardAverage")
+  Float gameXPLockpickingExpert=Game.GetGameSettingFloat("fLockpickXPRewardHard")
+  Float gameXPLockpickingMaster=Game.GetGameSettingFloat("fLockpickXPRewardVeryHard")
+
+  Float gameXPSpeechcraftSuccess=Game.GetGameSettingFloat("fSpeechChallengeSuccessXP")
+
+  Int gameXPKillOpponent=Game.GetGameSettingInt("iXPRewardKillOpponent")
+
+  String message = "Using Experience Control v" + Version + ".\n"
+  if (XPEnabled)
+    message += "XP Gain is currently enabled.\n"
+  Else 
+    message += "XP Gain is currently disabled.\n"
+  EndIf
+
+  message += "XP per level is set to " + gameXPStart + " and the XP multiplier is set to " + gameXPMultiplier + ".\n"
+  message += "Cooking XP is set to " + gameXPCookingBase + " and the cooking multiplier is set too " + gameXPCookingMult + ".\n"
+  message += "Research XP is set to " + gameXPResearchBase + " and the research multiplier is set too " + gameXPResearchMult + ".\n"
+  message += "Crafting XP is set to " + gameXPCraftingBase + " and the crafting multiplier is set too " + gameXPCraftingMult + ".\n"
+  message += "Lockpicking XP is set to " + gameXPLockpickingNovice + " for novice, " + gameXPLockpickingAdvanced + " for advanced, " + gameXPLockpickingExpert + " for expert, and finally " + gameXPLockpickingMaster + " for master.\n"
+  message += "Speechcraft XP is set to " + gameXPSpeechcraftSuccess + ".\n"
+  message += "Combat Kill XP is set to " + gameXPKillOpponent + ".\n"
+  
+  Debug.Trace(message, 1)
+  Debug.MessageBox(message)
 EndFunction
 
 ;; ****************************************************************************
