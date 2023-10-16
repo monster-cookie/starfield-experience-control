@@ -20,7 +20,7 @@ ScriptName VPI_ExperienceControl Extends ReferenceAlias
 ;;; Properties
 ;;;
 
-String Property Version="1.0.2" Auto
+String Property Version="1.1.0" Auto ;; -- MOD VERSION SET HERE
 
 Actor Property PlayerRef Auto
 ActorValue Property Experience Auto
@@ -33,51 +33,73 @@ Bool Property DiscoveryXPEnabled=true Auto
 Bool Property QuestXPEnabled=true Auto
 Bool Property SpeechcraftXPEnabled=true Auto
 
-;; Base XP Original Settings
-Float Property OriginalXPStart Auto
-Float Property OriginalXPBase Auto
-Float Property OriginalXPMult Auto
-Float Property OriginalXPModBase Auto
+;; Base XP Settings
+Float Property ConfigXPStart Auto
+Float Property ConfigXPBase Auto
+Float Property ConfigXPMult Auto
+Float Property ConfigXPModBase Auto
 
-;; Cooking XP Original Settings
-Float Property OriginalXPCookingBase Auto
-Float Property OriginalXPCookingMult Auto
-Float Property OriginalXPCookingMin Auto
-Float Property OriginalXPCookingMax Auto
+;; Cooking XP Settings
+Float Property ConfigXPCookingBase Auto
+Float Property ConfigXPCookingMult Auto
+Float Property ConfigXPCookingMin Auto
+Float Property ConfigXPCookingMax Auto
 
-;; Research XP Original Settings
-Float Property OriginalXPResearchBase Auto
-Float Property OriginalXPResearchMult Auto
-Float Property OriginalXPResearchMax Auto
+;; Research XP Settings
+Float Property ConfigXPResearchBase Auto
+Float Property ConfigXPResearchMult Auto
+Float Property ConfigXPResearchMax Auto
 
-;; Crafting XP Original Settings
-Float Property OriginalXPCraftingBase Auto
-Float Property OriginalXPCraftingMult Auto
-Float Property OriginalXPCraftingMin Auto
-Float Property OriginalXPCraftingMax Auto
+;; Crafting XP Settings
+Float Property ConfigXPCraftingBase Auto
+Float Property ConfigXPCraftingMult Auto
+Float Property ConfigXPCraftingMin Auto
+Float Property ConfigXPCraftingMax Auto
 
-;; Lockpicking/Hacking XP Original Settings
-Float Property OriginalXPLockpickingNovice Auto
-Float Property OriginalXPLockpickingAdvanced Auto
-Float Property OriginalXPLockpickingExpert Auto
-Float Property OriginalXPLockpickingMaster Auto
-Float Property OriginalXPHackingExperienceBase Auto
+;; Lockpicking/Hacking XP Settings
+Float Property ConfigXPLockpickingNovice Auto
+Float Property ConfigXPLockpickingAdvanced Auto
+Float Property ConfigXPLockpickingExpert Auto
+Float Property ConfigXPLockpickingMaster Auto
+Float Property ConfigXPHackingExperienceBase Auto
 
-;; Discovery XP Original Settings
-Int Property OriginalXPDiscoveryMapMarker Auto
-Int Property OriginalXPDiscoverySecretArea Auto
-Float Property OriginalXPScanCompletiong Auto
+;; Discovery XP Settings
+Int Property ConfigXPDiscoveryMapMarker Auto
+Int Property ConfigXPDiscoverySecretArea Auto
+Float Property ConfigXPScanCompletiong Auto
 
-;; Speechcraft XP Original Settings
-Float Property OriginalXPSpeechcraftSuccess Auto
+;; Speechcraft XP Settings
+Float Property ConfigXPSpeechcraftSuccess Auto
 
-;; Combat XP Original Settings
-Int Property OriginalXPKillOpponent Auto
-Float Property OriginalXPDiffMultXPVE Auto
-Float Property OriginalXPDiffMultXPE Auto
-Float Property OriginalXPDiffMultXPN Auto
-Float Property OriginalXPDiffMultXPH Auto
-Float Property OriginalXPDiffMultXPVH Auto
+;; Combat XP Settings
+Int Property ConfigXPKillOpponent Auto
+Float Property ConfigXPDiffMultXPVE Auto
+Float Property ConfigXPDiffMultXPE Auto
+Float Property ConfigXPDiffMultXPN Auto
+Float Property ConfigXPDiffMultXPH Auto
+Float Property ConfigXPDiffMultXPVH Auto
+
+;; Quest Settings
+Int Property ConfigMQACT1Small Auto
+Int Property ConfigMQACT1Medium Auto
+Int Property ConfigMQACT1Large Auto
+Int Property ConfigMQACT2Small Auto
+Int Property ConfigMQACT2Medium Auto
+Int Property ConfigMQACT2Large Auto
+Int Property ConfigMQACT3Small Auto
+Int Property ConfigMQACT3Medium Auto
+Int Property ConfigMQACT3Large Auto
+
+Int Property ConfigQuestTN Auto    ;; Generally 50
+Int Property ConfigQuestSM Auto    ;; Generally 100
+Int Property ConfigQuestMD Auto    ;; Generally 200
+Int Property ConfigQuestLG Auto    ;; Generally 300
+Int Property ConfigQuestXL Auto    ;; GEnerally 500
+Int Property ConfigQuestXXL Auto   ;; GEnerally 750
+Int Property ConfigQuestXXXL Auto  ;; GEnerally 1000
+Int Property ConfigQuestMSVSM Auto ;; GEnerally 4000
+Int Property ConfigQuestMSVMD Auto ;; GEnerally 4500
+Int Property ConfigQuestMSVLG Auto ;; GEnerally 5000
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -110,6 +132,11 @@ Event OnPlayerLoadGame()
   Debug.Notification("Experience Control version " + version + " is currently running.")
 
   UpdateBindings()
+
+  ;; If Version is not set or not current update it -- MOD VERSION SET HERE
+  If (Version != "1.1.0")
+    Version = "1.1.0"
+  EndIf
 
   ;; DO NOT STORE CURRENT SETTINGS THEY WILL WIPE OLD SETTINGS with game defaults and/or garbage
 
@@ -217,55 +244,89 @@ Function StoreCurrentXPSettings()
   Debug.MessageBox("Current Game XP settings (except quest values) hav been backed up to your save and can be restored by using EnableXP")
 
   ;; Base XP Settings
-  OriginalXPStart=Game.GetGameSettingFloat("fXPStart")
-  OriginalXPBase=Game.GetGameSettingFloat("fXPBase")
-  OriginalXPMult=Game.GetGameSettingFloat("fXPExpMult")
-  OriginalXPModBase=Game.GetGameSettingFloat("fXPModBase")
+  ConfigXPStart=Game.GetGameSettingFloat("fXPStart")
+  ConfigXPBase=Game.GetGameSettingFloat("fXPBase")
+  ConfigXPMult=Game.GetGameSettingFloat("fXPExpMult")
+  ConfigXPModBase=Game.GetGameSettingFloat("fXPModBase")
   
   ;; Cooking XP Settings
-  OriginalXPCookingBase=Game.GetGameSettingFloat("fCookingExpBase")
-  OriginalXPCookingMult=Game.GetGameSettingFloat("fCookingExpMult")
-  OriginalXPCookingMin=Game.GetGameSettingFloat("fCookingExpMin")
-  OriginalXPCookingMax=Game.GetGameSettingFloat("fCookingExpMax")
+  ConfigXPCookingBase=Game.GetGameSettingFloat("fCookingExpBase")
+  ConfigXPCookingMult=Game.GetGameSettingFloat("fCookingExpMult")
+  ConfigXPCookingMin=Game.GetGameSettingFloat("fCookingExpMin")
+  ConfigXPCookingMax=Game.GetGameSettingFloat("fCookingExpMax")
   
   ;; Research XP Settings
-  OriginalXPResearchBase=Game.GetGameSettingFloat("fResearchExpBase")
-  OriginalXPResearchMult=Game.GetGameSettingFloat("fResearchExpMult")
-  OriginalXPResearchMax=Game.GetGameSettingFloat("fResearchExpMax")
+  ConfigXPResearchBase=Game.GetGameSettingFloat("fResearchExpBase")
+  ConfigXPResearchMult=Game.GetGameSettingFloat("fResearchExpMult")
+  ConfigXPResearchMax=Game.GetGameSettingFloat("fResearchExpMax")
   
   ;; Crafting XP Settings
-  OriginalXPCraftingBase=Game.GetGameSettingFloat("fWorkbenchExperienceBase")
-  OriginalXPCraftingMult=Game.GetGameSettingFloat("fWorkbenchExperienceMult")
-  OriginalXPCraftingMin=Game.GetGameSettingFloat("fWorkbenchExperienceMin")
-  OriginalXPCraftingMax=Game.GetGameSettingFloat("fWorkbenchExperienceMax")
+  ConfigXPCraftingBase=Game.GetGameSettingFloat("fWorkbenchExperienceBase")
+  ConfigXPCraftingMult=Game.GetGameSettingFloat("fWorkbenchExperienceMult")
+  ConfigXPCraftingMin=Game.GetGameSettingFloat("fWorkbenchExperienceMin")
+  ConfigXPCraftingMax=Game.GetGameSettingFloat("fWorkbenchExperienceMax")
   
   ;; Lockpicking/Hacking XP Settings
-  OriginalXPLockpickingNovice=Game.GetGameSettingFloat("fLockpickXPRewardEasy")
-  OriginalXPLockpickingAdvanced=Game.GetGameSettingFloat("fLockpickXPRewardAverage")
-  OriginalXPLockpickingExpert=Game.GetGameSettingFloat("fLockpickXPRewardHard")
-  OriginalXPLockpickingMaster=Game.GetGameSettingFloat("fLockpickXPRewardVeryHard")
-  OriginalXPHackingExperienceBase=Game.GetGameSettingFloat("fHackingExperienceBase")
+  ConfigXPLockpickingNovice=Game.GetGameSettingFloat("fLockpickXPRewardEasy")
+  ConfigXPLockpickingAdvanced=Game.GetGameSettingFloat("fLockpickXPRewardAverage")
+  ConfigXPLockpickingExpert=Game.GetGameSettingFloat("fLockpickXPRewardHard")
+  ConfigXPLockpickingMaster=Game.GetGameSettingFloat("fLockpickXPRewardVeryHard")
+  ConfigXPHackingExperienceBase=Game.GetGameSettingFloat("fHackingExperienceBase")
   
   ;; Discovery XP Settings
-  OriginalXPDiscoveryMapMarker=Game.GetGameSettingInt("iXPRewardDiscoverMapMarker")
-  OriginalXPDiscoverySecretArea=Game.GetGameSettingInt("iXPRewardDiscoverSecretArea")
-  OriginalXPScanCompletiong=Game.GetGameSettingFloat("fScanCompleteXPReward")
+  ConfigXPDiscoveryMapMarker=Game.GetGameSettingInt("iXPRewardDiscoverMapMarker")
+  ConfigXPDiscoverySecretArea=Game.GetGameSettingInt("iXPRewardDiscoverSecretArea")
+  ConfigXPScanCompletiong=Game.GetGameSettingFloat("fScanCompleteXPReward")
 
   ;; Speechcraft XP Settings
-  OriginalXPSpeechcraftSuccess=Game.GetGameSettingFloat("fSpeechChallengeSuccessXP")
+  ConfigXPSpeechcraftSuccess=Game.GetGameSettingFloat("fSpeechChallengeSuccessXP")
 
   ;; Combat XP Settings
-  OriginalXPKillOpponent=Game.GetGameSettingInt("iXPRewardKillOpponent")
-  OriginalXPDiffMultXPVE=Game.GetGameSettingFloat("fDiffMultXPVE")
-  OriginalXPDiffMultXPE=Game.GetGameSettingFloat("fDiffMultXPE")
-  OriginalXPDiffMultXPN=Game.GetGameSettingFloat("fDiffMultXPN")
-  OriginalXPDiffMultXPH=Game.GetGameSettingFloat("fDiffMultXPH")
-  OriginalXPDiffMultXPVH=Game.GetGameSettingFloat("fDiffMultXPVH")
+  ConfigXPKillOpponent=Game.GetGameSettingInt("iXPRewardKillOpponent")
+  ConfigXPDiffMultXPVE=Game.GetGameSettingFloat("fDiffMultXPVE")
+  ConfigXPDiffMultXPE=Game.GetGameSettingFloat("fDiffMultXPE")
+  ConfigXPDiffMultXPN=Game.GetGameSettingFloat("fDiffMultXPN")
+  ConfigXPDiffMultXPH=Game.GetGameSettingFloat("fDiffMultXPH")
+  ConfigXPDiffMultXPVH=Game.GetGameSettingFloat("fDiffMultXPVH")
 
-  ;;
-  ;; Will not store quest XP too much of a pain and not very likely they were changed from defaults
-  ;;
+  ;; Quest XP Settings -- VERY VERY EXPERIMENTAL: These are Form Values making them a pain to deal with and they are stored in the save
+  GlobalVariable MQACT1RewardSmall = Game.GetForm(0x000DF3E1) as GlobalVariable
+  GlobalVariable MQACT1RewardMedium = Game.GetForm(0x0023DF3D) as GlobalVariable
+  GlobalVariable MQACT1RewardLarge = Game.GetForm(0x000DF3E0) as GlobalVariable
+  GlobalVariable MQACT2RewardSmall = Game.GetForm(0x0011C0E1) as GlobalVariable
+  GlobalVariable MQACT2RewardMedium = Game.GetForm(0x0011C0E0) as GlobalVariable
+  GlobalVariable MQACT2RewardLarge = Game.GetForm(0x0011C0DF) as GlobalVariable
+  GlobalVariable MQACT3RewardMedium = Game.GetForm(0x0011C0EA) as GlobalVariable
+  GlobalVariable MQACT3RewardLarge = Game.GetForm(0x0011C0E3) as GlobalVariable
 
+  ConfigMQACT1Small=MQACT1RewardSmall.GetValueInt()    ;; Default is 300
+  ConfigMQACT1Medium=MQACT1RewardMedium.GetValueInt()  ;; Default is 350
+  ConfigMQACT1Large=MQACT1RewardLarge.GetValueInt()    ;; Default is 400
+  ConfigMQACT2Small=MQACT2RewardSmall.GetValueInt()    ;; Default is 700
+  ConfigMQACT2Medium=MQACT2RewardMedium.GetValueInt()  ;; Default is 750
+  ConfigMQACT2Large=MQACT2RewardLarge.GetValueInt()    ;; Default is 800
+  ConfigMQACT3Small=4000                               ;; Doesn't seem to exist right now but shuld based on leveling curve
+  ConfigMQACT3Medium=MQACT3RewardMedium.GetValueInt()  ;; Default is 4500
+  ConfigMQACT3Large=MQACT3RewardLarge.GetValueInt()    ;; Default is 5000
+  
+  GlobalVariable QuestTN=Game.GetForm(0x002685E7) as GlobalVariable
+  GlobalVariable QuestSM=Game.GetForm(0x000DF3E4) as GlobalVariable
+  GlobalVariable QuestMD=Game.GetForm(0x0023DF3C) as GlobalVariable
+  GlobalVariable QuestLG=Game.GetForm(0x000DF3E2) as GlobalVariable
+  GlobalVariable QuestXL=Game.GetForm(0x0023842C) as GlobalVariable
+  GlobalVariable QuestMSVMD=Game.GetForm(0x0011C0EA) as GlobalVariable
+  GlobalVariable QuestMSVLG=Game.GetForm(0x0011C0E3) as GlobalVariable
+
+  ConfigQuestTN=QuestTN.GetValueInt()        ;; Generally 50
+  ConfigQuestSM=QuestSM.GetValueInt()        ;; Generally 100
+  ConfigQuestMD=QuestMD.GetValueInt()        ;; Generally 200
+  ConfigQuestLG=QuestLG.GetValueInt()        ;; Generally 300
+  ConfigQuestXL=QuestXL.GetValueInt()        ;; Generally 500
+  ConfigQuestXXL=750                         ;; Generally 750  -- Not Used Currently but should based on the leveling curve
+  ConfigQuestXXXL=1000                       ;; Generally 1000 -- Not Used Currently but should based on the leveling curve
+  ConfigQuestMSVSM=4000                      ;; Generally 4000 -- Not Used Currently but should based on the leveling curve
+  ConfigQuestMSVMD=QuestMSVMD.GetValueInt()  ;; Generally 4500
+  ConfigQuestMSVLG=QuestMSVLG.GetValueInt()  ;; Generally 5000
 EndFunction
 
 ;; ****************************************************************************
@@ -393,88 +454,88 @@ Function DisableQuestXP()
   QuestXPEnabled=false
 
   ;; Main Story Quests
-  SetFormSettingFloat("000DF3E1", 0.00)
-  SetFormSettingFloat("0023DF3D", 0.00)
-  SetFormSettingFloat("000DF3E0", 0.00)
-  SetFormSettingFloat("0011C0E1", 0.00)
-  SetFormSettingFloat("0011C0E0", 0.00)
-  SetFormSettingFloat("0011C0DF", 0.00)
-  SetFormSettingFloat("0011C0EA", 0.00)
-  SetFormSettingFloat("0011C0E3", 0.00)
+  SetFormSettingInt("000DF3E1", 0)
+  SetFormSettingInt("0023DF3D", 0)
+  SetFormSettingInt("000DF3E0", 0)
+  SetFormSettingInt("0011C0E1", 0)
+  SetFormSettingInt("0011C0E0", 0)
+  SetFormSettingInt("0011C0DF", 0)
+  SetFormSettingInt("0011C0EA", 0)
+  SetFormSettingInt("0011C0E3", 0)
 
   ;; Faction Quests
-  SetFormSettingFloat("000DF3DE", 0.00)
-  SetFormSettingFloat("0023DF3B", 0.00)
-  SetFormSettingFloat("000DF3DD", 0.00)
+  SetFormSettingInt("000DF3DE", 0)
+  SetFormSettingInt("0023DF3B", 0)
+  SetFormSettingInt("000DF3DD", 0)
 
   ;; Radient Quests
-  SetFormSettingFloat("000DF3E5", 0.00)
-  SetFormSettingFloat("00100AB6", 0.00)
-  SetFormSettingFloat("00100ABC", 0.00)
-  SetFormSettingFloat("0016D9A6", 0.00)
-  SetFormSettingFloat("001AF650", 0.00)
-  SetFormSettingFloat("0022B890", 0.00)
-  SetFormSettingFloat("0022B943", 0.00)
-  SetFormSettingFloat("0022B947", 0.00)
-  SetFormSettingFloat("0022B94B", 0.00)
-  SetFormSettingFloat("00255B55", 0.00)
-  SetFormSettingFloat("00255B60", 0.00)
-  SetFormSettingFloat("00255B6B", 0.00)
-  SetFormSettingFloat("00255B75", 0.00)
-  SetFormSettingFloat("00269A65", 0.00)
-  SetFormSettingFloat("00269BF3", 0.00)
-  SetFormSettingFloat("001AB4F3", 0.00)
-  SetFormSettingFloat("0023DF35", 0.00)
-  SetFormSettingFloat("000023A2", 0.00)
-  SetFormSettingFloat("000023A3", 0.00)
-  SetFormSettingFloat("00002690", 0.00)
-  SetFormSettingFloat("00003DDC", 0.00)
-  SetFormSettingFloat("001AEA62", 0.00)
+  SetFormSettingInt("000DF3E5", 0)
+  SetFormSettingInt("00100AB6", 0)
+  SetFormSettingInt("00100ABC", 0)
+  SetFormSettingInt("0016D9A6", 0)
+  SetFormSettingInt("001AF650", 0)
+  SetFormSettingInt("0022B890", 0)
+  SetFormSettingInt("0022B943", 0)
+  SetFormSettingInt("0022B947", 0)
+  SetFormSettingInt("0022B94B", 0)
+  SetFormSettingInt("00255B55", 0)
+  SetFormSettingInt("00255B60", 0)
+  SetFormSettingInt("00255B6B", 0)
+  SetFormSettingInt("00255B75", 0)
+  SetFormSettingInt("00269A65", 0)
+  SetFormSettingInt("00269BF3", 0)
+  SetFormSettingInt("001AB4F3", 0)
+  SetFormSettingInt("0023DF35", 0)
+  SetFormSettingInt("000023A2", 0)
+  SetFormSettingInt("000023A3", 0)
+  SetFormSettingInt("00002690", 0)
+  SetFormSettingInt("00003DDC", 0)
+  SetFormSettingInt("001AEA62", 0)
 
   ;; Misc Quests
-  SetFormSettingFloat("002685E7", 0.00)
-  SetFormSettingFloat("000DF3E4", 0.00)
-  SetFormSettingFloat("0023DF3C", 0.00)
-  SetFormSettingFloat("000DF3E2", 0.00)
+  SetFormSettingInt("002685E7", 0)
+  SetFormSettingInt("000DF3E4", 0)
+  SetFormSettingInt("0023DF3C", 0)
+  SetFormSettingInt("000DF3E2", 0)
 
   ;; Other Quests
-  SetFormSettingFloat("000FD332", 0.00)
-  SetFormSettingFloat("00167860", 0.00)
-  SetFormSettingFloat("002E0EC4", 0.00)
-  SetFormSettingFloat("0006B510", 0.00)
-  SetFormSettingFloat("000F3CF9", 0.00)
-  SetFormSettingFloat("000F19CC", 0.00)
-  SetFormSettingFloat("00246AD7", 0.00)
+  SetFormSettingInt("000FD332", 0)
+  SetFormSettingInt("00167860", 0)
+  SetFormSettingInt("002E0EC4", 0)
+  SetFormSettingInt("0006B510", 0)
+  SetFormSettingInt("000F3CF9", 0)
+  SetFormSettingInt("000F19CC", 0)
+  SetFormSettingInt("00246AD7", 0)
 
   ;; Planet/System Surveys
-  SetFormSettingFloat("00245AB9", 0.00)
-  SetFormSettingFloat("001AEB4E", 0.00)
-  SetFormSettingFloat("0030A8C5", 0.00)
-  SetFormSettingFloat("0030A8C6", 0.00)
-  SetFormSettingFloat("0030A8C7", 0.00)
-  SetFormSettingFloat("00056E62", 0.00)
-  SetFormSettingFloat("0023842C", 0.00)
-  SetFormSettingFloat("0030A8C8", 0.00)
-  SetFormSettingFloat("0030A8C9", 0.00)
-  SetFormSettingFloat("0030A8CA", 0.00)
-  SetFormSettingFloat("0030A8CB", 0.00)
+  SetFormSettingInt("00245AB9", 0)
+  SetFormSettingInt("001AEB4E", 0)
+  SetFormSettingInt("0030A8C5", 0)
+  SetFormSettingInt("0030A8C6", 0)
+  SetFormSettingInt("0030A8C7", 0)
+  SetFormSettingInt("00056E62", 0)
+  SetFormSettingInt("0023842C", 0)
+  SetFormSettingInt("0030A8C8", 0)
+  SetFormSettingInt("0030A8C9", 0)
+  SetFormSettingInt("0030A8CA", 0)
+  SetFormSettingInt("0030A8CB", 0)
 
   ;; Settlement Quests
-  SetFormSettingFloat("000DF3E7", 0.00)
-  SetFormSettingFloat("0010DF00", 0.00)
-  SetFormSettingFloat("0010DF0E", 0.00)
-  SetFormSettingFloat("0010DF12", 0.00)
-  SetFormSettingFloat("0010DF16", 0.00)
-  SetFormSettingFloat("001AB4F2", 0.00)
-  SetFormSettingFloat("0023DF34", 0.00)
+  SetFormSettingInt("000DF3E7", 0)
+  SetFormSettingInt("0010DF00", 0)
+  SetFormSettingInt("0010DF0E", 0)
+  SetFormSettingInt("0010DF12", 0)
+  SetFormSettingInt("0010DF16", 0)
+  SetFormSettingInt("001AB4F2", 0)
+  SetFormSettingInt("0023DF34", 0)
 
   ;; Mission Board Quests
-  SetFormSettingFloat("0009E153", 0.00)
-  SetFormSettingFloat("0016AB84", 0.00)
-  SetFormSettingFloat("0016AB85", 0.00)
-  SetFormSettingFloat("0016AB86", 0.00)
-  SetFormSettingFloat("0016AB87", 0.00)
-  SetFormSettingFloat("0016AB88", 0.00)
+  SetFormSettingInt("0009E153", 0)
+  SetFormSettingInt("0016AB84", 0)
+  SetFormSettingInt("0016AB85", 0)
+  SetFormSettingInt("0016AB86", 0)
+  SetFormSettingInt("0016AB87", 0)
+  SetFormSettingInt("0016AB88", 0)
 EndFunction
 
 ;; ****************************************************************************
@@ -501,18 +562,18 @@ Function EnableLevelingXP()
   LevelingXPEnabled=true
 
   ;; Base XP Settings
-  SetGameSettingFloat("fXPStart", OriginalXPStart)
-  SetGameSettingFloat("fXPBase", OriginalXPBase)
-  SetGameSettingFloat("fXPExpMult", OriginalXPMult)
-  SetGameSettingFloat("fXPModBase", OriginalXPModBase)
+  SetGameSettingFloat("fXPStart", ConfigXPStart)
+  SetGameSettingFloat("fXPBase", ConfigXPBase)
+  SetGameSettingFloat("fXPExpMult", ConfigXPMult)
+  SetGameSettingFloat("fXPModBase", ConfigXPModBase)
 
   ;; Combat XP Settings
-  SetGameSettingInt("iXPRewardKillOpponent", OriginalXPKillOpponent)
-  SetGameSettingFloat("fDiffMultXPVE", OriginalXPDiffMultXPVE)
-  SetGameSettingFloat("fDiffMultXPE", OriginalXPDiffMultXPE)
-  SetGameSettingFloat("fDiffMultXPN", OriginalXPDiffMultXPN)
-  SetGameSettingFloat("fDiffMultXPH", OriginalXPDiffMultXPH)
-  SetGameSettingFloat("fDiffMultXPVH", OriginalXPDiffMultXPVH)
+  SetGameSettingInt("iXPRewardKillOpponent", ConfigXPKillOpponent)
+  SetGameSettingFloat("fDiffMultXPVE", ConfigXPDiffMultXPVE)
+  SetGameSettingFloat("fDiffMultXPE", ConfigXPDiffMultXPE)
+  SetGameSettingFloat("fDiffMultXPN", ConfigXPDiffMultXPN)
+  SetGameSettingFloat("fDiffMultXPH", ConfigXPDiffMultXPH)
+  SetGameSettingFloat("fDiffMultXPVH", ConfigXPDiffMultXPVH)
 EndFunction
 
 ;; ****************************************************************************
@@ -524,16 +585,16 @@ Function EnableCraftingXP()
   CraftingXPEnabled=true
   
   ;; Cooking XP Settings
-  SetGameSettingFloat("fCookingExpBase", OriginalXPCookingBase)
-  SetGameSettingFloat("fCookingExpMult", OriginalXPCookingMult)
-  SetGameSettingFloat("fCookingExpMin", OriginalXPCookingMin)
-  SetGameSettingFloat("fCookingExpMax", OriginalXPCookingMax)
+  SetGameSettingFloat("fCookingExpBase", ConfigXPCookingBase)
+  SetGameSettingFloat("fCookingExpMult", ConfigXPCookingMult)
+  SetGameSettingFloat("fCookingExpMin", ConfigXPCookingMin)
+  SetGameSettingFloat("fCookingExpMax", ConfigXPCookingMax)
   
   ;; Crafting XP Settings
-  SetGameSettingFloat("fWorkbenchExperienceBase", OriginalXPCraftingBase)
-  SetGameSettingFloat("fWorkbenchExperienceMult", OriginalXPCraftingMult)
-  SetGameSettingFloat("fWorkbenchExperienceMin", OriginalXPCraftingMin)
-  SetGameSettingFloat("fWorkbenchExperienceMax", OriginalXPCraftingMax)
+  SetGameSettingFloat("fWorkbenchExperienceBase", ConfigXPCraftingBase)
+  SetGameSettingFloat("fWorkbenchExperienceMult", ConfigXPCraftingMult)
+  SetGameSettingFloat("fWorkbenchExperienceMin", ConfigXPCraftingMin)
+  SetGameSettingFloat("fWorkbenchExperienceMax", ConfigXPCraftingMax)
 EndFunction
 
 ;; ****************************************************************************
@@ -545,9 +606,9 @@ Function EnableResearchXP()
   ResearchXPEnabled=true
   
   ;; Research XP Settings
-  SetGameSettingFloat("fResearchExpBase", OriginalXPResearchBase)
-  SetGameSettingFloat("fResearchExpMult", OriginalXPResearchMult)
-  SetGameSettingFloat("fResearchExpMax", OriginalXPResearchMax)
+  SetGameSettingFloat("fResearchExpBase", ConfigXPResearchBase)
+  SetGameSettingFloat("fResearchExpMult", ConfigXPResearchMult)
+  SetGameSettingFloat("fResearchExpMax", ConfigXPResearchMax)
 EndFunction
 
 ;; ****************************************************************************
@@ -559,10 +620,10 @@ Function EnableLockpickingXP()
   LockpickingXPEnabled=true
   
   ;; Lockpicking/Hacking XP Settings
-  SetGameSettingFloat("fLockpickXPRewardEasy", OriginalXPLockpickingNovice)
-  SetGameSettingFloat("fLockpickXPRewardAverage", OriginalXPLockpickingAdvanced)
-  SetGameSettingFloat("fLockpickXPRewardHard", OriginalXPLockpickingExpert)
-  SetGameSettingFloat("fLockpickXPRewardVeryHard", OriginalXPLockpickingMaster)
+  SetGameSettingFloat("fLockpickXPRewardEasy", ConfigXPLockpickingNovice)
+  SetGameSettingFloat("fLockpickXPRewardAverage", ConfigXPLockpickingAdvanced)
+  SetGameSettingFloat("fLockpickXPRewardHard", ConfigXPLockpickingExpert)
+  SetGameSettingFloat("fLockpickXPRewardVeryHard", ConfigXPLockpickingMaster)
 EndFunction
 
 ;; ****************************************************************************
@@ -574,9 +635,9 @@ Function EnableDiscoveryXP()
   DiscoveryXPEnabled=true
   
   ;; Discovery XP Settings
-  SetGameSettingInt("iXPRewardDiscoverMapMarker", OriginalXPDiscoveryMapMarker)
-  SetGameSettingInt("iXPRewardDiscoverSecretArea", OriginalXPDiscoverySecretArea)
-  SetGameSettingFloat("fScanCompleteXPReward", OriginalXPScanCompletiong)
+  SetGameSettingInt("iXPRewardDiscoverMapMarker", ConfigXPDiscoveryMapMarker)
+  SetGameSettingInt("iXPRewardDiscoverSecretArea", ConfigXPDiscoverySecretArea)
+  SetGameSettingFloat("fScanCompleteXPReward", ConfigXPScanCompletiong)
 EndFunction
 
 ;; ****************************************************************************
@@ -588,7 +649,7 @@ Function EnableSpeechcraftXP()
   SpeechcraftXPEnabled=true
 
   ;; Speechcraft XP Settings
-  SetGameSettingFloat("fSpeechChallengeSuccessXP", OriginalXPSpeechcraftSuccess)
+  SetGameSettingFloat("fSpeechChallengeSuccessXP", ConfigXPSpeechcraftSuccess)
 EndFunction
 
 ;; ****************************************************************************
@@ -599,89 +660,89 @@ EndFunction
 Function EnableQuestXP()
   QuestXPEnabled=true
 
-  ;; Main Story Quests -- Too complicated to store this much so resetting to game defaults
-  SetFormSettingFloat("000DF3E1", 300)
-  SetFormSettingFloat("0023DF3D", 350)
-  SetFormSettingFloat("000DF3E0", 400)
-  SetFormSettingFloat("0011C0E1", 700)
-  SetFormSettingFloat("0011C0E0", 750)
-  SetFormSettingFloat("0011C0DF", 800)
-  SetFormSettingFloat("0011C0EA", 4500)
-  SetFormSettingFloat("0011C0E3", 5000)
+  ;; Main Story Quests
+  SetFormSettingInt("000DF3E1", ConfigMQACT1Small)
+  SetFormSettingInt("0023DF3D", ConfigMQACT1Medium)
+  SetFormSettingInt("000DF3E0", ConfigMQACT1Large)
+  SetFormSettingInt("0011C0E1", ConfigMQACT2Small)
+  SetFormSettingInt("0011C0E0", ConfigMQACT2Medium)
+  SetFormSettingInt("0011C0DF", ConfigMQACT2Large)
+  SetFormSettingInt("0011C0EA", ConfigMQACT3Medium)
+  SetFormSettingInt("0011C0E3", ConfigMQACT3Large)
 
-  ;; Faction Quests -- Too complicated to store this much so resetting to game defaults
-  SetFormSettingFloat("000DF3DE", 150)
-  SetFormSettingFloat("0023DF3B", 250)
-  SetFormSettingFloat("000DF3DD", 350)
+  ;; Faction Quests
+  SetFormSettingInt("000DF3DE", ConfigQuestMD)
+  SetFormSettingInt("0023DF3B", ConfigQuestLG)
+  SetFormSettingInt("000DF3DD", ConfigQuestXL)
 
-  ;; Radient Quests -- Too complicated to store this much so resetting to game defaults
-  SetFormSettingFloat("000DF3E5", 100)
-  SetFormSettingFloat("00100AB6", 100)
-  SetFormSettingFloat("00100ABC", 100)
-  SetFormSettingFloat("0016D9A6", 100)
-  SetFormSettingFloat("001AF650", 100)
-  SetFormSettingFloat("0022B890", 100)
-  SetFormSettingFloat("0022B943", 100)
-  SetFormSettingFloat("0022B947", 100)
-  SetFormSettingFloat("0022B94B", 100)
-  SetFormSettingFloat("00255B55", 100)
-  SetFormSettingFloat("00255B60", 100)
-  SetFormSettingFloat("00255B6B", 100)
-  SetFormSettingFloat("00255B75", 100)
-  SetFormSettingFloat("00269A65", 100)
-  SetFormSettingFloat("00269BF3", 100)
-  SetFormSettingFloat("001AB4F3", 125)
-  SetFormSettingFloat("0023DF35", 150)
-  SetFormSettingFloat("000023A2", 150)
-  SetFormSettingFloat("000023A3", 150)
-  SetFormSettingFloat("00002690", 150)
-  SetFormSettingFloat("00003DDC", 150)
-  SetFormSettingFloat("001AEA62", 150)
+  ;; Radient Quests
+  SetFormSettingInt("000DF3E5", ConfigQuestSM)
+  SetFormSettingInt("00100AB6", ConfigQuestSM)
+  SetFormSettingInt("00100ABC", ConfigQuestSM)
+  SetFormSettingInt("0016D9A6", ConfigQuestSM)
+  SetFormSettingInt("001AF650", ConfigQuestSM)
+  SetFormSettingInt("0022B890", ConfigQuestSM)
+  SetFormSettingInt("0022B943", ConfigQuestSM)
+  SetFormSettingInt("0022B947", ConfigQuestSM)
+  SetFormSettingInt("0022B94B", ConfigQuestSM)
+  SetFormSettingInt("00255B55", ConfigQuestSM)
+  SetFormSettingInt("00255B60", ConfigQuestSM)
+  SetFormSettingInt("00255B6B", ConfigQuestSM)
+  SetFormSettingInt("00255B75", ConfigQuestSM)
+  SetFormSettingInt("00269A65", ConfigQuestSM)
+  SetFormSettingInt("00269BF3", ConfigQuestSM)
+  SetFormSettingInt("001AB4F3", ConfigQuestMD)
+  SetFormSettingInt("0023DF35", ConfigQuestMD)
+  SetFormSettingInt("000023A2", ConfigQuestMD)
+  SetFormSettingInt("000023A3", ConfigQuestMD)
+  SetFormSettingInt("00002690", ConfigQuestMD)
+  SetFormSettingInt("00003DDC", ConfigQuestMD)
+  SetFormSettingInt("001AEA62", ConfigQuestMD)
 
-  ;; Misc Quests -- Too complicated to store this much so resetting to game defaults
-  SetFormSettingFloat("002685E7", 50)
-  SetFormSettingFloat("000DF3E4", 100)
-  SetFormSettingFloat("0023DF3C", 200)
-  SetFormSettingFloat("000DF3E2", 300)
+  ;; Misc Quests
+  SetFormSettingInt("002685E7", ConfigQuestTN)
+  SetFormSettingInt("000DF3E4", ConfigQuestSM)
+  SetFormSettingInt("0023DF3C", ConfigQuestMD)
+  SetFormSettingInt("000DF3E2", ConfigQuestLG)
 
-  ;; Other Quests -- Too complicated to store this much so resetting to game defaults
-  SetFormSettingFloat("000FD332", 250)
-  SetFormSettingFloat("00167860", 100)
-  SetFormSettingFloat("002E0EC4", 100)
-  SetFormSettingFloat("0006B510", 200)
-  SetFormSettingFloat("000F3CF9", 300)
-  SetFormSettingFloat("000F19CC", 400)
-  SetFormSettingFloat("00246AD7", 200)
+  ;; Other Quests
+  SetFormSettingInt("000FD332", ConfigQuestLG)
+  SetFormSettingInt("00167860", ConfigQuestSM)
+  SetFormSettingInt("002E0EC4", ConfigQuestSM)
+  SetFormSettingInt("0006B510", ConfigQuestMD)
+  SetFormSettingInt("000F3CF9", ConfigQuestLG)
+  SetFormSettingInt("000F19CC", ConfigQuestXL)
+  SetFormSettingInt("00246AD7", ConfigQuestMD)
 
-  ;; Planet/System Surveys -- Too complicated to store this much so resetting to game defaults
-  SetFormSettingFloat("00245AB9", 100)
-  SetFormSettingFloat("001AEB4E", 100)
-  SetFormSettingFloat("0030A8C5", 50)
-  SetFormSettingFloat("0030A8C6", 100)
-  SetFormSettingFloat("0030A8C7", 200)
-  SetFormSettingFloat("00056E62", 300)
-  SetFormSettingFloat("0023842C", 500)
-  SetFormSettingFloat("0030A8C8", 50)
-  SetFormSettingFloat("0030A8C9", 100)
-  SetFormSettingFloat("0030A8CA", 200)
-  SetFormSettingFloat("0030A8CB", 300)
+  ;; Planet/System Surveys
+  SetFormSettingInt("00245AB9", ConfigQuestSM)
+  SetFormSettingInt("001AEB4E", ConfigQuestSM)
+  SetFormSettingInt("0030A8C5", ConfigQuestTN)
+  SetFormSettingInt("0030A8C6", ConfigQuestSM)
+  SetFormSettingInt("0030A8C7", ConfigQuestMD)
+  SetFormSettingInt("00056E62", ConfigQuestLG)
+  SetFormSettingInt("0023842C", ConfigQuestXL)
+  SetFormSettingInt("0030A8C8", ConfigQuestTN)
+  SetFormSettingInt("0030A8C9", ConfigQuestSM)
+  SetFormSettingInt("0030A8CA", ConfigQuestMD)
+  SetFormSettingInt("0030A8CB", ConfigQuestLG)
 
-  ;; Settlement Quests -- Too complicated to store this much so resetting to game defaults
-  SetFormSettingFloat("000DF3E7", 50)
-  SetFormSettingFloat("0010DF00", 50)
-  SetFormSettingFloat("0010DF0E", 50)
-  SetFormSettingFloat("0010DF12", 50)
-  SetFormSettingFloat("0010DF16", 50)
-  SetFormSettingFloat("001AB4F2", 75)
-  SetFormSettingFloat("0023DF34", 100)
+  ;; Settlement Quests
+  SetFormSettingInt("000DF3E7", ConfigQuestTN)
+  SetFormSettingInt("0010DF00", ConfigQuestTN)
+  SetFormSettingInt("0010DF0E", ConfigQuestTN)
+  SetFormSettingInt("0010DF12", ConfigQuestTN)
+  SetFormSettingInt("0010DF16", ConfigQuestTN)
+  SetFormSettingInt("001AB4F2", ConfigQuestSM)
+  SetFormSettingInt("0023DF34", ConfigQuestMD)
 
-  ;; Mission Board Quests -- Too complicated to store this much so resetting to game defaults
-  SetFormSettingFloat("0009E153", 100)
-  SetFormSettingFloat("0016AB84", 100)
-  SetFormSettingFloat("0016AB85", 150)
-  SetFormSettingFloat("0016AB86", 200)
-  SetFormSettingFloat("0016AB87", 300)
-  SetFormSettingFloat("0016AB88", 500)
+  ;; Mission Board Quests
+  SetFormSettingInt("0009E153", ConfigQuestSM)
+  SetFormSettingInt("0016AB84", ConfigQuestSM)
+  SetFormSettingInt("0016AB85", ConfigQuestMD)
+  SetFormSettingInt("0016AB86", ConfigQuestMD)
+  SetFormSettingInt("0016AB87", ConfigQuestLG)
+  SetFormSettingInt("0016AB88", ConfigQuestXL)
 EndFunction
 
 ;; ****************************************************************************
