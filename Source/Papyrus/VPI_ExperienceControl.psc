@@ -13,6 +13,115 @@ ScriptName VPI_ExperienceControl Extends ReferenceAlias
 ;;;
 ;;; Global Variables
 ;;;
+GlobalVariable Property MainQuestAct1XPRewardSmall Auto   ;; Form ID 000DF3E1
+GlobalVariable Property MainQuestAct1XPRewardMedium Auto  ;; Form ID 0023DF3D
+GlobalVariable Property MainQuestAct1XPRewardLarge Auto   ;; Form ID 000DF3E0
+GlobalVariable Property MainQuestAct2XPRewardSmall Auto   ;; Form ID 0011C0E1
+GlobalVariable Property MainQuestAct2XPRewardMedium Auto  ;; Form ID 0011C0E0
+GlobalVariable Property MainQuestAct2XPRewardLarge Auto   ;; Form ID 0011C0DF
+;; GlobalVariable Property MainQuestAct3XPRewardSmall Auto   ;; Form ID ???????? -- Doesn't seeem to exist but should per leveling curve
+GlobalVariable Property MainQuestAct3XPRewardMedium Auto  ;; Form ID 0011C0EA
+GlobalVariable Property MainQuestAct3XPRewardLarge Auto   ;; Form ID 0011C0E3
+
+GlobalVariable Property FactionQuestXPRewardSmall Auto   ;; Form ID 000DF3DE
+GlobalVariable Property FactionQuestXPRewardMedium Auto  ;; Form ID 0023DF3B
+GlobalVariable Property FactionQuestXPRewardLarge Auto   ;; Form ID 000DF3DD
+
+GlobalVariable Property RadiantQuestVersion01XPRewardSmall Auto   ;; Form ID 000DF3E5
+GlobalVariable Property RadiantQuestVersion02XPRewardSmall Auto   ;; Form ID 00100AB6
+GlobalVariable Property RadiantQuestVersion03XPRewardSmall Auto   ;; Form ID 00100ABC
+GlobalVariable Property RadiantQuestVersion04XPRewardSmall Auto   ;; Form ID 0016D9A6
+GlobalVariable Property RadiantQuestVersion05XPRewardSmall Auto   ;; Form ID 001AF650
+GlobalVariable Property RadiantQuestVersion06XPRewardSmall Auto   ;; Form ID 0022B890
+GlobalVariable Property RadiantQuestVersion07XPRewardSmall Auto   ;; Form ID 0022B943
+GlobalVariable Property RadiantQuestVersion08XPRewardSmall Auto   ;; Form ID 0022B947
+GlobalVariable Property RadiantQuestVersion09XPRewardSmall Auto   ;; Form ID 0022B94B
+GlobalVariable Property RadiantQuestVersion10XPRewardSmall Auto   ;; Form ID 00255B55
+GlobalVariable Property RadiantQuestVersion11XPRewardSmall Auto   ;; Form ID 00255B60
+GlobalVariable Property RadiantQuestVersion12XPRewardSmall Auto   ;; Form ID 00255B6B
+GlobalVariable Property RadiantQuestVersion13XPRewardSmall Auto   ;; Form ID 00255B75
+GlobalVariable Property RadiantQuestVersion14XPRewardSmall Auto   ;; Form ID 00269A65
+GlobalVariable Property RadiantQuestVersion15XPRewardSmall Auto   ;; Form ID 00269BF3
+GlobalVariable Property RadiantQuestVersion01XPRewardMedium Auto  ;; Form ID 001AB4F3
+GlobalVariable Property RadiantQuestVersion01XPRewardLarge Auto   ;; Form ID 0023DF35
+GlobalVariable Property RadiantQuestVersion02XPRewardLarge Auto   ;; Form ID 000023A2
+GlobalVariable Property RadiantQuestVersion03XPRewardLarge Auto   ;; Form ID 000023A3
+GlobalVariable Property RadiantQuestVersion04XPRewardLarge Auto   ;; Form ID 00002690
+GlobalVariable Property RadiantQuestVersion05XPRewardLarge Auto   ;; Form ID 00003DDC
+GlobalVariable Property RadiantQuestVersion06XPRewardLarge Auto   ;; Form ID 001AEA62
+
+GlobalVariable Property MiscQuestXPRewardTiny Auto           ;; Form ID 002685E7
+GlobalVariable Property MiscQuestXPRewardSmall Auto          ;; Form ID 000DF3E4
+GlobalVariable Property MiscQuestXPRewardMedium Auto         ;; Form ID 0023DF3C
+GlobalVariable Property MiscQuestXPRewardLarge Auto          ;; Form ID 000DF3E2
+GlobalVariable Property CompanionQuestXPReward Auto          ;; Form ID 000FD332
+GlobalVariable Property OptionalObjectiveQuestXPReward Auto  ;; Form ID 00167860
+GlobalVariable Property RedMileRunQuestXPReward Auto         ;; Form ID 002E0EC4
+GlobalVariable Property OESmallQuestXPReward Auto            ;; Form ID 0006B510
+GlobalVariable Property OEMediumQuestXPReward Auto           ;; Form ID 000F3CF9
+GlobalVariable Property OELargeQuestXPReward Auto            ;; Form ID 000F19CC
+GlobalVariable Property StarbornTempleXPReward Auto          ;; Form ID 00246AD7
+; GlobalVariable Property CydoniaRedTapeQuestXPReward Auto     ;; Form ID 00237408 -- Not used default is 0
+; GlobalVariable Property UnknownAppTrackingQuestXPReward Auto ;; Form ID 0027A57A -- Not used default is 0
+
+GlobalVariable Property PlanetaryTraitXPReward Auto            ;; Form ID 00245AB9
+GlobalVariable Property PlanetaryTraitSkillBonusXPReward Auto  ;; Form ID 001AEB4E
+GlobalVariable Property PlanetaryTraitAstroBonusXPReward Auto  ;; Form ID 002B97EC
+GlobalVariable Property PlanetarySurveyV1XPReward Auto         ;; Form ID 0030A8C5
+GlobalVariable Property PlanetarySurveyV2XPReward Auto         ;; Form ID 0030A8C6
+GlobalVariable Property PlanetarySurveyV3XPReward Auto         ;; Form ID 0030A8C7
+GlobalVariable Property PlanetarySurveyV4XPReward Auto         ;; Form ID 00056E62
+GlobalVariable Property PlanetarySurveyV5XPReward Auto         ;; Form ID 0023842C
+GlobalVariable Property SystemSurveyV1XPReward Auto            ;; Form ID 0030A8C8
+GlobalVariable Property SystemSurveyV2XPReward Auto            ;; Form ID 0030A8C9
+GlobalVariable Property SystemSurveyV3XPReward Auto            ;; Form ID 0030A8CA
+GlobalVariable Property SystemSurveyV4XPReward Auto            ;; Form ID 0030A8CB
+
+GlobalVariable Property SettlementV1QuestXPRewardSmall Auto    ;; Form ID 000DF3E7
+GlobalVariable Property SettlementV2QuestXPRewardSmall Auto    ;; Form ID 0010DF00
+GlobalVariable Property SettlementV3QuestXPRewardSmall Auto    ;; Form ID 0010DF0E
+GlobalVariable Property SettlementV4QuestXPRewardSmall Auto    ;; Form ID 0010DF12
+GlobalVariable Property SettlementV5QuestXPRewardSmall Auto    ;; Form ID 0010DF16
+GlobalVariable Property SettlementV1QuestXPRewardMedium Auto   ;; Form ID 001AB4F2
+GlobalVariable Property SettlementV1QuestXPRewardLarge Auto    ;; Form ID 0023DF34
+
+GlobalVariable Property MissionBoardSurveyBaseXPReward Auto            ;; Form ID 0009E153
+; GlobalVariable Property MissionBoardSurveyActualV1XPReward Auto        ;; Form ID 0016AB80 -- Not used default is 0
+; GlobalVariable Property MissionBoardSurveyActualV2XPReward Auto        ;; Form ID 0016AB81 -- Not used default is 0
+; GlobalVariable Property MissionBoardSurveyActualV3XPReward Auto        ;; Form ID 0016AB82 -- Not used default is 0
+; GlobalVariable Property MissionBoardSurveyActualV4XPReward Auto        ;; Form ID 0016AB83 -- Not used default is 0
+GlobalVariable Property MissionBoardSurveyTraitV1XPReward Auto         ;; Form ID 0016AB84
+GlobalVariable Property MissionBoardSurveyTraitV2XPReward Auto         ;; Form ID 0016AB85
+GlobalVariable Property MissionBoardSurveyTraitV3XPReward Auto         ;; Form ID 0016AB86
+GlobalVariable Property MissionBoardSurveyTraitV4XPReward Auto         ;; Form ID 0016AB87
+GlobalVariable Property MissionBoardSurveyTraitV5XPReward Auto         ;; Form ID 0016AB88
+; GlobalVariable Property MissionBoardSurveyTraitActualV01XPReward Auto  ;; Form ID 0016AB89 -- Not used default is 0
+; GlobalVariable Property MissionBoardSurveyTraitActualV02XPReward Auto  ;; Form ID 0016AB8A -- Not used default is 0
+; GlobalVariable Property MissionBoardSurveyTraitActualV03XPReward Auto  ;; Form ID 0016AB8B -- Not used default is 0
+; GlobalVariable Property MissionBoardSurveyTraitActualV04XPReward Auto  ;; Form ID 0016AB8C -- Not used default is 0
+; GlobalVariable Property MissionBoardSurveyTraitActualV05XPReward Auto  ;; Form ID 0016AB8D -- Not used default is 0
+; GlobalVariable Property MissionBoardSurveyTraitActualV06XPReward Auto  ;; Form ID 0016AB8E -- Not used default is 0
+; GlobalVariable Property MissionBoardSurveyTraitActualV07XPReward Auto  ;; Form ID 0016AB8F -- Not used default is 0
+; GlobalVariable Property MissionBoardSurveyTraitActualV08XPReward Auto  ;; Form ID 0016AB90 -- Not used default is 0
+; GlobalVariable Property MissionBoardSurveyTraitActualV09XPReward Auto  ;; Form ID 0016AB91 -- Not used default is 0
+; GlobalVariable Property MissionBoardSurveyTraitActualV10XPReward Auto  ;; Form ID 0016AB92 -- Not used default is 0
+; GlobalVariable Property MissionBoardSurveyTraitActualV11XPReward Auto  ;; Form ID 0016AB93 -- Not used default is 0
+; GlobalVariable Property MissionBoardSurveyTraitActualV12XPReward Auto  ;; Form ID 0016AB94 -- Not used default is 0
+; GlobalVariable Property MissionBoardSurveyTraitActualV13XPReward Auto  ;; Form ID 0016AB95 -- Not used default is 0
+; GlobalVariable Property MissionBoardSurveyTraitActualV14XPReward Auto  ;; Form ID 0016AB96 -- Not used default is 0
+; GlobalVariable Property MissionBoardSurveyTraitActualV15XPReward Auto  ;; Form ID 0016AB97 -- Not used default is 0
+; GlobalVariable Property MissionBoardSurveyTraitActualV16XPReward Auto  ;; Form ID 0016AB98 -- Not used default is 0
+; GlobalVariable Property MissionBoardSurveyTraitActualV17XPReward Auto  ;; Form ID 0016AB99 -- Not used default is 0
+; GlobalVariable Property MissionBoardSurveyTraitActualV18XPReward Auto  ;; Form ID 0016AB9A -- Not used default is 0
+; GlobalVariable Property MissionBoardSurveyTraitActualV19XPReward Auto  ;; Form ID 0016AB9B -- Not used default is 0
+; GlobalVariable Property MissionBoardSurveyTraitActualV20XPReward Auto  ;; Form ID 0016AB9C -- Not used default is 0
+; GlobalVariable Property MissionBoardSurveyTraitActualV21XPReward Auto  ;; Form ID 0016AB9D -- Not used default is 0
+; GlobalVariable Property MissionBoardSurveyTraitActualV22XPReward Auto  ;; Form ID 0016AB9E -- Not used default is 0
+; GlobalVariable Property MissionBoardSurveyTraitActualV23XPReward Auto  ;; Form ID 0016AB9F -- Not used default is 0
+; GlobalVariable Property MissionBoardSurveyTraitActualV24XPReward Auto  ;; Form ID 0016ABA0 -- Not used default is 0
+; GlobalVariable Property MissionBoardSurveyTraitActualV25XPReward Auto  ;; Form ID 0016ABA1 -- Not used default is 0
+; GlobalVariable Property MissionBoardSurveyTraitActualV26XPReward Auto  ;; Form ID 0016ABA2 -- Not used default is 0
+
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -822,6 +931,10 @@ Function CurrentXPStatus()
   
   Debug.Trace(message, 1)
   Debug.MessageBox(message)
+EndFunction
+
+Function DumpXPMatrix()
+  
 EndFunction
 
 ;; ****************************************************************************
