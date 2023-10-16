@@ -305,8 +305,285 @@ Function UpdateBindings()
   if (PlayerRef == None) 
     PlayerRef = Game.GetPlayer()
   EndIf
+
   if (Experience == None) 
     Experience = Game.GetForm(0x000002C9) as ActorValue
+  EndIf
+
+  If (MainQuestAct1XPRewardSmall == None)
+    MainQuestAct1XPRewardSmall = Game.GetForm(0x000DF3E1) as GlobalVariable
+  EndIf
+
+  If (MainQuestAct1XPRewardMedium == None)
+    MainQuestAct1XPRewardMedium = Game.GetForm(0x0023DF3D) as GlobalVariable
+  EndIf
+
+  If (MainQuestAct1XPRewardLarge == None)
+    MainQuestAct1XPRewardLarge = Game.GetForm(0x000DF3E0) as GlobalVariable
+  EndIf
+
+  If (MainQuestAct2XPRewardSmall == None)
+    MainQuestAct2XPRewardSmall = Game.GetForm(0x0011C0E1) as GlobalVariable
+  EndIf
+
+  If (MainQuestAct2XPRewardMedium == None)
+    MainQuestAct2XPRewardMedium = Game.GetForm(0x0011C0E0) as GlobalVariable
+  EndIf
+
+  If (MainQuestAct2XPRewardLarge == None)
+    MainQuestAct2XPRewardLarge = Game.GetForm(0x0011C0DF) as GlobalVariable
+  EndIf
+
+  If (MainQuestAct3XPRewardMedium == None)
+    MainQuestAct3XPRewardMedium = Game.GetForm(0x0011C0EA) as GlobalVariable
+  EndIf
+
+  If (MainQuestAct3XPRewardLarge == None)
+    MainQuestAct3XPRewardLarge = Game.GetForm(0x0011C0E3) as GlobalVariable
+  EndIf
+  
+  If (FactionQuestXPRewardSmall == None)
+    FactionQuestXPRewardSmall = Game.GetForm(0x000DF3DE) as GlobalVariable
+  EndIf
+
+  If (FactionQuestXPRewardMedium == None)
+    FactionQuestXPRewardMedium = Game.GetForm(0x0023DF3B) as GlobalVariable
+  EndIf
+
+  If (FactionQuestXPRewardLarge == None)
+    FactionQuestXPRewardLarge = Game.GetForm(0x000DF3DD) as GlobalVariable
+  EndIf
+  
+  If (RadiantQuestVersion01XPRewardSmall == None)
+    RadiantQuestVersion01XPRewardSmall = Game.GetForm(0x000DF3E5) as GlobalVariable
+  EndIf
+
+  If (RadiantQuestVersion02XPRewardSmall == None)
+    RadiantQuestVersion02XPRewardSmall = Game.GetForm(0x00100AB6) as GlobalVariable
+  EndIf
+
+  If (RadiantQuestVersion03XPRewardSmall == None)
+    RadiantQuestVersion03XPRewardSmall = Game.GetForm(0x00100ABC) as GlobalVariable
+  EndIf
+
+  If (RadiantQuestVersion04XPRewardSmall == None)
+    RadiantQuestVersion04XPRewardSmall = Game.GetForm(0x0016D9A6) as GlobalVariable
+  EndIf
+
+  If (RadiantQuestVersion05XPRewardSmall == None)
+    RadiantQuestVersion05XPRewardSmall = Game.GetForm(0x001AF650) as GlobalVariable
+  EndIf
+
+  If (RadiantQuestVersion06XPRewardSmall == None)
+    RadiantQuestVersion06XPRewardSmall = Game.GetForm(0x0022B890) as GlobalVariable
+  EndIf
+
+  If (RadiantQuestVersion07XPRewardSmall == None)
+    RadiantQuestVersion07XPRewardSmall = Game.GetForm(0x0022B943) as GlobalVariable
+  EndIf
+
+  If (RadiantQuestVersion08XPRewardSmall == None)
+    RadiantQuestVersion08XPRewardSmall = Game.GetForm(0x0022B947) as GlobalVariable
+  EndIf
+
+  If (RadiantQuestVersion09XPRewardSmall == None)
+    RadiantQuestVersion09XPRewardSmall = Game.GetForm(0x0022B94B) as GlobalVariable
+  EndIf
+
+  If (RadiantQuestVersion10XPRewardSmall == None)
+    RadiantQuestVersion10XPRewardSmall = Game.GetForm(0x00255B55) as GlobalVariable
+  EndIf
+
+  If (RadiantQuestVersion11XPRewardSmall == None)
+    RadiantQuestVersion11XPRewardSmall = Game.GetForm(0x00255B60) as GlobalVariable
+  EndIf
+
+  If (RadiantQuestVersion12XPRewardSmall == None)
+    RadiantQuestVersion12XPRewardSmall = Game.GetForm(0x00255B6B) as GlobalVariable
+  EndIf
+
+  If (RadiantQuestVersion13XPRewardSmall == None)
+    RadiantQuestVersion13XPRewardSmall = Game.GetForm(0x00255B75) as GlobalVariable
+  EndIf
+
+  If (RadiantQuestVersion14XPRewardSmall == None)
+    RadiantQuestVersion14XPRewardSmall = Game.GetForm(0x00269A65) as GlobalVariable
+  EndIf
+
+  If (RadiantQuestVersion15XPRewardSmall == None)
+    RadiantQuestVersion15XPRewardSmall = Game.GetForm(0x00269BF3) as GlobalVariable
+  EndIf
+
+  If (RadiantQuestVersion01XPRewardMedium == None)
+    RadiantQuestVersion01XPRewardMedium = Game.GetForm(0x001AB4F3) as GlobalVariable
+  EndIf
+
+  If (RadiantQuestVersion01XPRewardLarge == None)
+    RadiantQuestVersion01XPRewardLarge = Game.GetForm(0x0023DF35) as GlobalVariable
+  EndIf
+
+  If (RadiantQuestVersion02XPRewardLarge == None)
+    RadiantQuestVersion02XPRewardLarge = Game.GetForm(0x000023A2) as GlobalVariable
+  EndIf
+
+  If (RadiantQuestVersion03XPRewardLarge == None)
+    RadiantQuestVersion03XPRewardLarge = Game.GetForm(0x000023A3) as GlobalVariable
+  EndIf
+
+  If (RadiantQuestVersion04XPRewardLarge == None)
+    RadiantQuestVersion04XPRewardLarge = Game.GetForm(0x00002690) as GlobalVariable
+  EndIf
+
+  If (RadiantQuestVersion05XPRewardLarge == None)
+    RadiantQuestVersion05XPRewardLarge = Game.GetForm(0x00003DDC) as GlobalVariable
+  EndIf
+
+  If (RadiantQuestVersion06XPRewardLarge == None)
+    RadiantQuestVersion06XPRewardLarge = Game.GetForm(0x001AEA62) as GlobalVariable
+  EndIf
+  
+  If (MiscQuestXPRewardTiny == None)
+    MiscQuestXPRewardTiny = Game.GetForm(0x002685E7) as GlobalVariable
+  EndIf
+
+  If (MiscQuestXPRewardSmall == None)
+    MiscQuestXPRewardSmall = Game.GetForm(0x000DF3E4) as GlobalVariable
+  EndIf
+
+  If (MiscQuestXPRewardMedium == None)
+    MiscQuestXPRewardMedium = Game.GetForm(0x0023DF3C) as GlobalVariable
+  EndIf
+
+  If (MiscQuestXPRewardLarge == None)
+    MiscQuestXPRewardLarge = Game.GetForm(0x000DF3E2) as GlobalVariable
+  EndIf
+
+  If (CompanionQuestXPReward == None)
+    CompanionQuestXPReward = Game.GetForm(0x000FD332) as GlobalVariable
+  EndIf
+
+  If (OptionalObjectiveQuestXPReward == None)
+    OptionalObjectiveQuestXPReward = Game.GetForm(0x00167860) as GlobalVariable
+  EndIf
+
+  If (RedMileRunQuestXPReward == None)
+    RedMileRunQuestXPReward = Game.GetForm(0x002E0EC4) as GlobalVariable
+  EndIf
+
+  If (OESmallQuestXPReward == None)
+    OESmallQuestXPReward = Game.GetForm(0x0006B510) as GlobalVariable
+  EndIf
+
+  If (OEMediumQuestXPReward == None)
+    OEMediumQuestXPReward = Game.GetForm(0x000F3CF9) as GlobalVariable
+  EndIf
+
+  If (OELargeQuestXPReward == None)
+    OELargeQuestXPReward = Game.GetForm(0x000F19CC) as GlobalVariable
+  EndIf
+
+  If (StarbornTempleXPReward == None)
+    StarbornTempleXPReward = Game.GetForm(0x00246AD7) as GlobalVariable
+  EndIf
+
+  If (PlanetaryTraitXPReward == None)
+    PlanetaryTraitXPReward = Game.GetForm(0x00245AB9) as GlobalVariable
+  EndIf
+
+  If (PlanetaryTraitSkillBonusXPReward == None)
+    PlanetaryTraitSkillBonusXPReward = Game.GetForm(0x001AEB4E) as GlobalVariable
+  EndIf
+
+  If (PlanetaryTraitAstroBonusXPReward == None)
+    PlanetaryTraitAstroBonusXPReward = Game.GetForm(0x002B97EC) as GlobalVariable
+  EndIf
+
+  If (PlanetarySurveyV1XPReward == None)
+    PlanetarySurveyV1XPReward = Game.GetForm(0x0030A8C5) as GlobalVariable
+  EndIf
+
+  If (PlanetarySurveyV2XPReward == None)
+    PlanetarySurveyV2XPReward = Game.GetForm(0x0030A8C6) as GlobalVariable
+  EndIf
+
+  If (PlanetarySurveyV3XPReward == None)
+    PlanetarySurveyV3XPReward = Game.GetForm(0x0030A8C7) as GlobalVariable
+  EndIf
+
+  If (PlanetarySurveyV4XPReward == None)
+    PlanetarySurveyV4XPReward = Game.GetForm(0x00056E62) as GlobalVariable
+  EndIf
+
+  If (PlanetarySurveyV5XPReward == None)
+    PlanetarySurveyV5XPReward = Game.GetForm(0x0023842C) as GlobalVariable
+  EndIf
+
+  If (SystemSurveyV1XPReward == None)
+    SystemSurveyV1XPReward = Game.GetForm(0x0030A8C8) as GlobalVariable
+  EndIf
+
+  If (SystemSurveyV2XPReward == None)
+    SystemSurveyV2XPReward = Game.GetForm(0x0030A8C9) as GlobalVariable
+  EndIf
+
+  If (SystemSurveyV3XPReward == None)
+    SystemSurveyV3XPReward = Game.GetForm(0x0030A8CA) as GlobalVariable
+  EndIf
+
+  If (SystemSurveyV4XPReward == None)
+    SystemSurveyV4XPReward = Game.GetForm(0x0030A8CB) as GlobalVariable
+  EndIf
+  
+  If (SettlementV1QuestXPRewardSmall == None)
+    SettlementV1QuestXPRewardSmall = Game.GetForm(0x000DF3E7) as GlobalVariable
+  EndIf
+
+  If (SettlementV2QuestXPRewardSmall == None)
+    SettlementV2QuestXPRewardSmall = Game.GetForm(0x0010DF00) as GlobalVariable
+  EndIf
+
+  If (SettlementV3QuestXPRewardSmall == None)
+    SettlementV3QuestXPRewardSmall = Game.GetForm(0x0010DF0E) as GlobalVariable
+  EndIf
+
+  If (SettlementV4QuestXPRewardSmall == None)
+    SettlementV4QuestXPRewardSmall = Game.GetForm(0x0010DF12) as GlobalVariable
+  EndIf
+
+  If (SettlementV5QuestXPRewardSmall == None)
+    SettlementV5QuestXPRewardSmall = Game.GetForm(0x0010DF16) as GlobalVariable
+  EndIf
+
+  If (SettlementV1QuestXPRewardMedium == None)
+    SettlementV1QuestXPRewardMedium = Game.GetForm(0x001AB4F2) as GlobalVariable
+  EndIf
+
+  If (SettlementV1QuestXPRewardLarge == None)
+    SettlementV1QuestXPRewardLarge = Game.GetForm(0x0023DF34) as GlobalVariable
+  EndIf
+
+  If (MissionBoardSurveyBaseXPReward == None)
+    MissionBoardSurveyBaseXPReward = Game.GetForm(0x0009E153) as GlobalVariable
+  EndIf
+
+  If (MissionBoardSurveyTraitV1XPReward == None)
+    MissionBoardSurveyTraitV1XPReward = Game.GetForm(0x0016AB84) as GlobalVariable
+  EndIf
+
+  If (MissionBoardSurveyTraitV2XPReward == None)
+    MissionBoardSurveyTraitV2XPReward = Game.GetForm(0x0016AB85) as GlobalVariable
+  EndIf
+
+  If (MissionBoardSurveyTraitV3XPReward == None)
+    MissionBoardSurveyTraitV3XPReward = Game.GetForm(0x0016AB86) as GlobalVariable
+  EndIf
+
+  If (MissionBoardSurveyTraitV4XPReward == None)
+    MissionBoardSurveyTraitV4XPReward = Game.GetForm(0x0016AB87) as GlobalVariable
+  EndIf
+
+  If (MissionBoardSurveyTraitV5XPReward == None)
+    MissionBoardSurveyTraitV5XPReward = Game.GetForm(0x0016AB88) as GlobalVariable
   EndIf
 EndFunction
 
