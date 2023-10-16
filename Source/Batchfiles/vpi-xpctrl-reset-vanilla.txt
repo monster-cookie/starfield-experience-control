@@ -128,8 +128,8 @@ Set 0009E153 to 100  ;; Mission Board Survey Base XP Reward (Default 100)       
 ;; Set 0016AB81 to 0    ;; Mission Board Survey Actual V2 XP Reward (Default 0)         -- Does not appear to be used as default is 0
 ;; Set 0016AB82 to 0    ;; Mission Board Survey Actual V3 XP Reward (Default 0)         -- Does not appear to be used as default is 0
 ;; Set 0016AB83 to 0    ;; Mission Board Survey Actual V4 XP Reward (Default 0)         -- Does not appear to be used as default is 0
-Set 0016AB84 to 100  ;; Mission Board Survey Trait V1 XP Reward (Default 100)        -- Stored In ConfigQuestSM
-Set 0016AB85 to 150  ;; Mission Board Survey Trait V2 XP Reward (Default 150)        -- Stored In ConfigQuestMD
+Set 0016AB84 to 100  ;; Mission Board Survey Trait V1 XP Reward (Default 100)        -- Stored In ConfigQuestTN
+Set 0016AB85 to 150  ;; Mission Board Survey Trait V2 XP Reward (Default 150)        -- Stored In ConfigQuestSM
 Set 0016AB86 to 200  ;; Mission Board Survey Trait V3 XP Reward (Default 200)        -- Stored In ConfigQuestMD
 Set 0016AB87 to 300  ;; Mission Board Survey Trait V4 XP Reward (Default 300)        -- Stored In ConfigQuestLG
 Set 0016AB88 to 500  ;; Mission Board Survey Trait V5 XP Reward (Default 500)        -- Stored In ConfigQuestXL

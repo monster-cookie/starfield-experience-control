@@ -66,7 +66,7 @@ GlobalVariable Property StarbornTempleXPReward Auto          ;; Form ID 00246AD7
 
 GlobalVariable Property PlanetaryTraitXPReward Auto            ;; Form ID 00245AB9
 GlobalVariable Property PlanetaryTraitSkillBonusXPReward Auto  ;; Form ID 001AEB4E
-GlobalVariable Property PlanetaryTraitAstroBonusXPReward Auto  ;; Form ID 002B97EC
+;; GlobalVariable Property PlanetaryTraitAstroBonusXPReward Auto  ;; Form ID 002B97EC -- GlobalVar only supprot Int in what we have access too and not sure of its use so disabling
 GlobalVariable Property PlanetarySurveyV1XPReward Auto         ;; Form ID 0030A8C5
 GlobalVariable Property PlanetarySurveyV2XPReward Auto         ;; Form ID 0030A8C6
 GlobalVariable Property PlanetarySurveyV3XPReward Auto         ;; Form ID 0030A8C7
@@ -175,7 +175,7 @@ Float Property ConfigXPHackingExperienceBase Auto
 ;; Discovery XP Settings
 Int Property ConfigXPDiscoveryMapMarker Auto
 Int Property ConfigXPDiscoverySecretArea Auto
-Float Property ConfigXPScanCompletiong Auto
+Float Property ConfigXPScanCompletion Auto
 
 ;; Speechcraft XP Settings
 Float Property ConfigXPSpeechcraftSuccess Auto
@@ -494,9 +494,9 @@ Function UpdateBindings()
     PlanetaryTraitSkillBonusXPReward = Game.GetForm(0x001AEB4E) as GlobalVariable
   EndIf
 
-  If (PlanetaryTraitAstroBonusXPReward == None)
-    PlanetaryTraitAstroBonusXPReward = Game.GetForm(0x002B97EC) as GlobalVariable
-  EndIf
+  ; If (PlanetaryTraitAstroBonusXPReward == None)
+  ;   PlanetaryTraitAstroBonusXPReward = Game.GetForm(0x002B97EC) as GlobalVariable
+  ; EndIf
 
   If (PlanetarySurveyV1XPReward == None)
     PlanetarySurveyV1XPReward = Game.GetForm(0x0030A8C5) as GlobalVariable
@@ -662,7 +662,7 @@ Function StoreCurrentXPSettings()
   ;; Discovery XP Settings
   ConfigXPDiscoveryMapMarker=Game.GetGameSettingInt("iXPRewardDiscoverMapMarker")
   ConfigXPDiscoverySecretArea=Game.GetGameSettingInt("iXPRewardDiscoverSecretArea")
-  ConfigXPScanCompletiong=Game.GetGameSettingFloat("fScanCompleteXPReward")
+  ConfigXPScanCompletion=Game.GetGameSettingFloat("fScanCompleteXPReward")
 
   ;; Speechcraft XP Settings
   ConfigXPSpeechcraftSuccess=Game.GetGameSettingFloat("fSpeechChallengeSuccessXP")
@@ -800,6 +800,22 @@ Function DisableDiscoveryXP()
   SetGameSettingInt("iXPRewardDiscoverMapMarker", 0)
   SetGameSettingInt("iXPRewardDiscoverSecretArea", 0)
   SetGameSettingFloat("fScanCompleteXPReward", 0.00)
+
+  ;; Planet Surveys
+  SetFormSettingInt(PlanetaryTraitXPReward.GetFormID(), 0) ;; PlanetaryTraitXPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  PlanetaryTraitSkillBonusXPReward.SetValueInt(0)
+  ;; PlanetaryTraitAstroBonusXPReward.SetValueInt(0)
+  SetFormSettingInt(PlanetarySurveyV1XPReward.GetFormID(), 0) ;; PlanetarySurveyV1XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt(PlanetarySurveyV2XPReward.GetFormID(), 0) ;; PlanetarySurveyV2XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt(PlanetarySurveyV3XPReward.GetFormID(), 0) ;; PlanetarySurveyV3XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt(PlanetarySurveyV4XPReward.GetFormID(), 0) ;; PlanetarySurveyV4XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt(PlanetarySurveyV5XPReward.GetFormID(), 0) ;; PlanetarySurveyV5XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+
+  ;; System Surveys
+  SetFormSettingInt(SystemSurveyV1XPReward.GetFormID(), 0) ;; SystemSurveyV1XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt(SystemSurveyV2XPReward.GetFormID(), 0) ;; SystemSurveyV2XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt(SystemSurveyV3XPReward.GetFormID(), 0) ;; SystemSurveyV3XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt(SystemSurveyV4XPReward.GetFormID(), 0) ;; SystemSurveyV4XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
 EndFunction
 
 ;; ****************************************************************************
@@ -823,88 +839,74 @@ Function DisableQuestXP()
   QuestXPEnabled=false
 
   ;; Main Story Quests
-  SetFormSettingInt("000DF3E1", 0)
-  SetFormSettingInt("0023DF3D", 0)
-  SetFormSettingInt("000DF3E0", 0)
-  SetFormSettingInt("0011C0E1", 0)
-  SetFormSettingInt("0011C0E0", 0)
-  SetFormSettingInt("0011C0DF", 0)
-  SetFormSettingInt("0011C0EA", 0)
-  SetFormSettingInt("0011C0E3", 0)
+  MainQuestAct1XPRewardSmall.SetValueInt(0)
+  MainQuestAct1XPRewardMedium.SetValueInt(0)
+  MainQuestAct1XPRewardLarge.SetValueInt(0)
+  MainQuestAct2XPRewardSmall.SetValueInt(0)
+  MainQuestAct2XPRewardMedium.SetValueInt(0)
+  MainQuestAct2XPRewardLarge.SetValueInt(0)
+  MainQuestAct3XPRewardMedium.SetValueInt(0)
+  MainQuestAct3XPRewardLarge.SetValueInt(0)
 
   ;; Faction Quests
-  SetFormSettingInt("000DF3DE", 0)
-  SetFormSettingInt("0023DF3B", 0)
-  SetFormSettingInt("000DF3DD", 0)
+  FactionQuestXPRewardSmall.SetValueInt(0)
+  FactionQuestXPRewardMedium.SetValueInt(0)
+  FactionQuestXPRewardLarge.SetValueInt(0)
 
   ;; Radient Quests
-  SetFormSettingInt("000DF3E5", 0)
-  SetFormSettingInt("00100AB6", 0)
-  SetFormSettingInt("00100ABC", 0)
-  SetFormSettingInt("0016D9A6", 0)
-  SetFormSettingInt("001AF650", 0)
-  SetFormSettingInt("0022B890", 0)
-  SetFormSettingInt("0022B943", 0)
-  SetFormSettingInt("0022B947", 0)
-  SetFormSettingInt("0022B94B", 0)
-  SetFormSettingInt("00255B55", 0)
-  SetFormSettingInt("00255B60", 0)
-  SetFormSettingInt("00255B6B", 0)
-  SetFormSettingInt("00255B75", 0)
-  SetFormSettingInt("00269A65", 0)
-  SetFormSettingInt("00269BF3", 0)
-  SetFormSettingInt("001AB4F3", 0)
-  SetFormSettingInt("0023DF35", 0)
-  SetFormSettingInt("000023A2", 0)
-  SetFormSettingInt("000023A3", 0)
-  SetFormSettingInt("00002690", 0)
-  SetFormSettingInt("00003DDC", 0)
-  SetFormSettingInt("001AEA62", 0)
+  RadiantQuestVersion01XPRewardSmall.SetValueInt(0)
+  RadiantQuestVersion02XPRewardSmall.SetValueInt(0)
+  RadiantQuestVersion03XPRewardSmall.SetValueInt(0)
+  RadiantQuestVersion04XPRewardSmall.SetValueInt(0)
+  RadiantQuestVersion05XPRewardSmall.SetValueInt(0)
+  RadiantQuestVersion06XPRewardSmall.SetValueInt(0)
+  RadiantQuestVersion07XPRewardSmall.SetValueInt(0)
+  RadiantQuestVersion08XPRewardSmall.SetValueInt(0)
+  RadiantQuestVersion09XPRewardSmall.SetValueInt(0)
+  RadiantQuestVersion10XPRewardSmall.SetValueInt(0)
+  RadiantQuestVersion11XPRewardSmall.SetValueInt(0)
+  RadiantQuestVersion12XPRewardSmall.SetValueInt(0)
+  RadiantQuestVersion13XPRewardSmall.SetValueInt(0)
+  RadiantQuestVersion14XPRewardSmall.SetValueInt(0)
+  RadiantQuestVersion15XPRewardSmall.SetValueInt(0)
+  RadiantQuestVersion01XPRewardMedium.SetValueInt(0)
+  RadiantQuestVersion02XPRewardLarge.SetValueInt(0)
+  RadiantQuestVersion03XPRewardLarge.SetValueInt(0)
+  RadiantQuestVersion04XPRewardLarge.SetValueInt(0)
+  RadiantQuestVersion05XPRewardLarge.SetValueInt(0)
+  RadiantQuestVersion06XPRewardLarge.SetValueInt(0)
 
   ;; Misc Quests
-  SetFormSettingInt("002685E7", 0)
-  SetFormSettingInt("000DF3E4", 0)
-  SetFormSettingInt("0023DF3C", 0)
-  SetFormSettingInt("000DF3E2", 0)
+  SetFormSettingInt(MiscQuestXPRewardTiny.GetFormID(), 0) ;; MiscQuestXPRewardTiny.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  MiscQuestXPRewardSmall.SetValueInt(0)
+  MiscQuestXPRewardMedium.SetValueInt(0)
+  MiscQuestXPRewardLarge.SetValueInt(0)
 
   ;; Other Quests
-  SetFormSettingInt("000FD332", 0)
-  SetFormSettingInt("00167860", 0)
-  SetFormSettingInt("002E0EC4", 0)
-  SetFormSettingInt("0006B510", 0)
-  SetFormSettingInt("000F3CF9", 0)
-  SetFormSettingInt("000F19CC", 0)
-  SetFormSettingInt("00246AD7", 0)
-
-  ;; Planet/System Surveys
-  SetFormSettingInt("00245AB9", 0)
-  SetFormSettingInt("001AEB4E", 0)
-  SetFormSettingInt("0030A8C5", 0)
-  SetFormSettingInt("0030A8C6", 0)
-  SetFormSettingInt("0030A8C7", 0)
-  SetFormSettingInt("00056E62", 0)
-  SetFormSettingInt("0023842C", 0)
-  SetFormSettingInt("0030A8C8", 0)
-  SetFormSettingInt("0030A8C9", 0)
-  SetFormSettingInt("0030A8CA", 0)
-  SetFormSettingInt("0030A8CB", 0)
+  CompanionQuestXPReward.SetValueInt(0)
+  OptionalObjectiveQuestXPReward.SetValueInt(0)
+  RedMileRunQuestXPReward.SetValueInt(0)
+  SetFormSettingInt(OESmallQuestXPReward.GetFormID(), 0) ;; OESmallQuestXPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt(OEMediumQuestXPReward.GetFormID(), 0) ;; OEMediumQuestXPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt(OELargeQuestXPReward.GetFormID(), 0) ;; OELargeQuestXPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  StarbornTempleXPReward.SetValueInt(0)
 
   ;; Settlement Quests
-  SetFormSettingInt("000DF3E7", 0)
-  SetFormSettingInt("0010DF00", 0)
-  SetFormSettingInt("0010DF0E", 0)
-  SetFormSettingInt("0010DF12", 0)
-  SetFormSettingInt("0010DF16", 0)
-  SetFormSettingInt("001AB4F2", 0)
-  SetFormSettingInt("0023DF34", 0)
+  SettlementV1QuestXPRewardSmall.SetValueInt(0)
+  SettlementV2QuestXPRewardSmall.SetValueInt(0)
+  SettlementV3QuestXPRewardSmall.SetValueInt(0)
+  SettlementV4QuestXPRewardSmall.SetValueInt(0)
+  SettlementV5QuestXPRewardSmall.SetValueInt(0)
+  SettlementV1QuestXPRewardMedium.SetValueInt(0)
+  SettlementV1QuestXPRewardLarge.SetValueInt(0)
 
   ;; Mission Board Quests
-  SetFormSettingInt("0009E153", 0)
-  SetFormSettingInt("0016AB84", 0)
-  SetFormSettingInt("0016AB85", 0)
-  SetFormSettingInt("0016AB86", 0)
-  SetFormSettingInt("0016AB87", 0)
-  SetFormSettingInt("0016AB88", 0)
+  SetFormSettingInt(MissionBoardSurveyBaseXPReward.GetFormID(), 0) ;; MissionBoardSurveyBaseXPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt(MissionBoardSurveyTraitV1XPReward.GetFormID(), 0) ;; MissionBoardSurveyTraitV1XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt(MissionBoardSurveyTraitV2XPReward.GetFormID(), 0) ;; MissionBoardSurveyTraitV2XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt(MissionBoardSurveyTraitV3XPReward.GetFormID(), 0) ;; MissionBoardSurveyTraitV3XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt(MissionBoardSurveyTraitV4XPReward.GetFormID(), 0) ;; MissionBoardSurveyTraitV4XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt(MissionBoardSurveyTraitV5XPReward.GetFormID(), 0) ;; MissionBoardSurveyTraitV5XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
 EndFunction
 
 ;; ****************************************************************************
@@ -1006,7 +1008,22 @@ Function EnableDiscoveryXP()
   ;; Discovery XP Settings
   SetGameSettingInt("iXPRewardDiscoverMapMarker", ConfigXPDiscoveryMapMarker)
   SetGameSettingInt("iXPRewardDiscoverSecretArea", ConfigXPDiscoverySecretArea)
-  SetGameSettingFloat("fScanCompleteXPReward", ConfigXPScanCompletiong)
+  SetGameSettingFloat("fScanCompleteXPReward", ConfigXPScanCompletion)
+
+  ;; Planetary Surveys
+  SetFormSettingInt(PlanetaryTraitXPReward.GetFormID(), ConfigQuestSM) ;; PlanetaryTraitXPReward.SetValueInt(ConfigQuestSM) ;; Papyrus has this locked as a const var but set console command works
+  ;; PlanetaryTraitAstroBonusXPReward.SetValueFloat(0.25)
+  SetFormSettingInt(PlanetarySurveyV1XPReward.GetFormID(), ConfigQuestTN) ;; PlanetarySurveyV1XPReward.SetValueInt(ConfigQuestTN) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt(PlanetarySurveyV2XPReward.GetFormID(), ConfigQuestSM) ;; PlanetarySurveyV2XPReward.SetValueInt(ConfigQuestSM) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt(PlanetarySurveyV3XPReward.GetFormID(), ConfigQuestMD) ;; PlanetarySurveyV3XPReward.SetValueInt(ConfigQuestMD) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt(PlanetarySurveyV4XPReward.GetFormID(), ConfigQuestLG) ;; PlanetarySurveyV4XPReward.SetValueInt(ConfigQuestLG) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt(PlanetarySurveyV5XPReward.GetFormID(), ConfigQuestXL) ;; PlanetarySurveyV5XPReward.SetValueInt(ConfigQuestXL) ;; Papyrus has this locked as a const var but set console command works
+
+  ;; System Surveys
+  SetFormSettingInt(SystemSurveyV1XPReward.GetFormID(), ConfigQuestTN) ;; SystemSurveyV1XPReward.SetValueInt(ConfigQuestTN) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt(SystemSurveyV2XPReward.GetFormID(), ConfigQuestSM) ;; SystemSurveyV2XPReward.SetValueInt(ConfigQuestSM) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt(SystemSurveyV3XPReward.GetFormID(), ConfigQuestMD) ;; SystemSurveyV3XPReward.SetValueInt(ConfigQuestMD) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt(SystemSurveyV4XPReward.GetFormID(), ConfigQuestLG) ;; SystemSurveyV4XPReward.SetValueInt(ConfigQuestLG) ;; Papyrus has this locked as a const var but set console command works
 EndFunction
 
 ;; ****************************************************************************
@@ -1030,88 +1047,74 @@ Function EnableQuestXP()
   QuestXPEnabled=true
 
   ;; Main Story Quests
-  SetFormSettingInt("000DF3E1", ConfigMQACT1Small)
-  SetFormSettingInt("0023DF3D", ConfigMQACT1Medium)
-  SetFormSettingInt("000DF3E0", ConfigMQACT1Large)
-  SetFormSettingInt("0011C0E1", ConfigMQACT2Small)
-  SetFormSettingInt("0011C0E0", ConfigMQACT2Medium)
-  SetFormSettingInt("0011C0DF", ConfigMQACT2Large)
-  SetFormSettingInt("0011C0EA", ConfigMQACT3Medium)
-  SetFormSettingInt("0011C0E3", ConfigMQACT3Large)
+  MainQuestAct1XPRewardSmall.SetValueInt(ConfigMQACT1Small)
+  MainQuestAct1XPRewardMedium.SetValueInt(ConfigMQACT1Medium)
+  MainQuestAct1XPRewardLarge.SetValueInt(ConfigMQACT1Large)
+  MainQuestAct2XPRewardSmall.SetValueInt(ConfigMQACT2Small)
+  MainQuestAct2XPRewardMedium.SetValueInt(ConfigMQACT2Medium)
+  MainQuestAct2XPRewardLarge.SetValueInt(ConfigMQACT2Large)
+  MainQuestAct3XPRewardMedium.SetValueInt(ConfigMQACT3Medium)
+  MainQuestAct3XPRewardLarge.SetValueInt(ConfigMQACT3Large)
 
   ;; Faction Quests
-  SetFormSettingInt("000DF3DE", ConfigQuestMD)
-  SetFormSettingInt("0023DF3B", ConfigQuestLG)
-  SetFormSettingInt("000DF3DD", ConfigQuestXL)
+  FactionQuestXPRewardSmall.SetValueInt(ConfigQuestMD)
+  FactionQuestXPRewardMedium.SetValueInt(ConfigQuestLG)
+  FactionQuestXPRewardLarge.SetValueInt(ConfigQuestXL)
 
   ;; Radient Quests
-  SetFormSettingInt("000DF3E5", ConfigQuestSM)
-  SetFormSettingInt("00100AB6", ConfigQuestSM)
-  SetFormSettingInt("00100ABC", ConfigQuestSM)
-  SetFormSettingInt("0016D9A6", ConfigQuestSM)
-  SetFormSettingInt("001AF650", ConfigQuestSM)
-  SetFormSettingInt("0022B890", ConfigQuestSM)
-  SetFormSettingInt("0022B943", ConfigQuestSM)
-  SetFormSettingInt("0022B947", ConfigQuestSM)
-  SetFormSettingInt("0022B94B", ConfigQuestSM)
-  SetFormSettingInt("00255B55", ConfigQuestSM)
-  SetFormSettingInt("00255B60", ConfigQuestSM)
-  SetFormSettingInt("00255B6B", ConfigQuestSM)
-  SetFormSettingInt("00255B75", ConfigQuestSM)
-  SetFormSettingInt("00269A65", ConfigQuestSM)
-  SetFormSettingInt("00269BF3", ConfigQuestSM)
-  SetFormSettingInt("001AB4F3", ConfigQuestMD)
-  SetFormSettingInt("0023DF35", ConfigQuestMD)
-  SetFormSettingInt("000023A2", ConfigQuestMD)
-  SetFormSettingInt("000023A3", ConfigQuestMD)
-  SetFormSettingInt("00002690", ConfigQuestMD)
-  SetFormSettingInt("00003DDC", ConfigQuestMD)
-  SetFormSettingInt("001AEA62", ConfigQuestMD)
+  RadiantQuestVersion01XPRewardSmall.SetValueInt(ConfigQuestSM)
+  RadiantQuestVersion02XPRewardSmall.SetValueInt(ConfigQuestSM)
+  RadiantQuestVersion03XPRewardSmall.SetValueInt(ConfigQuestSM)
+  RadiantQuestVersion04XPRewardSmall.SetValueInt(ConfigQuestSM)
+  RadiantQuestVersion05XPRewardSmall.SetValueInt(ConfigQuestSM)
+  RadiantQuestVersion06XPRewardSmall.SetValueInt(ConfigQuestSM)
+  RadiantQuestVersion07XPRewardSmall.SetValueInt(ConfigQuestSM)
+  RadiantQuestVersion08XPRewardSmall.SetValueInt(ConfigQuestSM)
+  RadiantQuestVersion09XPRewardSmall.SetValueInt(ConfigQuestSM)
+  RadiantQuestVersion10XPRewardSmall.SetValueInt(ConfigQuestSM)
+  RadiantQuestVersion11XPRewardSmall.SetValueInt(ConfigQuestSM)
+  RadiantQuestVersion12XPRewardSmall.SetValueInt(ConfigQuestSM)
+  RadiantQuestVersion13XPRewardSmall.SetValueInt(ConfigQuestSM)
+  RadiantQuestVersion14XPRewardSmall.SetValueInt(ConfigQuestSM)
+  RadiantQuestVersion15XPRewardSmall.SetValueInt(ConfigQuestSM)
+  RadiantQuestVersion01XPRewardMedium.SetValueInt(ConfigQuestMD)
+  RadiantQuestVersion02XPRewardLarge.SetValueInt(ConfigQuestLG)
+  RadiantQuestVersion03XPRewardLarge.SetValueInt(ConfigQuestLG)
+  RadiantQuestVersion04XPRewardLarge.SetValueInt(ConfigQuestLG)
+  RadiantQuestVersion05XPRewardLarge.SetValueInt(ConfigQuestLG)
+  RadiantQuestVersion06XPRewardLarge.SetValueInt(ConfigQuestLG)
 
   ;; Misc Quests
-  SetFormSettingInt("002685E7", ConfigQuestTN)
-  SetFormSettingInt("000DF3E4", ConfigQuestSM)
-  SetFormSettingInt("0023DF3C", ConfigQuestMD)
-  SetFormSettingInt("000DF3E2", ConfigQuestLG)
+  SetFormSettingInt(MiscQuestXPRewardTiny.GetFormID(), ConfigQuestTN) ;; MiscQuestXPRewardTiny.SetValueInt(ConfigQuestTN) ;; Papyrus has this locked as a const var but set console command works
+  MiscQuestXPRewardSmall.SetValueInt(ConfigQuestSM)
+  MiscQuestXPRewardMedium.SetValueInt(ConfigQuestMD)
+  MiscQuestXPRewardLarge.SetValueInt(ConfigQuestLG)
 
   ;; Other Quests
-  SetFormSettingInt("000FD332", ConfigQuestLG)
-  SetFormSettingInt("00167860", ConfigQuestSM)
-  SetFormSettingInt("002E0EC4", ConfigQuestSM)
-  SetFormSettingInt("0006B510", ConfigQuestMD)
-  SetFormSettingInt("000F3CF9", ConfigQuestLG)
-  SetFormSettingInt("000F19CC", ConfigQuestXL)
-  SetFormSettingInt("00246AD7", ConfigQuestMD)
-
-  ;; Planet/System Surveys
-  SetFormSettingInt("00245AB9", ConfigQuestSM)
-  SetFormSettingInt("001AEB4E", ConfigQuestSM)
-  SetFormSettingInt("0030A8C5", ConfigQuestTN)
-  SetFormSettingInt("0030A8C6", ConfigQuestSM)
-  SetFormSettingInt("0030A8C7", ConfigQuestMD)
-  SetFormSettingInt("00056E62", ConfigQuestLG)
-  SetFormSettingInt("0023842C", ConfigQuestXL)
-  SetFormSettingInt("0030A8C8", ConfigQuestTN)
-  SetFormSettingInt("0030A8C9", ConfigQuestSM)
-  SetFormSettingInt("0030A8CA", ConfigQuestMD)
-  SetFormSettingInt("0030A8CB", ConfigQuestLG)
+  CompanionQuestXPReward.SetValueInt(ConfigQuestLG)
+  OptionalObjectiveQuestXPReward.SetValueInt(ConfigQuestSM)
+  RedMileRunQuestXPReward.SetValueInt(ConfigQuestSM)
+  SetFormSettingInt(OESmallQuestXPReward.GetFormID(), ConfigQuestMD) ;; OESmallQuestXPReward.SetValueInt(ConfigQuestMD) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt(OEMediumQuestXPReward.GetFormID(), ConfigQuestLG) ;; OEMediumQuestXPReward.SetValueInt(ConfigQuestLG) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt(OELargeQuestXPReward.GetFormID(), ConfigQuestXL) ;; OELargeQuestXPReward.SetValueInt(ConfigQuestXL) ;; Papyrus has this locked as a const var but set console command works
+  StarbornTempleXPReward.SetValueInt(ConfigQuestMD)
 
   ;; Settlement Quests
-  SetFormSettingInt("000DF3E7", ConfigQuestTN)
-  SetFormSettingInt("0010DF00", ConfigQuestTN)
-  SetFormSettingInt("0010DF0E", ConfigQuestTN)
-  SetFormSettingInt("0010DF12", ConfigQuestTN)
-  SetFormSettingInt("0010DF16", ConfigQuestTN)
-  SetFormSettingInt("001AB4F2", ConfigQuestSM)
-  SetFormSettingInt("0023DF34", ConfigQuestMD)
+  SettlementV1QuestXPRewardSmall.SetValueInt(ConfigQuestTN)
+  SettlementV2QuestXPRewardSmall.SetValueInt(ConfigQuestTN)
+  SettlementV3QuestXPRewardSmall.SetValueInt(ConfigQuestTN)
+  SettlementV4QuestXPRewardSmall.SetValueInt(ConfigQuestTN)
+  SettlementV5QuestXPRewardSmall.SetValueInt(ConfigQuestTN)
+  SettlementV1QuestXPRewardMedium.SetValueInt(ConfigQuestSM)
+  SettlementV1QuestXPRewardLarge.SetValueInt(ConfigQuestMD)
 
   ;; Mission Board Quests
-  SetFormSettingInt("0009E153", ConfigQuestSM)
-  SetFormSettingInt("0016AB84", ConfigQuestSM)
-  SetFormSettingInt("0016AB85", ConfigQuestMD)
-  SetFormSettingInt("0016AB86", ConfigQuestMD)
-  SetFormSettingInt("0016AB87", ConfigQuestLG)
-  SetFormSettingInt("0016AB88", ConfigQuestXL)
+  SetFormSettingInt(MissionBoardSurveyBaseXPReward.GetFormID(), ConfigQuestSM) ;; MissionBoardSurveyBaseXPReward.SetValueInt(ConfigQuestSM) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt(MissionBoardSurveyTraitV1XPReward.GetFormID(), ConfigQuestTN) ;; MissionBoardSurveyTraitV1XPReward.SetValueInt(ConfigQuestTN) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt(MissionBoardSurveyTraitV2XPReward.GetFormID(), ConfigQuestSM) ;; MissionBoardSurveyTraitV2XPReward.SetValueInt(ConfigQuestSM) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt(MissionBoardSurveyTraitV3XPReward.GetFormID(), ConfigQuestMD) ;; MissionBoardSurveyTraitV3XPReward.SetValueInt(ConfigQuestMD) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt(MissionBoardSurveyTraitV4XPReward.GetFormID(), ConfigQuestLG) ;; MissionBoardSurveyTraitV4XPReward.SetValueInt(ConfigQuestLG) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt(MissionBoardSurveyTraitV5XPReward.GetFormID(), ConfigQuestXL) ;; MissionBoardSurveyTraitV5XPReward.SetValueInt(ConfigQuestXL) ;; Papyrus has this locked as a const var but set console command works
 EndFunction
 
 ;; ****************************************************************************
@@ -1193,8 +1196,45 @@ Function CurrentXPStatus()
   Debug.MessageBox(message)
 EndFunction
 
+;; ****************************************************************************
+;; Get the current experience config
+;;
+;; Use: player.cf "VPI_ExperienceControl.DumpXPMatrix"
+;;
 Function DumpXPMatrix()
-  
+  string message = "Configuration Data from version " + Version + ".\n"
+  message += "\n\n***** Combat/Crafting/ResearcH XP *****\n"
+  message += "______________|_____Base_____|__Multiplier__|__Minimum___|__Maximum___|\n"
+  message += "     Combat XP| " + ConfigXPBase + "    | " + ConfigXPMult  + "     |            |            |\n"
+  message += "    Cooking XP| " + ConfigXPCookingBase + "     | " + ConfigXPCookingMult + "     | " + ConfigXPCookingMin  + "   | " + ConfigXPCookingMax  + "  |\n"
+  message += "   Research XP| " + ConfigXPResearchBase + "     | " + ConfigXPResearchMult + "     |     N/A    | " + ConfigXPResearchMax + " |\n"
+  message += "   Crafting XP| " + ConfigXPCraftingBase + "     | " + ConfigXPCraftingMult + "     | " + ConfigXPCraftingMin  + "   | " + ConfigXPCraftingMax + "  |\n"
+  message += "==============|==============|==============|============|============|\n"
+  message += "\n\nLockpicking/Hacking:\n Novice=" + ConfigXPLockpickingNovice + "; Advanced=" + ConfigXPLockpickingAdvanced + "; Expert=" + ConfigXPLockpickingExpert + "; Master=" + ConfigXPLockpickingMaster + "; HAcking Base=" + ConfigXPHackingExperienceBase + "\n"
+  message += "\n\n***** Discovery XP *****\n"
+  message += "Map Markers: " + ConfigXPDiscoveryMapMarker + "\n"
+  message += "Secret Areas: " + ConfigXPDiscoverySecretArea  + "\n"
+  message += "Scan Complete: " + ConfigXPScanCompletion + "\n"
+  message += "Survey Base XP: " + PlanetaryTraitXPReward.GetValueInt() + "\n"
+  message += "_________________|____T1____|____T2____|____T3____|____T4____|____T5____|\n"
+  message += "Planetary Surveys|    " + PlanetarySurveyV1XPReward.GetValueInt() + "    |   " + PlanetarySurveyV2XPReward.GetValueInt() + "    |   " + PlanetarySurveyV3XPReward.GetValueInt() + "    |   " + PlanetarySurveyV4XPReward.GetValueInt() + "    |    " + PlanetarySurveyV5XPReward.GetValueInt() + "   |\n"
+  message += "   System Surveys|    " + SystemSurveyV1XPReward.GetValueInt() + "    |   " + SystemSurveyV2XPReward.GetValueInt() + "    |   " + SystemSurveyV3XPReward.GetValueInt() + "    |   " + SystemSurveyV4XPReward.GetValueInt() + "    |    N/A   |\n"
+  message += "=================|==========|==========|==========|==========|==========|\n"
+  message += "\n\n***** Quest XP *****\n"
+  message += "_________________|___Base___|___Tiny___|__Small___|__Medium__|__Large___|____XL____|\n"
+  message += " Main Quest Act 1|    N/A   |    N/A   |    " + MainQuestAct1XPRewardSmall.GetValueInt() + "   |    " + MainQuestAct1XPRewardMedium.GetValueInt() + "   |    " + MainQuestAct1XPRewardLarge.GetValueInt() + "   |    N/A   |\n"
+  message += " Main Quest Act 2|    N/A   |    N/A   |    " + MainQuestAct2XPRewardSmall.GetValueInt() + "   |    " + MainQuestAct2XPRewardMedium.GetValueInt() + "   |    " + MainQuestAct2XPRewardLarge.GetValueInt() + "   |    N/A   |\n"
+  message += " Main Quest Act 3|    N/A   |    N/A   |    N/A   |    " + MainQuestAct3XPRewardMedium.GetValueInt() + "  |    " + MainQuestAct3XPRewardLarge.GetValueInt() + "  |    N/A   |\n"
+  message += "          Faction|    N/A   |    N/A   |    " + FactionQuestXPRewardSmall.GetValueInt() + "   |    " + FactionQuestXPRewardMedium.GetValueInt() + "   |    " + FactionQuestXPRewardLarge.GetValueInt() + "   |    N/A   |\n"
+  message += "          Radiant|    N/A   |    N/A   |    " + RadiantQuestVersion01XPRewardSmall.GetValueInt() + "   |    " + RadiantQuestVersion01XPRewardMedium.GetValueInt() + "   |    " + RadiantQuestVersion01XPRewardLarge.GetValueInt() + "   |    N/A   |\n"
+  message += "             Misc|    N/A   |    " + MiscQuestXPRewardTiny.GetValueInt() + "    |    " + MiscQuestXPRewardSmall.GetValueInt() + "   |    " + MiscQuestXPRewardMedium.GetValueInt() + "   |    " + MiscQuestXPRewardLarge.GetValueInt() + "   |    N/A   |\n"
+  message += "            OE???|    N/A   |    N/A   |    " + OESmallQuestXPReward.GetValueInt() + "   |    " + OEMediumQuestXPReward.GetValueInt() + "   |    " + OELargeQuestXPReward.GetValueInt() + "   |    N/A   |\n"
+  message += "       Settlement|    N/A   |    N/A   |    " + SettlementV1QuestXPRewardSmall.GetValueInt() + "    |    " + SettlementV1QuestXPRewardMedium.GetValueInt() + "   |    " + SettlementV1QuestXPRewardLarge.GetValueInt() + "   |    N/A   |\n"
+  message += "    Mission Board|    " + MissionBoardSurveyBaseXPReward.GetValueInt() + "   |    " + MissionBoardSurveyTraitV1XPReward.GetValueInt() + "   |    " + MissionBoardSurveyTraitV2XPReward.GetValueInt() + "   |    " + MissionBoardSurveyTraitV3XPReward.GetValueInt() + "   |    " + MissionBoardSurveyTraitV4XPReward.GetValueInt() + "   |    " + MissionBoardSurveyTraitV5XPReward.GetValueInt() + "   |\n"
+  message += "=================|==========|==========|==========|==========|==========|==========|\n"
+
+  Debug.Trace(message, 2)
+  Debug.Messagebox("This message is too large for notification or message box so please enable and look in the papyrus Log. Sorry, I'll Look for a better way for a future version.")
 EndFunction
 
 ;; ****************************************************************************
