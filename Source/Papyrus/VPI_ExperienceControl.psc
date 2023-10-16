@@ -676,43 +676,26 @@ Function StoreCurrentXPSettings()
   ConfigXPDiffMultXPVH=Game.GetGameSettingFloat("fDiffMultXPVH")
 
   ;; Quest XP Settings -- VERY VERY EXPERIMENTAL: These are Form Values making them a pain to deal with and they are stored in the save
-  GlobalVariable MQACT1RewardSmall = Game.GetForm(0x000DF3E1) as GlobalVariable
-  GlobalVariable MQACT1RewardMedium = Game.GetForm(0x0023DF3D) as GlobalVariable
-  GlobalVariable MQACT1RewardLarge = Game.GetForm(0x000DF3E0) as GlobalVariable
-  GlobalVariable MQACT2RewardSmall = Game.GetForm(0x0011C0E1) as GlobalVariable
-  GlobalVariable MQACT2RewardMedium = Game.GetForm(0x0011C0E0) as GlobalVariable
-  GlobalVariable MQACT2RewardLarge = Game.GetForm(0x0011C0DF) as GlobalVariable
-  GlobalVariable MQACT3RewardMedium = Game.GetForm(0x0011C0EA) as GlobalVariable
-  GlobalVariable MQACT3RewardLarge = Game.GetForm(0x0011C0E3) as GlobalVariable
-
-  ConfigMQACT1Small=MQACT1RewardSmall.GetValueInt()    ;; Default is 300
-  ConfigMQACT1Medium=MQACT1RewardMedium.GetValueInt()  ;; Default is 350
-  ConfigMQACT1Large=MQACT1RewardLarge.GetValueInt()    ;; Default is 400
-  ConfigMQACT2Small=MQACT2RewardSmall.GetValueInt()    ;; Default is 700
-  ConfigMQACT2Medium=MQACT2RewardMedium.GetValueInt()  ;; Default is 750
-  ConfigMQACT2Large=MQACT2RewardLarge.GetValueInt()    ;; Default is 800
+  ConfigMQACT1Small=MainQuestAct1XPRewardSmall.GetValueInt()    ;; Default is 300
+  ConfigMQACT1Medium=MainQuestAct1XPRewardMedium.GetValueInt()  ;; Default is 350
+  ConfigMQACT1Large=MainQuestAct1XPRewardLarge.GetValueInt()    ;; Default is 400
+  ConfigMQACT2Small=MainQuestAct2XPRewardSmall.GetValueInt()    ;; Default is 700
+  ConfigMQACT2Medium=MainQuestAct2XPRewardMedium.GetValueInt()  ;; Default is 750
+  ConfigMQACT2Large=MainQuestAct2XPRewardLarge.GetValueInt()    ;; Default is 800
   ConfigMQACT3Small=4000                               ;; Doesn't seem to exist right now but shuld based on leveling curve
-  ConfigMQACT3Medium=MQACT3RewardMedium.GetValueInt()  ;; Default is 4500
-  ConfigMQACT3Large=MQACT3RewardLarge.GetValueInt()    ;; Default is 5000
-  
-  GlobalVariable QuestTN=Game.GetForm(0x002685E7) as GlobalVariable
-  GlobalVariable QuestSM=Game.GetForm(0x000DF3E4) as GlobalVariable
-  GlobalVariable QuestMD=Game.GetForm(0x0023DF3C) as GlobalVariable
-  GlobalVariable QuestLG=Game.GetForm(0x000DF3E2) as GlobalVariable
-  GlobalVariable QuestXL=Game.GetForm(0x0023842C) as GlobalVariable
-  GlobalVariable QuestMSVMD=Game.GetForm(0x0011C0EA) as GlobalVariable
-  GlobalVariable QuestMSVLG=Game.GetForm(0x0011C0E3) as GlobalVariable
+  ConfigMQACT3Medium=MainQuestAct3XPRewardMedium.GetValueInt()  ;; Default is 4500
+  ConfigMQACT3Large=MainQuestAct3XPRewardLarge.GetValueInt()    ;; Default is 5000
 
-  ConfigQuestTN=QuestTN.GetValueInt()        ;; Generally 50
-  ConfigQuestSM=QuestSM.GetValueInt()        ;; Generally 100
-  ConfigQuestMD=QuestMD.GetValueInt()        ;; Generally 200
-  ConfigQuestLG=QuestLG.GetValueInt()        ;; Generally 300
-  ConfigQuestXL=QuestXL.GetValueInt()        ;; Generally 500
-  ConfigQuestXXL=750                         ;; Generally 750  -- Not Used Currently but should based on the leveling curve
-  ConfigQuestXXXL=1000                       ;; Generally 1000 -- Not Used Currently but should based on the leveling curve
-  ConfigQuestMSVSM=4000                      ;; Generally 4000 -- Not Used Currently but should based on the leveling curve
-  ConfigQuestMSVMD=QuestMSVMD.GetValueInt()  ;; Generally 4500
-  ConfigQuestMSVLG=QuestMSVLG.GetValueInt()  ;; Generally 5000
+  ConfigQuestTN=MiscQuestXPRewardTiny.GetValueInt()           ;; Generally 50
+  ConfigQuestSM=MiscQuestXPRewardSmall.GetValueInt()          ;; Generally 100
+  ConfigQuestMD=MiscQuestXPRewardMedium.GetValueInt()         ;; Generally 200
+  ConfigQuestLG=MiscQuestXPRewardLarge.GetValueInt()          ;; Generally 300
+  ConfigQuestXL=PlanetarySurveyV5XPReward.GetValueInt()       ;; Generally 500
+  ConfigQuestXXL=MainQuestAct1XPRewardMedium.GetValueInt()    ;; Generally 750  -- Not Used Currently but should based on the leveling curve
+  ConfigQuestXXXL=1000                                        ;; Generally 1000 -- Not Used Currently but should based on the leveling curve
+  ConfigQuestMSVSM=4000                                       ;; Generally 4000 -- Not Used Currently but should based on the leveling curve
+  ConfigQuestMSVMD=MainQuestAct3XPRewardMedium.GetValueInt()  ;; Generally 4500
+  ConfigQuestMSVLG=MainQuestAct3XPRewardLarge.GetValueInt()   ;; Generally 5000
 EndFunction
 
 ;; ****************************************************************************
