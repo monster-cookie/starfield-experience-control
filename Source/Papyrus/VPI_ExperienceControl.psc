@@ -129,7 +129,7 @@ GlobalVariable Property MissionBoardSurveyTraitV5XPReward Auto         ;; Form I
 ;;; Properties
 ;;;
 
-String Property Version="1.1.0" Auto ;; -- MOD VERSION SET HERE
+String Property Version="1.1.1" Auto ;; -- MOD VERSION SET HERE
 
 Actor Property PlayerRef Auto
 ActorValue Property Experience Auto
@@ -243,8 +243,8 @@ Event OnPlayerLoadGame()
   UpdateBindings()
 
   ;; If Version is not set or not current update it -- MOD VERSION SET HERE
-  If (Version != "1.1.0")
-    Version = "1.1.0"
+  If (Version != "1.1.1")
+    Version = "1.1.1"
   EndIf
 
   ;; DO NOT STORE CURRENT SETTINGS THEY WILL WIPE OLD SETTINGS with game defaults and/or garbage
