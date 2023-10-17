@@ -1,0 +1,101 @@
+;;
+;; Configure Leveling XP Settings
+;;
+;; player.cf "VPI_ExperienceControl.ConfigureLevelingXP" <newXPForLevel> <newXPBase> <newXPMultiplier> <newXPModBase> <newKillXPReward> <newDiffXPModVE> <newDiffXPModE> <newDiffXPModN> <newDiffXPModH> <newDiffXPModVH>
+;;   newXPForLevel = The starting XP needed for each level (GS is fXPStart and its default is 200)
+;;   newXPBase = The amount the XP required to level increases by for each new level past 1, for example level 4 is 75*3 (GS is fXPBase and its default is 75)
+;;   newXPMultiplier = Modifies the XP increases per level (GS is fXPExpMult and its default is 0.0015)
+;;   newXPModBase = Not exactly sure of the point of this.... Change carfully (GS is fXPModBase and its default is 1.0)
+;;   newKillXPReward = The XP awarded for killing stuff. Unlike normal this is an int not a float. (GS is iXPRewardKillOpponent and its default is 20)
+;;   newDiffXPModVE = The percentage multiplier in decimal form for the very easy difficulty mode. (GS is fDiffMultXPVE and its default is 1)
+;;   newDiffXPModE = The percentage multiplier in decimal form for the easy difficulty mode. (GS is fDiffMultXPE and its default is 1)
+;;   newDiffXPModN = The percentage multiplier in decimal form for the normal difficulty mode. (GS is fDiffMultXPN and its default is 1)
+;;   newDiffXPModH = The percentage multiplier in decimal form for the hard difficulty mode. (GS is fDiffMultXPH and its default is 1)
+;;   newDiffXPModVH = The percentage multiplier in decimal form for the very hard difficulty mode. (GS is fDiffMultXPVH and its default is 1)
+player.cf "VPI_ExperienceControl.ConfigureLevelingXP" 200 75 0.0015 1.0 20 1 1 1 1 1
+
+;;
+;; Configure Cooking XP Settings
+;;
+;; player.cf "VPI_ExperienceControl.ConfigureCookingXP" <base> <multiplier> <minReward> <maxReward>
+;;   base = The base amount of XP that can be rewarded. (GS is fCookingExpBase and its default is 1)
+;;   multiplier = The percentage multiplier in decimal form to apply to the base rewarded XP. (GS is fCookingExpMult and its default is 0.01)
+;;   minReward = The minimum amount of XP reward you can get after the multiplier is applied. (GS is fCookingExpMin and its default is 1)
+;;   maxReward = The maximum amount of XP reward you can get after the multiplier is applied. (GS is fCookingExpMax and its default is 10)
+player.cf "VPI_ExperienceControl.ConfigureCookingXP" 1 0.01 1 10
+
+;;
+;; Configure Workbench XP Settings
+;;
+;; player.cf "VPI_ExperienceControl.ConfigureWorkbenchXP" <base> <multiplier> <minReward> <maxReward>
+;;   base = The base amount of XP that can be rewarded. (GS is fWorkbenchExperienceBase and its default is 1)
+;;   multiplier = The percentage multiplier in decimal form to apply to the base rewarded XP. (GS is fWorkbenchExperienceMult and its default is 0.01)
+;;   minReward = The minimum amount of XP reward you can get after the multiplier is applied. (GS is fWorkbenchExperienceMin and its default is 1)
+;;   maxReward = The maximum amount of XP reward you can get after the multiplier is applied. (GS is fWorkbenchExperienceMax and its default is 20)
+player.cf "VPI_ExperienceControl.ConfigureWorkbenchXP" 1 0.01 1 20
+
+;;
+;; Configure Research XP Settings
+;;
+;; player.cf "VPI_ExperienceControl.ConfigureResearchXP" <base> <multiplier> <maxReward>
+;;   base = The base amount of XP that can be rewarded. (GS is fResearchExpBase and its default is 8)
+;;   multiplier = The percentage multiplier in decimal form to apply to the base rewarded XP. (GS is fResearchExpMult and its default is 0.1)
+;;   maxReward = The maximum amount of XP reward you can get after the multiplier is applied. (GS is fResearchExpMax and its default is 200)
+player.cf "VPI_ExperienceControl.ConfigureResearchXP" 8 0.1 200
+
+;;
+;; Configure Lockpicking/Hacking XP Settings
+;;
+;; player.cf "VPI_ExperienceControl.ConfigureLockpickingXP" <novice> <advanced> <expert> <master> <hackingBase>
+;;   novice = The XP rewarded for successfully hacking a novice lock/terminal (GS is fLockpickXPRewardEasy and its default is 5)
+;;   advanced = The XP rewarded for successfully hacking a advanced lock/terminal (GS is fLockpickXPRewardAverage and its default is 10)
+;;   expert = The XP rewarded for successfully hacking a expert lock/terminal (GS is fLockpickXPRewardHard and its default is 15)
+;;   master = The XP rewarded for successfully hacking a master lock/terminal (GS is fLockpickXPRewardVeryHard and its default is 20)
+;;   hackingBase = The base XP rewarded for successfully hacking a terminal. (GS is fHackingExperienceBase and its default is 10)
+player.cf "VPI_ExperienceControl.ConfigureLockpickingXP" 5 10 15 20 10
+
+;;
+;; Configure Discovery XP Settings
+;;
+;; player.cf "VPI_ExperienceControl.ConfigureDiscoveryXP" <mapMarkers> <secretAreas> <scanCompletion>
+;;   mapMarkers = The XP rewarded for successfully unlocking a map marker. Unlike normal this is an int not a float. (GS is iXPRewardDiscoverMapMarker and its default is 20)
+;;   secretAreas = The XP rewarded for successfully discovering a secret area. Unlike normal this is an int not a float. (GS is iXPRewardDiscoverSecretArea and its default is 20)
+;;   scanCompletion = The XP rewarded for successfully completing a scan (GS is fScanCompleteXPReward and its default is 20)
+player.cf "VPI_ExperienceControl.ConfigureDiscoveryXP" 20 20 20.0
+
+;;
+;; Configure Speechcraft XP Settings
+;;
+;; player.cf "VPI_ExperienceControl.ConfigureSpeechcraftXP" <successReward>
+;;   successReward = The XP rewarded for successfully completing a speechcraft action, persuasion, diplomacy, etc. (GS is fSpeechChallengeSuccessXP and its default is 10)
+player.cf "VPI_ExperienceControl.ConfigureSpeechcraftXP" 10
+
+;;
+;; Configure Main Quest XP Settings
+;;
+;; player.cf "VPI_ExperienceControl.ConfigureMainQuestXP" <act1XPSmall> <act1XPMedium> <act1XPLarge> <act2XPSmall> <act2XPMedium> <act2XPLarge> <act3XPMedium> <act3XPLarge>
+;;   act1XPSmall = The XP rewarded for completeing small quest in act 1 (Form ID 000DF3E1 and its default is 300)
+;;   act1XPMedium = The XP rewarded for completeing medium quest in act 1 (Form ID 0023DF3D and its default is 350)
+;;   act1XPLarge = The XP rewarded for completeing large quest in act 1 (Form ID 000DF3E0 and its default is 400)
+;;   act2XPSmall = The XP rewarded for completeing small quest in act 2 (Form ID 0011C0E1 and its default is 700)
+;;   act2XPMedium = The XP rewarded for completeing medium quest in act 2 (Form ID 0011C0E0 and its default is 750)
+;;   act2XPLarge = The XP rewarded for completeing large quest in act 2 (Form ID 0011C0DF and its default is 800)
+;;   act3XPMedium = The XP rewarded for completeing medium quest in act 3 (Form ID 0011C0EA and its default is 4500)
+;;   act3XPLarge = The XP rewarded for completeing large quest in act 3 (Form IS 0011C0E3 and its default is 5000)
+player.cf "VPI_ExperienceControl.ConfigureMainQuestXP" 300 350 400 450 700 750 800 4500 500
+
+;;
+;; Configure Normalized Quest XP Settings
+;;
+;; player.cf "VPI_ExperienceControl.ConfigureNormalizedQuestXP" <tinyReward> <smallReward> <mediumReward> <largeReward> <xlReward> <xxlReward> <xxxlReward> <smallMassiveReward> <mediumMassiveReward> <largeMassiveReward>
+;;   tinyReward = Awards a tiny amount of XP for quest completion (Default 50)
+;;   smallReward = Awards a small amount of XP for quest completion (Default 100)
+;;   mediumReward = Awards a medium amount of XP for quest completion (Default 200)
+;;   largeReward = Awards a large amount of XP for quest completion (Default 300)
+;;   xlReward = Awards a extra large amount of XP for quest completion (Default 500)
+;;   xxlReward = Awards a extra extra large amount of XP for quest completion (Default 750)
+;;   xxxlReward = Awards a triple extra large amount of XP for quest completion (Default 1000)
+;;   smallMassiveReward = Awards a small massively large amount of XP for quest completion (Default 4000)
+;;   mediumMassiveReward = Awards a medium massively large amount of XP for quest completion (Default 4500)
+;;   largeMassiveReward = Awards a large massively large amount of XP for quest completion (Default 5000)
+player.cf "VPI_ExperienceControl.ConfigureNormalizedQuestXP" 50 100 200 300 500 750 1000 4000 4500 500
