@@ -98,4 +98,4 @@ player.cf "VPI_ExperienceControl.ConfigureMainQuestXP" 300 350 400 450 700 750 8
 ;;   smallMassiveReward = Awards a small massively large amount of XP for quest completion (Default 4000)
 ;;   mediumMassiveReward = Awards a medium massively large amount of XP for quest completion (Default 4500)
 ;;   largeMassiveReward = Awards a large massively large amount of XP for quest completion (Default 5000)
-player.cf "VPI_ExperienceControl.ConfigureNormalizedQuestXP" 50 100 200 300 500 750 1000 4000 4500 500
+player.cf "VPI_ExperienceControl.ConfigureNormalizedQuestXP" 50 100 200 300 500 750 1000 4000 4500 5000
