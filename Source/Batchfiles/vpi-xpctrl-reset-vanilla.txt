@@ -44,85 +44,118 @@ setgs fDiffMultXPVH 1                   ;; XP Gain from combat success in Very H
 ;; The Remaining Settings WILL HAVE TO BE REVERSED IF UNINSTALLED OR WILL NEED TO START A NEW GAME
 
 ;;;;; Main Story Quests ;;;;;
-Set 000DF3E1 to 300  ;; XP Reward Main Quest Act 1 Small (Default 300)
-Set 0023DF3D to 350  ;; XP Reward Main Quest Act 1 Medium (Default 350)
-Set 000DF3E0 to 400  ;; XP Reward Main Quest Act 1 Large (Default 400)
-Set 0011C0E1 to 700  ;; XP Reward Main Quest Act 2 Small (Default 700)
-Set 0011C0E0 to 750  ;; XP Reward Main Quest Act 2 Medium (Default 750)
-Set 0011C0DF to 800  ;; XP Reward Main Quest Act 2 Large (Default 800)
-Set 0011C0EA to 4500 ;; XP Reward Main Quest Act 3 Medium (Default 4500)
-Set 0011C0E3 to 5000 ;; XP Reward Main Quest Act 3 Large (Default 5000)
+Set 000DF3E1 to 300  ;; XP Reward Main Quest Act 1 Small (Default 300)      -- Stored In ConfigMQACT1Small
+Set 0023DF3D to 350  ;; XP Reward Main Quest Act 1 Medium (Default 350)     -- Stored In ConfigMQACT1Medium
+Set 000DF3E0 to 400  ;; XP Reward Main Quest Act 1 Large (Default 400)      -- Stored In ConfigMQACT1Large
+Set 0011C0E1 to 700  ;; XP Reward Main Quest Act 2 Small (Default 700)      -- Stored In ConfigMQACT2Small
+Set 0011C0E0 to 750  ;; XP Reward Main Quest Act 2 Medium (Default 750)     -- Stored In ConfigMQACT2Medium
+Set 0011C0DF to 800  ;; XP Reward Main Quest Act 2 Large (Default 800)      -- Stored In ConfigMQACT2Large
+Set 0011C0EA to 4500 ;; XP Reward Main Quest Act 3 Medium (Default 4500)    -- Stored In ConfigMQACT3Medium
+Set 0011C0E3 to 5000 ;; XP Reward Main Quest Act 3 Large (Default 5000)     -- Stored In ConfigMQACT3Large
 
 ;;;;; Faction Quests ;;;;;
-Set 000DF3DE to 150  ;; XP Reward Faction Quest Small (Default 150)
-Set 0023DF3B to 250  ;; XP Reward Faction Quest Medium (Default 250)
-Set 000DF3DD to 350  ;; XP Reward Faction Quest Large (Default 350)
+Set 000DF3DE to 150  ;; XP Reward Faction Quest Small (Default 150)         -- Stored In ConfigQuestMD
+Set 0023DF3B to 250  ;; XP Reward Faction Quest Medium (Default 250)        -- Stored In ConfigQuestLG
+Set 000DF3DD to 350  ;; XP Reward Faction Quest Large (Default 350)         -- Stored In ConfigQuestXL
 
 ;;;;; Radiant Quests ;;;;;
-Set 000DF3E5 to 100  ;; XP Reward Radiant Quests Small (Default 100)
-Set 00100AB6 to 100  ;; XP Reward Radiant Quests Small (Default 100)
-Set 00100ABC to 100  ;; XP Reward Radiant Quests Small (Default 100)
-Set 0016D9A6 to 100  ;; XP Reward Radiant Quests Small (Default 100)
-Set 001AF650 to 100  ;; XP Reward Radiant Quests Small (Default 100)
-Set 0022B890 to 100  ;; XP Reward Radiant Quests Small (Default 100)
-Set 0022B943 to 100  ;; XP Reward Radiant Quests Small (Default 100)
-Set 0022B947 to 100  ;; XP Reward Radiant Quests Small (Default 100)
-Set 0022B94B to 100  ;; XP Reward Radiant Quests Small (Default 100)
-Set 00255B55 to 100  ;; XP Reward Radiant Quests Small (Default 100)
-Set 00255B60 to 100  ;; XP Reward Radiant Quests Small (Default 100)
-Set 00255B6B to 100  ;; XP Reward Radiant Quests Small (Default 100)
-Set 00255B75 to 100  ;; XP Reward Radiant Quests Small (Default 100)
-Set 00269A65 to 100  ;; XP Reward Radiant Quests Small (Default 100)
-Set 00269BF3 to 100  ;; XP Reward Radiant Quests Small (Default 100)
-Set 001AB4F3 to 125  ;; XP Reward Radiant Quests Medium (Default 125)
-Set 0023DF35 to 150  ;; XP Reward Radiant Quests Large (Default 150)
-Set 000023A2 to 150  ;; XP Reward Radiant Quests Large (Default 150)
-Set 000023A3 to 150  ;; XP Reward Radiant Quests Large (Default 150)
-Set 00002690 to 150  ;; XP Reward Radiant Quests Large (Default 150)
-Set 00003DDC to 150  ;; XP Reward Radiant Quests Large (Default 150)
-Set 001AEA62 to 150  ;; XP Reward Radiant Quests Large (Default 150)
+Set 000DF3E5 to 100  ;; XP Reward Radiant Quests Small (Default 100)        -- Stored In ConfigQuestSM
+Set 00100AB6 to 100  ;; XP Reward Radiant Quests Small (Default 100)        -- Stored In ConfigQuestSM
+Set 00100ABC to 100  ;; XP Reward Radiant Quests Small (Default 100)        -- Stored In ConfigQuestSM
+Set 0016D9A6 to 100  ;; XP Reward Radiant Quests Small (Default 100)        -- Stored In ConfigQuestSM
+Set 001AF650 to 100  ;; XP Reward Radiant Quests Small (Default 100)        -- Stored In ConfigQuestSM
+Set 0022B890 to 100  ;; XP Reward Radiant Quests Small (Default 100)        -- Stored In ConfigQuestSM
+Set 0022B943 to 100  ;; XP Reward Radiant Quests Small (Default 100)        -- Stored In ConfigQuestSM
+Set 0022B947 to 100  ;; XP Reward Radiant Quests Small (Default 100)        -- Stored In ConfigQuestSM
+Set 0022B94B to 100  ;; XP Reward Radiant Quests Small (Default 100)        -- Stored In ConfigQuestSM
+Set 00255B55 to 100  ;; XP Reward Radiant Quests Small (Default 100)        -- Stored In ConfigQuestSM
+Set 00255B60 to 100  ;; XP Reward Radiant Quests Small (Default 100)        -- Stored In ConfigQuestSM
+Set 00255B6B to 100  ;; XP Reward Radiant Quests Small (Default 100)        -- Stored In ConfigQuestSM
+Set 00255B75 to 100  ;; XP Reward Radiant Quests Small (Default 100)        -- Stored In ConfigQuestSM
+Set 00269A65 to 100  ;; XP Reward Radiant Quests Small (Default 100)        -- Stored In ConfigQuestSM
+Set 00269BF3 to 100  ;; XP Reward Radiant Quests Small (Default 100)        -- Stored In ConfigQuestSM
+Set 001AB4F3 to 125  ;; XP Reward Radiant Quests Medium (Default 125)       -- Stored In ConfigQuestMD
+Set 0023DF35 to 150  ;; XP Reward Radiant Quests Large (Default 150)        -- Stored In ConfigQuestMD
+Set 000023A2 to 150  ;; XP Reward Radiant Quests Large (Default 150)        -- Stored In ConfigQuestMD
+Set 000023A3 to 150  ;; XP Reward Radiant Quests Large (Default 150)        -- Stored In ConfigQuestMD
+Set 00002690 to 150  ;; XP Reward Radiant Quests Large (Default 150)        -- Stored In ConfigQuestMD
+Set 00003DDC to 150  ;; XP Reward Radiant Quests Large (Default 150)        -- Stored In ConfigQuestMD
+Set 001AEA62 to 150  ;; XP Reward Radiant Quests Large (Default 150)        -- Stored In ConfigQuestMD
 
 ;;;;; Misc Quests ;;;;;
-Set 002685E7 to 50   ;; XP Reward Misc Quests Tiny (Default 50)
-Set 000DF3E4 to 100  ;; XP Reward Misc Quests Small (Default 100)
-Set 0023DF3C to 200  ;; XP Reward Misc Quests Medium (Default 200)
-Set 000DF3E2 to 300  ;; XP Reward Misc Quests Large (Default 300)
+Set 002685E7 to 50   ;; XP Reward Misc Quests Tiny (Default 50)             -- Stored In ConfigQuestTN
+Set 000DF3E4 to 100  ;; XP Reward Misc Quests Small (Default 100)           -- Stored In ConfigQuestSM
+Set 0023DF3C to 200  ;; XP Reward Misc Quests Medium (Default 200)          -- Stored In ConfigQuestMD
+Set 000DF3E2 to 300  ;; XP Reward Misc Quests Large (Default 300)           -- Stored In ConfigQuestLG
 
 ;;;;; Other ;;;;;
-Set 000FD332 to 250  ;; XP Reward Companion Quests (Default 250)
-Set 00167860 to 100  ;; XP Reward Quest Optional Objective (Default 100)
-Set 002E0EC4 to 100  ;; XP Reward Red Mile Run (Default 100)
-Set 0006B510 to 200  ;; Not Sure Small Version (Default 200)
-Set 000F3CF9 to 300  ;; Not Sure Medium Version (Default 300)
-Set 000F19CC to 400  ;; Not Sure Large Version (Default 400)
-Set 00246AD7 to 200  ;; Starborn Temple (Default 200)
+Set 000FD332 to 250  ;; XP Reward Companion Quests (Default 250)            -- Stored In ConfigQuestLG
+Set 00167860 to 100  ;; XP Reward Quest Optional Objective (Default 100)    -- Stored In ConfigQuestSM
+Set 002E0EC4 to 100  ;; XP Reward Red Mile Run (Default 100)                -- Stored In ConfigQuestSM
+Set 0006B510 to 200  ;; Not Sure Small Version (Default 200)                -- Stored In ConfigQuestMD
+Set 000F3CF9 to 300  ;; Not Sure Medium Version (Default 300)               -- Stored In ConfigQuestLG
+Set 000F19CC to 400  ;; Not Sure Large Version (Default 400)                -- Stored In ConfigQuestXL
+Set 00246AD7 to 200  ;; Starborn Temple (Default 200)                       -- Stored In ConfigQuestMD
+;; Set 00237408 to 0    ;; Red Tape Quest In Cydonia (Default 0)               -- Does not appear to be used as default is 0
+;; Set 0027A57A to 0    ;; Not sure (Default 0)                                -- Does not appear to be used as default is 0
 
 ;;;;; Planet/System Surveys ;;;;;
-Set 00245AB9 to 100  ;; Planetary Trait Discovery (Default 100)
-Set 001AEB4E to 100  ;; Planetary Trait Discovery (Default 100)
-Set 0030A8C5 to 50   ;; Survey Planet (Default 50)
-Set 0030A8C6 to 100  ;; Survey Planet (Default 100)
-Set 0030A8C7 to 200  ;; Survey Planet (Default 200)
-Set 00056E62 to 300  ;; Survey Planet (Default 300)
-Set 0023842C to 500  ;; Survey Planet (Default 500)
-Set 0030A8C8 to 50   ;; Survey System (Default 50)
-Set 0030A8C9 to 100  ;; Survey System (Default 100)
-Set 0030A8CA to 200  ;; Survey System (Default 200)
-Set 0030A8CB to 300  ;; Survey System (Default 300)
+Set 00245AB9 to 100  ;; Planetary Trait Discovery (Default 100)             -- Stored In ConfigQuestSM
+Set 001AEB4E to 100  ;; Planetary Trait Skill Bonus Discovery (Default 100) -- Stored In ConfigQuestSM
+Set 002B97EC to 0.25 ;; Planetary Trait Astrophysics Bonus (Default 0.25)   -- Stored In ConfigQuestSM
+Set 0030A8C5 to 50   ;; Planet Survey (Default 50)                          -- Stored In ConfigQuestTN
+Set 0030A8C6 to 100  ;; Planet Survey (Default 100)                         -- Stored In ConfigQuestSM
+Set 0030A8C7 to 200  ;; Planet Survey (Default 200)                         -- Stored In ConfigQuestMD
+Set 00056E62 to 300  ;; Planet Survey (Default 300)                         -- Stored In ConfigQuestLG
+Set 0023842C to 500  ;; Planet Survey (Default 500)                         -- Stored In ConfigQuestXL
+Set 0030A8C8 to 50   ;; System Survey (Default 50)                          -- Stored In ConfigQuestTN
+Set 0030A8C9 to 100  ;; System Survey (Default 100)                         -- Stored In ConfigQuestSM
+Set 0030A8CA to 200  ;; System Survey (Default 200)                         -- Stored In ConfigQuestMD
+Set 0030A8CB to 300  ;; System Survey (Default 300)                         -- Stored In ConfigQuestLG
 
 ;;;;; Settlement Quests ;;;;;
-Set 000DF3E7 to 50   ;; XP Reward for Small Settlement Quest (Default 50)
-Set 0010DF00 to 50   ;; XP Reward for Small Settlement Quest (Default 50)
-Set 0010DF0E to 50   ;; XP Reward for Small Settlement Quest (Default 50)
-Set 0010DF12 to 50   ;; XP Reward for Small Settlement Quest (Default 50)
-Set 0010DF16 to 50   ;; XP Reward for Small Settlement Quest (Default 50)
-Set 001AB4F2 to 75   ;; XP Reward for Medium Settlement Quest (Default 75)
-Set 0023DF34 to 100  ;; XP Reward for Large Settlement Quest (Default 100)
+Set 000DF3E7 to 50   ;; XP Reward for Small Settlement Quest (Default 50)   -- Stored In ConfigQuestTN
+Set 0010DF00 to 50   ;; XP Reward for Small Settlement Quest (Default 50)   -- Stored In ConfigQuestTN
+Set 0010DF0E to 50   ;; XP Reward for Small Settlement Quest (Default 50)   -- Stored In ConfigQuestTN
+Set 0010DF12 to 50   ;; XP Reward for Small Settlement Quest (Default 50)   -- Stored In ConfigQuestTN
+Set 0010DF16 to 50   ;; XP Reward for Small Settlement Quest (Default 50)   -- Stored In ConfigQuestTN
+Set 001AB4F2 to 75   ;; XP Reward for Medium Settlement Quest (Default 75)  -- Stored In ConfigQuestSM
+Set 0023DF34 to 100  ;; XP Reward for Large Settlement Quest (Default 100)  -- Stored In ConfigQuestMD
 
-;;;;; Mission Board Survey missions ;;;;;
-Set 0009E153 to 100  ;; XP Reward Mission Board Survey Planet Mission (Default 100)
-Set 0016AB84 to 100  ;; XP Reward Mission Board Survey Planet Mission (Default 100)
-Set 0016AB85 to 150  ;; XP Reward Mission Board Survey Planet Mission (Default 150)
-Set 0016AB86 to 200  ;; XP Reward Mission Board Survey Planet Mission (Default 200)
-Set 0016AB87 to 300  ;; XP Reward Mission Board Survey Planet Mission (Default 300)
-Set 0016AB88 to 500  ;; XP Reward Mission Board Survey Planet Mission (Default 500)
+;;;;; Mission Board Missions ;;;;;
+Set 0009E153 to 100  ;; Mission Board Survey Base XP Reward (Default 100)            -- Stored In ConfigQuestSM
+;; Set 0016AB80 to 0    ;; Mission Board Survey Actual V1 XP Reward (Default 0)         -- Does not appear to be used as default is 0
+;; Set 0016AB81 to 0    ;; Mission Board Survey Actual V2 XP Reward (Default 0)         -- Does not appear to be used as default is 0
+;; Set 0016AB82 to 0    ;; Mission Board Survey Actual V3 XP Reward (Default 0)         -- Does not appear to be used as default is 0
+;; Set 0016AB83 to 0    ;; Mission Board Survey Actual V4 XP Reward (Default 0)         -- Does not appear to be used as default is 0
+Set 0016AB84 to 100  ;; Mission Board Survey Trait V1 XP Reward (Default 100)        -- Stored In ConfigQuestTN
+Set 0016AB85 to 150  ;; Mission Board Survey Trait V2 XP Reward (Default 150)        -- Stored In ConfigQuestSM
+Set 0016AB86 to 200  ;; Mission Board Survey Trait V3 XP Reward (Default 200)        -- Stored In ConfigQuestMD
+Set 0016AB87 to 300  ;; Mission Board Survey Trait V4 XP Reward (Default 300)        -- Stored In ConfigQuestLG
+Set 0016AB88 to 500  ;; Mission Board Survey Trait V5 XP Reward (Default 500)        -- Stored In ConfigQuestXL
+;; Set 0016AB89 to 0    ;; Mission Board Survey Trait Actual V01 XP Reward (Default 0)  -- Does not appear to be used as default is 0
+;; Set 0016AB8A to 0    ;; Mission Board Survey Trait Actual V02 XP Reward (Default 0)  -- Does not appear to be used as default is 0
+;; Set 0016AB8B to 0    ;; Mission Board Survey Trait Actual V03 XP Reward (Default 0)  -- Does not appear to be used as default is 0
+;; Set 0016AB8C to 0    ;; Mission Board Survey Trait Actual V04 XP Reward (Default 0)  -- Does not appear to be used as default is 0
+;; Set 0016AB8D to 0    ;; Mission Board Survey Trait Actual V05 XP Reward (Default 0)  -- Does not appear to be used as default is 0
+;; Set 0016AB8E to 0    ;; Mission Board Survey Trait Actual V06 XP Reward (Default 0)  -- Does not appear to be used as default is 0
+;; Set 0016AB8F to 0    ;; Mission Board Survey Trait Actual V07 XP Reward (Default 0)  -- Does not appear to be used as default is 0
+;; Set 0016AB90 to 0    ;; Mission Board Survey Trait Actual V08 XP Reward (Default 0)  -- Does not appear to be used as default is 0
+;; Set 0016AB91 to 0    ;; Mission Board Survey Trait Actual V09 XP Reward (Default 0)  -- Does not appear to be used as default is 0
+;; Set 0016AB92 to 0    ;; Mission Board Survey Trait Actual V10 XP Reward (Default 0)  -- Does not appear to be used as default is 0
+;; Set 0016AB93 to 0    ;; Mission Board Survey Trait Actual V11 XP Reward (Default 0)  -- Does not appear to be used as default is 0
+;; Set 0016AB94 to 0    ;; Mission Board Survey Trait Actual V12 XP Reward (Default 0)  -- Does not appear to be used as default is 0
+;; Set 0016AB95 to 0    ;; Mission Board Survey Trait Actual V13 XP Reward (Default 0)  -- Does not appear to be used as default is 0
+;; Set 0016AB96 to 0    ;; Mission Board Survey Trait Actual V14 XP Reward (Default 0)  -- Does not appear to be used as default is 0
+;; Set 0016AB97 to 0    ;; Mission Board Survey Trait Actual V15 XP Reward (Default 0)  -- Does not appear to be used as default is 0
+;; Set 0016AB98 to 0    ;; Mission Board Survey Trait Actual V16 XP Reward (Default 0)  -- Does not appear to be used as default is 0
+;; Set 0016AB99 to 0    ;; Mission Board Survey Trait Actual V17 XP Reward (Default 0)  -- Does not appear to be used as default is 0
+;; Set 0016AB9A to 0    ;; Mission Board Survey Trait Actual V18 XP Reward (Default 0)  -- Does not appear to be used as default is 0
+;; Set 0016AB9B to 0    ;; Mission Board Survey Trait Actual V19 XP Reward (Default 0)  -- Does not appear to be used as default is 0
+;; Set 0016AB9C to 0    ;; Mission Board Survey Trait Actual V20 XP Reward (Default 0)  -- Does not appear to be used as default is 0
+;; Set 0016AB9D to 0    ;; Mission Board Survey Trait Actual V21 XP Reward (Default 0)  -- Does not appear to be used as default is 0
+;; Set 0016AB9E to 0    ;; Mission Board Survey Trait Actual V22 XP Reward (Default 0)  -- Does not appear to be used as default is 0
+;; Set 0016AB9F to 0    ;; Mission Board Survey Trait Actual V23 XP Reward (Default 0)  -- Does not appear to be used as default is 0
+;; Set 0016ABA0 to 0    ;; Mission Board Survey Trait Actual V24 XP Reward (Default 0)  -- Does not appear to be used as default is 0
+;; Set 0016ABA1 to 0    ;; Mission Board Survey Trait Actual V25 XP Reward (Default 0)  -- Does not appear to be used as default is 0
+;; Set 0016ABA2 to 0    ;; Mission Board Survey Trait Actual V26 XP Reward (Default 0)  -- Does not appear to be used as default is 0
