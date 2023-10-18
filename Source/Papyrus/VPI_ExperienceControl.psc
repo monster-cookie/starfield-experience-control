@@ -129,7 +129,7 @@ GlobalVariable Property MissionBoardSurveyTraitV5XPReward Auto         ;; Form I
 ;;; Properties
 ;;;
 
-String Property Version="1.1.1" Auto ;; -- MOD VERSION SET HERE
+String Property Version="1.1.2" Auto ;; -- MOD VERSION SET HERE
 
 Actor Property PlayerRef Auto
 ActorValue Property Experience Auto
@@ -243,8 +243,8 @@ Event OnPlayerLoadGame()
   UpdateBindings()
 
   ;; If Version is not set or not current update it -- MOD VERSION SET HERE
-  If (Version != "1.1.1")
-    Version = "1.1.1"
+  If (Version != "1.1.2")
+    Version = "1.1.2"
   EndIf
 
   ;; DO NOT STORE CURRENT SETTINGS THEY WILL WIPE OLD SETTINGS with game defaults and/or garbage
@@ -1200,20 +1200,20 @@ Function DisableDiscoveryXP()
   SetGameSettingFloat("fScanCompleteXPReward", 0.00)
 
   ;; Planet Surveys
-  SetFormSettingInt(PlanetaryTraitXPReward.GetFormID(), 0) ;; PlanetaryTraitXPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt("0x00245AB9", 0) ;; PlanetaryTraitXPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
   PlanetaryTraitSkillBonusXPReward.SetValueInt(0)
   ;; PlanetaryTraitAstroBonusXPReward.SetValueInt(0)
-  SetFormSettingInt(PlanetarySurveyV1XPReward.GetFormID(), 0) ;; PlanetarySurveyV1XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt(PlanetarySurveyV2XPReward.GetFormID(), 0) ;; PlanetarySurveyV2XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt(PlanetarySurveyV3XPReward.GetFormID(), 0) ;; PlanetarySurveyV3XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt(PlanetarySurveyV4XPReward.GetFormID(), 0) ;; PlanetarySurveyV4XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt(PlanetarySurveyV5XPReward.GetFormID(), 0) ;; PlanetarySurveyV5XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt("0x0030A8C5", 0) ;; PlanetarySurveyV1XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt("0x0030A8C6", 0) ;; PlanetarySurveyV2XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt("0x0030A8C7", 0) ;; PlanetarySurveyV3XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt("0x00056E62", 0) ;; PlanetarySurveyV4XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt("0x0023842C", 0) ;; PlanetarySurveyV5XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
 
   ;; System Surveys
-  SetFormSettingInt(SystemSurveyV1XPReward.GetFormID(), 0) ;; SystemSurveyV1XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt(SystemSurveyV2XPReward.GetFormID(), 0) ;; SystemSurveyV2XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt(SystemSurveyV3XPReward.GetFormID(), 0) ;; SystemSurveyV3XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt(SystemSurveyV4XPReward.GetFormID(), 0) ;; SystemSurveyV4XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt("0x0030A8C8", 0) ;; SystemSurveyV1XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt("0x0030A8C9", 0) ;; SystemSurveyV2XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt("0x0030A8CA", 0) ;; SystemSurveyV3XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt("0x0030A8CB", 0) ;; SystemSurveyV4XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
 EndFunction
 
 ;; ****************************************************************************
@@ -1230,19 +1230,20 @@ Function EnableDiscoveryXP()
   SetGameSettingFloat("fScanCompleteXPReward", ConfigXPScanCompletion)
 
   ;; Planetary Surveys
-  SetFormSettingInt(PlanetaryTraitXPReward.GetFormID(), ConfigQuestSM) ;; PlanetaryTraitXPReward.SetValueInt(ConfigQuestSM) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt("0x00245AB9", ConfigQuestSM) ;; PlanetaryTraitXPReward.SetValueInt(ConfigQuestSM) ;; Papyrus has this locked as a const var but set console command works
+  PlanetaryTraitSkillBonusXPReward.SetValueInt(ConfigQuestSM)
   ;; PlanetaryTraitAstroBonusXPReward.SetValueFloat(0.25)
-  SetFormSettingInt(PlanetarySurveyV1XPReward.GetFormID(), ConfigQuestTN) ;; PlanetarySurveyV1XPReward.SetValueInt(ConfigQuestTN) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt(PlanetarySurveyV2XPReward.GetFormID(), ConfigQuestSM) ;; PlanetarySurveyV2XPReward.SetValueInt(ConfigQuestSM) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt(PlanetarySurveyV3XPReward.GetFormID(), ConfigQuestMD) ;; PlanetarySurveyV3XPReward.SetValueInt(ConfigQuestMD) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt(PlanetarySurveyV4XPReward.GetFormID(), ConfigQuestLG) ;; PlanetarySurveyV4XPReward.SetValueInt(ConfigQuestLG) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt(PlanetarySurveyV5XPReward.GetFormID(), ConfigQuestXL) ;; PlanetarySurveyV5XPReward.SetValueInt(ConfigQuestXL) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt("0x0030A8C5", ConfigQuestTN) ;; PlanetarySurveyV1XPReward.SetValueInt(ConfigQuestTN) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt("0x0030A8C6", ConfigQuestSM) ;; PlanetarySurveyV2XPReward.SetValueInt(ConfigQuestSM) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt("0x0030A8C7", ConfigQuestMD) ;; PlanetarySurveyV3XPReward.SetValueInt(ConfigQuestMD) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt("0x00056E62", ConfigQuestLG) ;; PlanetarySurveyV4XPReward.SetValueInt(ConfigQuestLG) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt("0x0023842C", ConfigQuestXL) ;; PlanetarySurveyV5XPReward.SetValueInt(ConfigQuestXL) ;; Papyrus has this locked as a const var but set console command works
 
   ;; System Surveys
-  SetFormSettingInt(SystemSurveyV1XPReward.GetFormID(), ConfigQuestTN) ;; SystemSurveyV1XPReward.SetValueInt(ConfigQuestTN) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt(SystemSurveyV2XPReward.GetFormID(), ConfigQuestSM) ;; SystemSurveyV2XPReward.SetValueInt(ConfigQuestSM) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt(SystemSurveyV3XPReward.GetFormID(), ConfigQuestMD) ;; SystemSurveyV3XPReward.SetValueInt(ConfigQuestMD) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt(SystemSurveyV4XPReward.GetFormID(), ConfigQuestLG) ;; SystemSurveyV4XPReward.SetValueInt(ConfigQuestLG) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt("0x0030A8C8", ConfigQuestTN) ;; SystemSurveyV1XPReward.SetValueInt(ConfigQuestTN) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt("0x0030A8C9", ConfigQuestSM) ;; SystemSurveyV2XPReward.SetValueInt(ConfigQuestSM) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt("0x0030A8CA", ConfigQuestMD) ;; SystemSurveyV3XPReward.SetValueInt(ConfigQuestMD) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt("0x0030A8CB", ConfigQuestLG) ;; SystemSurveyV4XPReward.SetValueInt(ConfigQuestLG) ;; Papyrus has this locked as a const var but set console command works
 EndFunction
 
 ;; ****************************************************************************
@@ -1386,18 +1387,18 @@ Function DisableQuestXP()
   RadiantQuestVersion06XPRewardLarge.SetValueInt(0)
 
   ;; Misc Quests
-  SetFormSettingInt(MiscQuestXPRewardTiny.GetFormID(), 0) ;; MiscQuestXPRewardTiny.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
-  MiscQuestXPRewardSmall.SetValueInt(0)
-  MiscQuestXPRewardMedium.SetValueInt(0)
-  MiscQuestXPRewardLarge.SetValueInt(0)
+  SetFormSettingInt("0x002685E7", 0) ;; MiscQuestXPRewardTiny.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  MiscQuestXPRewardSmall.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  MiscQuestXPRewardMedium.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  MiscQuestXPRewardLarge.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
 
   ;; Other Quests
   CompanionQuestXPReward.SetValueInt(0)
   OptionalObjectiveQuestXPReward.SetValueInt(0)
   RedMileRunQuestXPReward.SetValueInt(0)
-  SetFormSettingInt(OESmallQuestXPReward.GetFormID(), 0) ;; OESmallQuestXPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt(OEMediumQuestXPReward.GetFormID(), 0) ;; OEMediumQuestXPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt(OELargeQuestXPReward.GetFormID(), 0) ;; OELargeQuestXPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt("0x0006B510", 0) ;; OESmallQuestXPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt("0x000F3CF9", 0) ;; OEMediumQuestXPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt("0x000F19CC", 0) ;; OELargeQuestXPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
   StarbornTempleXPReward.SetValueInt(0)
 
   ;; Settlement Quests
@@ -1410,12 +1411,12 @@ Function DisableQuestXP()
   SettlementV1QuestXPRewardLarge.SetValueInt(0)
 
   ;; Mission Board Quests
-  SetFormSettingInt(MissionBoardSurveyBaseXPReward.GetFormID(), 0) ;; MissionBoardSurveyBaseXPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt(MissionBoardSurveyTraitV1XPReward.GetFormID(), 0) ;; MissionBoardSurveyTraitV1XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt(MissionBoardSurveyTraitV2XPReward.GetFormID(), 0) ;; MissionBoardSurveyTraitV2XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt(MissionBoardSurveyTraitV3XPReward.GetFormID(), 0) ;; MissionBoardSurveyTraitV3XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt(MissionBoardSurveyTraitV4XPReward.GetFormID(), 0) ;; MissionBoardSurveyTraitV4XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt(MissionBoardSurveyTraitV5XPReward.GetFormID(), 0) ;; MissionBoardSurveyTraitV5XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt("0x0009E153", 0) ;; MissionBoardSurveyBaseXPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt("0x0016AB84", 0) ;; MissionBoardSurveyTraitV1XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt("0x0016AB85", 0) ;; MissionBoardSurveyTraitV2XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt("0x0016AB86", 0) ;; MissionBoardSurveyTraitV3XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt("0x0016AB87", 0) ;; MissionBoardSurveyTraitV4XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt("0x0016AB88", 0) ;; MissionBoardSurveyTraitV5XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
 EndFunction
 
 ;; ****************************************************************************
@@ -1465,7 +1466,7 @@ Function EnableQuestXP()
   RadiantQuestVersion06XPRewardLarge.SetValueInt(ConfigQuestLG)
 
   ;; Misc Quests
-  SetFormSettingInt(MiscQuestXPRewardTiny.GetFormID(), ConfigQuestTN) ;; MiscQuestXPRewardTiny.SetValueInt(ConfigQuestTN) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt("0x002685E7", ConfigQuestTN) ;; MiscQuestXPRewardTiny.SetValueInt(ConfigQuestTN) ;; Papyrus has this locked as a const var but set console command works
   MiscQuestXPRewardSmall.SetValueInt(ConfigQuestSM)
   MiscQuestXPRewardMedium.SetValueInt(ConfigQuestMD)
   MiscQuestXPRewardLarge.SetValueInt(ConfigQuestLG)
@@ -1474,9 +1475,9 @@ Function EnableQuestXP()
   CompanionQuestXPReward.SetValueInt(ConfigQuestLG)
   OptionalObjectiveQuestXPReward.SetValueInt(ConfigQuestSM)
   RedMileRunQuestXPReward.SetValueInt(ConfigQuestSM)
-  SetFormSettingInt(OESmallQuestXPReward.GetFormID(), ConfigQuestMD) ;; OESmallQuestXPReward.SetValueInt(ConfigQuestMD) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt(OEMediumQuestXPReward.GetFormID(), ConfigQuestLG) ;; OEMediumQuestXPReward.SetValueInt(ConfigQuestLG) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt(OELargeQuestXPReward.GetFormID(), ConfigQuestXL) ;; OELargeQuestXPReward.SetValueInt(ConfigQuestXL) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt("0x0006B510", ConfigQuestMD) ;; OESmallQuestXPReward.SetValueInt(ConfigQuestMD) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt("0x000F3CF9", ConfigQuestLG) ;; OEMediumQuestXPReward.SetValueInt(ConfigQuestLG) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt("0x000F19CC", ConfigQuestXL) ;; OELargeQuestXPReward.SetValueInt(ConfigQuestXL) ;; Papyrus has this locked as a const var but set console command works
   StarbornTempleXPReward.SetValueInt(ConfigQuestMD)
 
   ;; Settlement Quests
@@ -1489,12 +1490,12 @@ Function EnableQuestXP()
   SettlementV1QuestXPRewardLarge.SetValueInt(ConfigQuestMD)
 
   ;; Mission Board Quests
-  SetFormSettingInt(MissionBoardSurveyBaseXPReward.GetFormID(), ConfigQuestSM) ;; MissionBoardSurveyBaseXPReward.SetValueInt(ConfigQuestSM) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt(MissionBoardSurveyTraitV1XPReward.GetFormID(), ConfigQuestTN) ;; MissionBoardSurveyTraitV1XPReward.SetValueInt(ConfigQuestTN) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt(MissionBoardSurveyTraitV2XPReward.GetFormID(), ConfigQuestSM) ;; MissionBoardSurveyTraitV2XPReward.SetValueInt(ConfigQuestSM) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt(MissionBoardSurveyTraitV3XPReward.GetFormID(), ConfigQuestMD) ;; MissionBoardSurveyTraitV3XPReward.SetValueInt(ConfigQuestMD) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt(MissionBoardSurveyTraitV4XPReward.GetFormID(), ConfigQuestLG) ;; MissionBoardSurveyTraitV4XPReward.SetValueInt(ConfigQuestLG) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt(MissionBoardSurveyTraitV5XPReward.GetFormID(), ConfigQuestXL) ;; MissionBoardSurveyTraitV5XPReward.SetValueInt(ConfigQuestXL) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt("0x0009E153", ConfigQuestSM) ;; MissionBoardSurveyBaseXPReward.SetValueInt(ConfigQuestSM) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt("0x0016AB84", ConfigQuestTN) ;; MissionBoardSurveyTraitV1XPReward.SetValueInt(ConfigQuestTN) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt("0x0016AB85", ConfigQuestSM) ;; MissionBoardSurveyTraitV2XPReward.SetValueInt(ConfigQuestSM) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt("0x0016AB86", ConfigQuestMD) ;; MissionBoardSurveyTraitV3XPReward.SetValueInt(ConfigQuestMD) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt("0x0016AB87", ConfigQuestLG) ;; MissionBoardSurveyTraitV4XPReward.SetValueInt(ConfigQuestLG) ;; Papyrus has this locked as a const var but set console command works
+  SetFormSettingInt("0x0016AB88", ConfigQuestXL) ;; MissionBoardSurveyTraitV5XPReward.SetValueInt(ConfigQuestXL) ;; Papyrus has this locked as a const var but set console command works
 EndFunction
 
 ;; ****************************************************************************
