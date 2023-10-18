@@ -219,7 +219,7 @@ Int Property ConfigQuestMSVLG Auto ;; GEnerally 5000
 ;; This event will run once, when the script is initialized and is a member of any and all scripts 
 ;; per docs. In the terms of ReferenceAlias is called when the script is bound to something. 
 Event OnInit() 
-  Debug.Trace("EVENT: OnInit triggered populating Properties and resetting XP based on last mode", 0)
+  Debug.Trace("VPIXPCTRL_EVENT: : OnInit triggered populating Properties and resetting XP based on last mode", 0)
   Debug.Notification("Experience Control version " + version + " is currently running.")
 
   UpdateBindings()
@@ -236,58 +236,71 @@ EndEvent
 ;; alias by the time the event is sent, and the alias script will not receive the event. It should 
 ;; then receive later events.
 Event OnPlayerLoadGame()
-  Utility.Wait(1.0)
-  Debug.Trace("EVENT: OnPlayerLoadGame triggered populating Properties and resetting XP based on last mode", 0)
+  Debug.Trace("VPIXPCTRL_EVENT: OnPlayerLoadGame triggered populating Properties and resetting XP based on last mode", 0)
   Debug.Notification("Experience Control version " + version + " is currently running.")
-
-  UpdateBindings()
 
   ;; If Version is not set or not current update it -- MOD VERSION SET HERE
   If (Version != "1.1.2")
     Version = "1.1.2"
   EndIf
 
+  UpdateBindings()
+
   ;; DO NOT STORE CURRENT SETTINGS THEY WILL WIPE OLD SETTINGS with game defaults and/or garbage
 
   If (CraftingXPEnabled == true)
+    Debug.Trace("VPIXPCTRL_EVENT: OnPlayerLoadGame - Reloading Crafting XP in enable mode", 0)
     EnableCraftingXP()
   Else 
+    Debug.Trace("VPIXPCTRL_EVENT: OnPlayerLoadGame - Reloading Crafting XP in disable mode", 0)
     DisableCraftingXP()
   EndIf
 
   If (DiscoveryXPEnabled == true)
+    Debug.Trace("VPIXPCTRL_EVENT: OnPlayerLoadGame - Reloading Discovery XP in enable mode", 0)
     EnableDiscoveryXP()
   Else 
+    Debug.Trace("VPIXPCTRL_EVENT: OnPlayerLoadGame - Reloading Discovery XP in disable mode", 0)
     DisableDiscoveryXP()
   EndIf
 
   If (LevelingXPEnabled == true)
+    Debug.Trace("VPIXPCTRL_EVENT: OnPlayerLoadGame - Reloading Leveling XP in enable mode", 0)
     EnableLevelingXP()
   Else 
+    Debug.Trace("VPIXPCTRL_EVENT: OnPlayerLoadGame - Reloading Leveling XP in disable mode", 0)
     DisableLevelingXP()
   EndIf
 
   If (LockpickingXPEnabled == true)
+    Debug.Trace("VPIXPCTRL_EVENT: OnPlayerLoadGame - Reloading Lockpicking XP in enable mode", 0)
     EnableLockpickingXP()
   Else 
+    Debug.Trace("VPIXPCTRL_EVENT: OnPlayerLoadGame - Reloading Lockpicking XP in disable mode", 0)
     DisableLockpickingXP()
   EndIf
 
   If (QuestXPEnabled == true)
+    Debug.Trace("VPIXPCTRL_EVENT: OnPlayerLoadGame - Reloading Quest XP in enable mode", 0)
     EnableQuestXP()
   Else 
+    Debug.Trace("VPIXPCTRL_EVENT: OnPlayerLoadGame - Reloading Quest XP in disable mode", 0)
     DisableQuestXP()
   EndIf
 
   If (ResearchXPEnabled == true)
+    Debug.Trace("VPIXPCTRL_EVENT: OnPlayerLoadGame - Reloading Research XP in enable mode", 0)
     EnableResearchXP()
   Else 
+    Debug.Trace("VPIXPCTRL_EVENT: OnPlayerLoadGame - Reloading Research XP in disable mode", 0)
     DisableResearchXP()
   EndIf
 
   If (SpeechcraftXPEnabled == true)
+    Debug.Trace("VPIXPCTRL_EVENT: OnPlayerLoadGame - Reloading Speechcraft XP in enable mode", 0)
     EnableSpeechcraftXP()
   Else 
+    Debug.Trace("VPIXPCTRL_EVENT: OnPlayerLoadGame - Reloading Speechcraft XP in disable mode", 0)
     DisableSpeechcraftXP()
   EndIf
 EndEvent
@@ -940,7 +953,7 @@ Function DumpLevelingXP()
   EndIf
   message += "Running in " + sDifficulty + " so the difficulty experience multiplier is " + activeDifficultyMultiplier + "\n."
   
-  Debug.Trace(message, 1)
+  Debug.Trace("VPIXPCTRL_DMPLVLXP" + message, 1)
   Debug.MessageBox(message)
 EndFunction
 
@@ -1041,7 +1054,7 @@ Function DumpCraftingXP()
   message += "\n\n***** Workbench *****\n"
   message += "Base=" + ConfigXPCraftingBase + "; Multiplier=" + ConfigXPCraftingMult + "; Min Reward=" + ConfigXPCraftingMin + "; Max Reward=" + ConfigXPCraftingMax + ";\n"
   
-  Debug.Trace(message, 1)
+  Debug.Trace("VPIXPCTRL_DMPCFTXP: " + message, 1)
   Debug.MessageBox(message)
 EndFunction
 
@@ -1104,7 +1117,7 @@ Function DumpResearchXP()
   string message = ""
   message += "Research: Base=" + ConfigXPResearchBase + "; Multiplier=" + ConfigXPResearchMult + "; Min Reward=1; Max Reward=" + ConfigXPResearchMax + ";\n"
   
-  Debug.Trace(message, 1)
+  Debug.Trace("VPIXPCTRL_DMPRSCHXP: " + message, 1)
   Debug.MessageBox(message)
 EndFunction
 
@@ -1176,7 +1189,7 @@ Function DumpLockpickingXP()
   message += "Lockpicking: Novice=" + ConfigXPLockpickingNovice + "; Advanced=" + ConfigXPLockpickingAdvanced + "; Expert=" + ConfigXPLockpickingExpert + "; Master=" + ConfigXPLockpickingMaster + ";\n"
   message += "Hacking: Base=" + ConfigXPHackingExperienceBase + ";\n"
 
-  Debug.Trace(message, 1)
+  Debug.Trace("VPIXPCTRL_DMPLCPKXP: " + message, 1)
   Debug.MessageBox(message)
 EndFunction
 
@@ -1201,7 +1214,7 @@ Function DisableDiscoveryXP()
 
   ;; Planet Surveys
   SetFormSettingInt("0x00245AB9", 0) ;; PlanetaryTraitXPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
-  PlanetaryTraitSkillBonusXPReward.SetValueInt(0)
+  SetFormSettingInt("0x001AEB4E", 0) ;; PlanetaryTraitSkillBonusXPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
   ;; PlanetaryTraitAstroBonusXPReward.SetValueInt(0)
   SetFormSettingInt("0x0030A8C5", 0) ;; PlanetarySurveyV1XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
   SetFormSettingInt("0x0030A8C6", 0) ;; PlanetarySurveyV2XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
@@ -1231,7 +1244,7 @@ Function EnableDiscoveryXP()
 
   ;; Planetary Surveys
   SetFormSettingInt("0x00245AB9", ConfigQuestSM) ;; PlanetaryTraitXPReward.SetValueInt(ConfigQuestSM) ;; Papyrus has this locked as a const var but set console command works
-  PlanetaryTraitSkillBonusXPReward.SetValueInt(ConfigQuestSM)
+  SetFormSettingInt("0x001AEB4E", ConfigQuestSM) ;; PlanetaryTraitSkillBonusXPReward.SetValueInt(ConfigQuestSM) ;; Papyrus has this locked as a const var but set console command works
   ;; PlanetaryTraitAstroBonusXPReward.SetValueFloat(0.25)
   SetFormSettingInt("0x0030A8C5", ConfigQuestTN) ;; PlanetarySurveyV1XPReward.SetValueInt(ConfigQuestTN) ;; Papyrus has this locked as a const var but set console command works
   SetFormSettingInt("0x0030A8C6", ConfigQuestSM) ;; PlanetarySurveyV2XPReward.SetValueInt(ConfigQuestSM) ;; Papyrus has this locked as a const var but set console command works
@@ -1275,7 +1288,7 @@ Function DumpDiscoveryXP()
   message += "\n\n***** System Surveys (Uses Normalized Quest XP) *****\n"
   message += "Survey T1=" + ConfigQuestTN + "; Survey T2=" + ConfigQuestSM + "; Survey T3=" + ConfigQuestMD + "; Survey T4=" + ConfigQuestLG + ";\n"
 
-  Debug.Trace(message, 1)
+  Debug.Trace("VPIXPCTRL_DMPDSCXP: " + message, 1)
   Debug.MessageBox(message)
 EndFunction
 
@@ -1330,7 +1343,7 @@ Function DumpSpeechcraftXP()
   string message = ""
   message += "Speechcraft: Successs=" + ConfigXPSpeechcraftSuccess + ";\n"
 
-  Debug.Trace(message, 1)
+  Debug.Trace("VPIXPCTRL_DMPSPCHXP: " + message, 1)
   Debug.MessageBox(message)
 EndFunction
 
@@ -1573,7 +1586,7 @@ Function DumpQuestXP()
   message += "XL=" + ConfigQuestXL + "; XXL=" + ConfigQuestXXL + "; XXL=" + ConfigQuestXXXL + ";\n"
   message += "SM MSV=" + ConfigQuestMSVSM + "; MD MSV=" + ConfigQuestMSVMD + "; LG MSV=" + ConfigQuestMSVLG + ";\n"
 
-  Debug.Trace(message, 1)
+  Debug.Trace("VPIXPCTRL_DMPQUSTXP: " + message, 1)
   Debug.MessageBox(message)
 EndFunction
 
@@ -1658,7 +1671,7 @@ Function CurrentXPStatus()
   message += "Lockpicking XP is set to " + gameXPLockpickingNovice + " for novice, " + gameXPLockpickingAdvanced + " for advanced, " + gameXPLockpickingExpert + " for expert, and finally " + gameXPLockpickingMaster + " for master.\n"
   message += "Speechcraft XP is set to " + gameXPSpeechcraftSuccess + ".\n"
   
-  Debug.Trace(message, 1)
+  Debug.Trace("VPIXPCTRL_CRXPSTS: " + message, 1)
   Debug.MessageBox(message)
 EndFunction
 
@@ -1670,8 +1683,12 @@ EndFunction
 Function DumpXPMatrix()
   string message = "Configuration Data from version " + Version + ".\n"
   message += "\n\n***** Combat/Crafting/ResearcH XP *****\n"
+  message += "\n\n"
+  message += "At level one you need starting XP of " + ConfigXPStart + " XP to level from then on you get your current level * a base xp of " + ConfigXPBase + " xp as that level's needed XP to level and then the multiplier (" + ConfigXPMult + ") is appied also.\n"
+  message += "The actual function is <prevlevelexp> + round(" + ConfigXPBase + "^(1+(" + ConfigXPMult + "*currentlevel)), 5)\n"
+  message += "NOTE: If you mess with XP Start, Base, and Multiplier you can end up with a negative XP values or a bunch of unexpected levels. They should only be messed with on new characters."
+  message += "\n\n"
   message += "______________|_____Base_____|__Multiplier__|__Minimum___|__Maximum___|\n"
-  message += "     Combat XP| " + ConfigXPBase + "    | " + ConfigXPMult  + "     |            |            |\n"
   message += "    Cooking XP| " + ConfigXPCookingBase + "     | " + ConfigXPCookingMult + "     | " + ConfigXPCookingMin  + "   | " + ConfigXPCookingMax  + "  |\n"
   message += "   Research XP| " + ConfigXPResearchBase + "     | " + ConfigXPResearchMult + "     |     N/A    | " + ConfigXPResearchMax + " |\n"
   message += "   Crafting XP| " + ConfigXPCraftingBase + "     | " + ConfigXPCraftingMult + "     | " + ConfigXPCraftingMin  + "   | " + ConfigXPCraftingMax + "  |\n"
@@ -1699,7 +1716,7 @@ Function DumpXPMatrix()
   message += "    Mission Board|    " + MissionBoardSurveyBaseXPReward.GetValueInt() + "   |    " + MissionBoardSurveyTraitV1XPReward.GetValueInt() + "   |    " + MissionBoardSurveyTraitV2XPReward.GetValueInt() + "   |    " + MissionBoardSurveyTraitV3XPReward.GetValueInt() + "   |    " + MissionBoardSurveyTraitV4XPReward.GetValueInt() + "   |    " + MissionBoardSurveyTraitV5XPReward.GetValueInt() + "   |\n"
   message += "=================|==========|==========|==========|==========|==========|==========|\n"
 
-  Debug.Trace(message, 2)
+  Debug.Trace("VPIXPCTRL_DMPXPMTX: " + message, 2)
   Debug.Messagebox("This message is too large for notification or message box so please enable and look in the papyrus Log. Sorry, I'll Look for a better way for a future version.")
 EndFunction
 
