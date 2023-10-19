@@ -6,6 +6,10 @@ ScriptName VPI_Helper
 ;;; Public Member Functions
 ;;;
 
+;;
+;; Helper functions for setting game settings
+;;
+
 ;; ****************************************************************************
 ;; Set a float based game setting 
 ;;
@@ -21,6 +25,26 @@ Function SetGameSettingInt(String gameSetting, Int value) Global
 EndFunction
 
 ;; ****************************************************************************
+;; Get, scale, and update a float based game setting 
+;;
+Function ScaleGameSettingFloat(String gameSetting, Float defaultValue, Float scaleFactor)
+  Float scaledValue = defaultValue * scaleFactor
+  SetGameSettingFloat(gameSetting, scaledValue)
+EndFunction
+
+;; ****************************************************************************
+;; Get, scale, and update a float based game setting 
+;;
+Function ScaleGameSettingInt(String gameSetting, Int defaultValue, Int scaleFactor)
+  Int scaledValue = defaultValue * scaleFactor
+  SetGameSettingInt(gameSetting, scaledValue)
+EndFunction
+
+;;
+;; Helper functions for setting form settings
+;;
+
+;; ****************************************************************************
 ;; Set a float based form setting 
 ;;
 Function SetFormSettingFloat(String formID, Float value) Global
@@ -33,6 +57,26 @@ EndFunction
 Function SetFormSettingInt(String formID, Int value) Global
   Debug.ExecuteConsole("set " + formID + " to " + value)
 EndFunction
+
+;; ****************************************************************************
+;; Get, scale, and update a float based game setting 
+;;
+Function ScaleFormSettingFloat(String formID, Float defaultValue, Float scaleFactor)
+  Float scaledValue = defaultValue * scaleFactor
+  SetFormSettingFloat(formID, scaledValue)
+EndFunction
+
+;; ****************************************************************************
+;; Get, scale, and update a float based game setting 
+;;
+Function ScaleFormSettingInt(String formID, Int defaultValue, Int scaleFactor)
+  Int scaledValue = defaultValue * scaleFactor
+  SetFormSettingInt(formID, scaledValue)
+EndFunction
+
+;;
+;; Helper functions for Difficulty mode stuff
+;;
 
 ;; ****************************************************************************
 ;; Convert the difficulty int value to the string value
@@ -53,12 +97,14 @@ String Function GetDifficulty(int iDifficulty) Global
   EndIf
 EndFunction
 
+;;
+;; Helper functions for Level Scaling Brackets
+;;
+
 ;; ****************************************************************************
 ;; Get the bracket that applies to the player's current level
 ;;
-Int Function GetBracketForPlayerLevel()
-  Int playerLevel = PlayerRef.GetLevel()
-
+Int Function GetBracketForPlayerLevel(int playerLevel)
   If (1 <= playerLevel && playerLevel <= 25)
     return 1
   ElseIf (26 <= playerLevel && playerLevel <= 50)
