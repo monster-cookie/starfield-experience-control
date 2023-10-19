@@ -229,6 +229,7 @@ Event OnInit()
   Debug.Notification("Experience Control version " + version + " is currently running.")
 
   UpdateBindings()
+  CreateBracketArrays()
 
   ;; Store Current XP Settings
   StoreCurrentXPSettings()
@@ -251,6 +252,7 @@ Event OnPlayerLoadGame()
   EndIf
 
   UpdateBindings()
+  CreateBracketArrays()
 
   ;; DO NOT STORE CURRENT SETTINGS THEY WILL WIPE OLD SETTINGS with game defaults and/or garbage
 
@@ -607,6 +609,121 @@ Function UpdateBindings()
 EndFunction
 
 
+Function CreateBracketArrays() 
+  If (SF_XPDifficultyMultiplier == None)
+    SF_XPDifficultyMultiplier = new Float[11]
+    SF_XPDifficultyMultiplier[1] = 1.00
+    SF_XPDifficultyMultiplier[2] = 1.00
+    SF_XPDifficultyMultiplier[3] = 1.25
+    SF_XPDifficultyMultiplier[4] = 1.25
+    SF_XPDifficultyMultiplier[5] = 1.50
+    SF_XPDifficultyMultiplier[6] = 1.50
+    SF_XPDifficultyMultiplier[7] = 1.75
+    SF_XPDifficultyMultiplier[8] = 1.75
+    SF_XPDifficultyMultiplier[9] = 2.00
+    SF_XPDifficultyMultiplier[10] = 2.50
+  EndIf
+
+  If (SF_CombatXP == None)
+    SF_CombatXP = new Float[11]
+    SF_CombatXP[1] = 1.00
+    SF_CombatXP[2] = 1.00
+    SF_CombatXP[3] = 1.00
+    SF_CombatXP[4] = 1.00
+    SF_CombatXP[5] = 1.00
+    SF_CombatXP[6] = 1.00
+    SF_CombatXP[7] = 1.00
+    SF_CombatXP[8] = 1.00
+    SF_CombatXP[9] = 1.00
+    SF_CombatXP[10] = 1.00
+  EndIf
+
+  If (SF_ResearchXP == None)
+    SF_ResearchXP = new Float[11]
+    SF_ResearchXP[1] = 1.00
+    SF_ResearchXP[2] = 1.00
+    SF_ResearchXP[3] = 1.00
+    SF_ResearchXP[4] = 1.00
+    SF_ResearchXP[5] = 1.00
+    SF_ResearchXP[6] = 1.00
+    SF_ResearchXP[7] = 1.00
+    SF_ResearchXP[8] = 1.00
+    SF_ResearchXP[9] = 1.00
+    SF_ResearchXP[10] = 1.00
+  EndIf
+
+  If (SF_CraftingXP == None)
+    SF_CraftingXP = new Float[11]
+    SF_CraftingXP[1] = 1.00
+    SF_CraftingXP[2] = 1.00
+    SF_CraftingXP[3] = 1.00
+    SF_CraftingXP[4] = 1.00
+    SF_CraftingXP[5] = 1.00
+    SF_CraftingXP[6] = 1.00
+    SF_CraftingXP[7] = 1.00
+    SF_CraftingXP[8] = 1.00
+    SF_CraftingXP[9] = 1.00
+    SF_CraftingXP[10] = 1.00
+  EndIf
+
+  If (SF_LockpickingXP == None)
+    SF_LockpickingXP = new Float[11]
+    SF_LockpickingXP[1] = 1.00
+    SF_LockpickingXP[2] = 1.00
+    SF_LockpickingXP[3] = 1.00
+    SF_LockpickingXP[4] = 1.00
+    SF_LockpickingXP[5] = 1.00
+    SF_LockpickingXP[6] = 1.00
+    SF_LockpickingXP[7] = 1.00
+    SF_LockpickingXP[8] = 1.00
+    SF_LockpickingXP[9] = 1.00
+    SF_LockpickingXP[10] = 1.00
+  EndIf
+
+  If (SF_DiscoveryXP == None)
+    SF_DiscoveryXP = new Float[11]
+    SF_DiscoveryXP[1] = 1.00
+    SF_DiscoveryXP[2] = 1.00
+    SF_DiscoveryXP[3] = 1.00
+    SF_DiscoveryXP[4] = 1.00
+    SF_DiscoveryXP[5] = 1.00
+    SF_DiscoveryXP[6] = 1.00
+    SF_DiscoveryXP[7] = 1.00
+    SF_DiscoveryXP[8] = 1.00
+    SF_DiscoveryXP[9] = 1.00
+    SF_DiscoveryXP[10] = 1.00
+  EndIf
+
+  If (SF_QuestXP == None)
+    SF_QuestXP = new Float[11]
+    SF_QuestXP[1] = 1.00
+    SF_QuestXP[2] = 1.00
+    SF_QuestXP[3] = 1.00
+    SF_QuestXP[4] = 1.00
+    SF_QuestXP[5] = 1.00
+    SF_QuestXP[6] = 1.00
+    SF_QuestXP[7] = 1.00
+    SF_QuestXP[8] = 1.00
+    SF_QuestXP[9] = 1.00
+    SF_QuestXP[10] = 1.00
+  EndIf
+
+  If (SF_SpeechcraftXP == None)
+    SF_SpeechcraftXP = new Float[11]
+    SF_SpeechcraftXP[1] = 1.00
+    SF_SpeechcraftXP[2] = 1.00
+    SF_SpeechcraftXP[3] = 1.00
+    SF_SpeechcraftXP[4] = 1.00
+    SF_SpeechcraftXP[5] = 1.00
+    SF_SpeechcraftXP[6] = 1.00
+    SF_SpeechcraftXP[7] = 1.00
+    SF_SpeechcraftXP[8] = 1.00
+    SF_SpeechcraftXP[9] = 1.00
+    SF_SpeechcraftXP[10] = 1.00
+  EndIf
+EndFunction
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Public Member Functions
@@ -765,28 +882,9 @@ Function EnableLevelingXP()
 EndFunction
 
 ;; ****************************************************************************
-;; Configure All Leveling XP Settings
-;;
-;; Use: player.cf "VPI_ExperienceControl.ConfigureLevelingXP" <newXPForLevel> <newXPBase> <newXPMultiplier> <newXPModBase> <newKillXPReward> <newDiffXPModVE> <newDiffXPModE> <newDiffXPModN> <newDiffXPModH> <newDiffXPModVH>
-;; Params:
-;;   newKillXPReward = The XP awarded for killing stuff. Unlike normal this is an int not a float.
-;;   newDiffXPMod* = The percentage multiplier in decimal form for the current difficulty mode. 
-;;
-Function ConfigureLevelingXP(int newKillXPReward, Float newDiffXPModVE, Float newDiffXPModE, Float newDiffXPModN, Float newDiffXPModH, Float newDiffXPModVH)
-  ;; Difficulty Base XP Modifier
-  ConfigureLevelingXP_DifficultyXPMultiplier(newDiffXPModVE, newDiffXPModE, newDiffXPModN, newDiffXPModH, newDiffXPModVH)
-
-  ;; Combat XP Settings
-  ConfigureLevelingXP_KillXPReward(newKillXPReward)
-
-  ;; Apply the new settings 
-  EnableLevelingXP()
-EndFunction
-
-;; ****************************************************************************
 ;; Configure Level XP Settings: Difficulty Multiplier - Must call EnableLevelingXP manually after this completes
 ;;
-;; Use: player.cf "VPI_ExperienceControl.ConfigureLevelingXP_DifficultyXPMultiplier" <newDiffXPModVE> <newDiffXPModE> <newDiffXPModN> <newDiffXPModH> <newDiffXPModVH>
+;; Use: player.cf "VPI_ExperienceControl.ConfigureDifficultyXPMultiplier" <newDiffXPModVE> <newDiffXPModE> <newDiffXPModN> <newDiffXPModH> <newDiffXPModVH>
 ;; Params:
 ;;   newDiffXPModVE = The percentage multiplier in decimal form for the very easy difficulty mode. 
 ;;   newDiffXPModE = The percentage multiplier in decimal form for the easy difficulty mode. 
@@ -794,7 +892,7 @@ EndFunction
 ;;   newDiffXPModH = The percentage multiplier in decimal form for the hard difficulty mode. 
 ;;   newDiffXPModVH = The percentage multiplier in decimal form for the very hard difficulty mode. 
 ;;
-Function ConfigureLevelingXP_DifficultyXPMultiplier(Float newDiffXPModVE, Float newDiffXPModE, Float newDiffXPModN, Float newDiffXPModH, Float newDiffXPModVH)
+Function ConfigureDifficultyXPMultiplier(Float newDiffXPModVE, Float newDiffXPModE, Float newDiffXPModN, Float newDiffXPModH, Float newDiffXPModVH)
   ConfigXPDiffMultXPVE=newDiffXPModVE
   ConfigXPDiffMultXPE=newDiffXPModE
   ConfigXPDiffMultXPN=newDiffXPModN
@@ -806,11 +904,11 @@ EndFunction
 ;; ****************************************************************************
 ;; Configure Level XP Settings: Kill XP - Must call EnableLevelingXP manually after this completes
 ;;
-;; Use: player.cf "VPI_ExperienceControl.ConfigureLevelingXP_KillXPReward" <newKillXPReward>
+;; Use: player.cf "VPI_ExperienceControl.ConfigureCombatXP" <newKillXPReward>
 ;; Params:
 ;;   newKillXPReward = The XP awarded for killing stuff. Unlike normal this is an int not a float.
 ;;
-Function ConfigureLevelingXP_KillXPReward(int newKillXPReward)
+Function ConfigureCombatXP(int newKillXPReward)
   ConfigXPKillOpponent=newKillXPReward
   ;; DO NOT CALL EnableLevelingXP ON SINGLE CHANGES you will cause a race condition
 EndFunction
@@ -1474,6 +1572,100 @@ Function DumpQuestXP()
 
   Debug.Trace("VPIXPCTRL_DEBUG: " + message, 1)
   Debug.MessageBox(message)
+EndFunction
+
+
+
+;;
+;; Scaling Public Functions
+;;
+
+;; ****************************************************************************
+;; Change a scaling factor in the specified level bracket for Difficulty Based XP Multiplier
+;;
+;; Use: player.cf "VPI_ExperienceControl.SetDifficultyXPMultiplierSFForBracket" <bracket> <newSF>
+;;   bracket -> The bracket to change can be 1 to 10 only
+;;   newSF -> The new scale factor to set for the bracket
+;;
+Function SetDifficultyXPMultiplierSFForBracket(int bracket, Float newSF)
+  SF_XPDifficultyMultiplier[bracket]=newSF
+EndFunction
+
+;; ****************************************************************************
+;; Change a scaling factor in the specified level bracket for Kill XP Reward
+;;
+;; Use: player.cf "VPI_ExperienceControl.SetDifficultyCombatXPSFForBracket" <bracket> <newSF>
+;;   bracket -> The bracket to change can be 1 to 10 only
+;;   newSF -> The new scale factor to set for the bracket
+;;
+Function SetDifficultyCombatXPSFForBracket(int bracket, Float newSF)
+  SF_CombatXP[bracket]=newSF
+EndFunction
+
+;; ****************************************************************************
+;; Change a scaling factor in the specified level bracket for Crafting XP Reward
+;;
+;; Use: player.cf "VPI_ExperienceControl.SetDifficultyCraftingXPSFForBracket" <bracket> <newSF>
+;;   bracket -> The bracket to change can be 1 to 10 only
+;;   newSF -> The new scale factor to set for the bracket
+;;
+Function SetDifficultyCraftingXPSFForBracket(int bracket, Float newSF)
+  SF_CraftingXP[bracket]=newSF
+EndFunction
+
+;; ****************************************************************************
+;; Change a scaling factor in the specified level bracket for Research XP Reward
+;;
+;; Use: player.cf "VPI_ExperienceControl.SetDifficultyResearchXPSFForBracket" <bracket> <newSF>
+;;   bracket -> The bracket to change can be 1 to 10 only
+;;   newSF -> The new scale factor to set for the bracket
+;;
+Function SetDifficultyResearchXPSFForBracket(int bracket, Float newSF)
+  SF_ResearchXP[bracket]=newSF
+EndFunction
+
+;; ****************************************************************************
+;; Change a scaling factor in the specified level bracket for Lockpicking XP Reward
+;;
+;; Use: player.cf "VPI_ExperienceControl.SetDifficultyLockpickingXPSFForBracket" <bracket> <newSF>
+;;   bracket -> The bracket to change can be 1 to 10 only
+;;   newSF -> The new scale factor to set for the bracket
+;;
+Function SetDifficultyLockpickingXPSFForBracket(int bracket, Float newSF)
+  SF_LockpickingXP[bracket]=newSF
+EndFunction
+
+;; ****************************************************************************
+;; Change a scaling factor in the specified level bracket for Discovery XP Reward
+;;
+;; Use: player.cf "VPI_ExperienceControl.SetDifficultyDiscoveryXPSFForBracket" <bracket> <newSF>
+;;   bracket -> The bracket to change can be 1 to 10 only
+;;   newSF -> The new scale factor to set for the bracket
+;;
+Function SetDifficultyDiscoveryXPSFForBracket(int bracket, Float newSF)
+  SF_DiscoveryXP[bracket]=newSF
+EndFunction
+
+;; ****************************************************************************
+;; Change a scaling factor in the specified level bracket for Speechcraft XP Reward
+;;
+;; Use: player.cf "VPI_ExperienceControl.SetDifficultySpeechcraftXPSFForBracket" <bracket> <newSF>
+;;   bracket -> The bracket to change can be 1 to 10 only
+;;   newSF -> The new scale factor to set for the bracket
+;;
+Function SetDifficultySpeechcraftXPSFForBracket(int bracket, Float newSF)
+  SF_SpeechcraftXP[bracket]=newSF
+EndFunction
+
+;; ****************************************************************************
+;; Change a scaling factor in the specified level bracket for Quest XP Reward
+;;
+;; Use: player.cf "VPI_ExperienceControl.SetDifficultyQuestXPSFForBracket" <bracket> <newSF>
+;;   bracket -> The bracket to change can be 1 to 10 only
+;;   newSF -> The new scale factor to set for the bracket
+;;
+Function SetDifficultyQuestXPSFForBracket(int bracket, Float newSF)
+  SF_QuestXP[bracket]=newSF
 EndFunction
 
 

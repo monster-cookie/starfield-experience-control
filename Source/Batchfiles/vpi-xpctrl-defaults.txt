@@ -1,14 +1,21 @@
 ;;
-;; Configure Leveling XP Settings
+;; Configure Difficulty XP Multiplier Settings
 ;;
-;; player.cf "VPI_ExperienceControl.ConfigureLevelingXP" <newKillXPReward> <newDiffXPModVE> <newDiffXPModE> <newDiffXPModN> <newDiffXPModH> <newDiffXPModVH>
-;;   newKillXPReward = The XP awarded for killing stuff. Unlike normal this is an int not a float. (GS is iXPRewardKillOpponent and its default is 20)
+;; player.cf "VPI_ExperienceControl.ConfigureDifficultyXPMultiplier" <newDiffXPModVE> <newDiffXPModE> <newDiffXPModN> <newDiffXPModH> <newDiffXPModVH>
 ;;   newDiffXPModVE = The percentage multiplier in decimal form for the very easy difficulty mode. (GS is fDiffMultXPVE and its default is 1)
 ;;   newDiffXPModE = The percentage multiplier in decimal form for the easy difficulty mode. (GS is fDiffMultXPE and its default is 1)
 ;;   newDiffXPModN = The percentage multiplier in decimal form for the normal difficulty mode. (GS is fDiffMultXPN and its default is 1)
 ;;   newDiffXPModH = The percentage multiplier in decimal form for the hard difficulty mode. (GS is fDiffMultXPH and its default is 1)
 ;;   newDiffXPModVH = The percentage multiplier in decimal form for the very hard difficulty mode. (GS is fDiffMultXPVH and its default is 1)
-player.cf "VPI_ExperienceControl.ConfigureLevelingXP" 20 1 1 1 1 1
+player.cf "VPI_ExperienceControl.ConfigureDifficultyXPMultiplier" 1 1 1 1 1
+
+;;
+;; Configure Combat XP Settings
+;;
+;; player.cf "VPI_ExperienceControl.ConfigureCombatXP" <newKillXPReward>
+;;   newKillXPReward = The XP awarded for killing stuff. Unlike normal this is an int not a float. (GS is iXPRewardKillOpponent and its default is 20)
+player.cf "VPI_ExperienceControl.ConfigureCombatXP" 20
+
 
 ;;
 ;; Configure Cooking XP Settings
