@@ -1,18 +1,14 @@
 ;;
 ;; Configure Leveling XP Settings
 ;;
-;; player.cf "VPI_ExperienceControl.ConfigureLevelingXP" <newXPForLevel> <newXPBase> <newXPMultiplier> <newXPModBase> <newKillXPReward> <newDiffXPModVE> <newDiffXPModE> <newDiffXPModN> <newDiffXPModH> <newDiffXPModVH>
-;;   newXPForLevel = The starting XP needed for each level (GS is fXPStart and its default is 200)
-;;   newXPBase = The amount the XP required to level increases by for each new level past 1, for example level 4 is 75*3 (GS is fXPBase and its default is 75)
-;;   newXPMultiplier = Modifies the XP increases per level (GS is fXPExpMult and its default is 0.0015)
-;;   newXPModBase = Not exactly sure of the point of this.... Change carfully (GS is fXPModBase and its default is 1.0)
+;; player.cf "VPI_ExperienceControl.ConfigureLevelingXP" <newKillXPReward> <newDiffXPModVE> <newDiffXPModE> <newDiffXPModN> <newDiffXPModH> <newDiffXPModVH>
 ;;   newKillXPReward = The XP awarded for killing stuff. Unlike normal this is an int not a float. (GS is iXPRewardKillOpponent and its default is 20)
 ;;   newDiffXPModVE = The percentage multiplier in decimal form for the very easy difficulty mode. (GS is fDiffMultXPVE and its default is 1)
 ;;   newDiffXPModE = The percentage multiplier in decimal form for the easy difficulty mode. (GS is fDiffMultXPE and its default is 1)
 ;;   newDiffXPModN = The percentage multiplier in decimal form for the normal difficulty mode. (GS is fDiffMultXPN and its default is 1)
 ;;   newDiffXPModH = The percentage multiplier in decimal form for the hard difficulty mode. (GS is fDiffMultXPH and its default is 1)
 ;;   newDiffXPModVH = The percentage multiplier in decimal form for the very hard difficulty mode. (GS is fDiffMultXPVH and its default is 1)
-player.cf "VPI_ExperienceControl.ConfigureLevelingXP" 200 75 0.0015 1.0 20 1 1 1 1 1
+player.cf "VPI_ExperienceControl.ConfigureLevelingXP" 20 1 1 1 1 1
 
 ;;
 ;; Configure Cooking XP Settings

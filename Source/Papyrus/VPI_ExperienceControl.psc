@@ -142,11 +142,8 @@ Bool Property DiscoveryXPEnabled=true Auto
 Bool Property QuestXPEnabled=true Auto
 Bool Property SpeechcraftXPEnabled=true Auto
 
-;; Base XP Settings
-Float Property ConfigXPStart Auto
-Float Property ConfigXPBase Auto
-Float Property ConfigXPMult Auto
-Float Property ConfigXPModBase Auto
+;; Leveling XP Settings
+Int Property ConfigXPKillOpponent Auto
 
 ;; Cooking XP Settings
 Float Property ConfigXPCookingBase Auto
@@ -180,8 +177,7 @@ Float Property ConfigXPScanCompletion Auto
 ;; Speechcraft XP Settings
 Float Property ConfigXPSpeechcraftSuccess Auto
 
-;; Combat XP Settings
-Int Property ConfigXPKillOpponent Auto
+;; XP Difficulty Multiplier
 Float Property ConfigXPDiffMultXPVE Auto
 Float Property ConfigXPDiffMultXPE Auto
 Float Property ConfigXPDiffMultXPN Auto
@@ -209,6 +205,16 @@ Int Property ConfigQuestXXXL Auto  ;; GEnerally 1000
 Int Property ConfigQuestMSVSM Auto ;; GEnerally 4000
 Int Property ConfigQuestMSVMD Auto ;; GEnerally 4500
 Int Property ConfigQuestMSVLG Auto ;; GEnerally 5000
+
+;; Scaling Bracket Variables
+Float[] Property SF_XPDifficultyMultiplier Auto
+Float[] Property SF_CombatXP Auto
+Float[] Property SF_ResearchXP Auto
+Float[] Property SF_CraftingXP Auto
+Float[] Property SF_LockpickingXP Auto
+Float[] Property SF_DiscoveryXP Auto
+Float[] Property SF_QuestXP Auto
+Float[] Property SF_SpeechcraftXP Auto
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -613,12 +619,6 @@ EndFunction
 ;;
 Function StoreCurrentXPSettings()
   Debug.MessageBox("Current Game XP settings (except quest values) hav been backed up to your save and can be restored by using EnableXP")
-
-  ;; Base XP Settings
-  ConfigXPStart=Game.GetGameSettingFloat("fXPStart")
-  ConfigXPBase=Game.GetGameSettingFloat("fXPBase")
-  ConfigXPMult=Game.GetGameSettingFloat("fXPExpMult")
-  ConfigXPModBase=Game.GetGameSettingFloat("fXPModBase")
   
   ;; Cooking XP Settings
   ConfigXPCookingBase=Game.GetGameSettingFloat("fCookingExpBase")
@@ -654,6 +654,8 @@ Function StoreCurrentXPSettings()
 
   ;; Combat XP Settings
   ConfigXPKillOpponent=Game.GetGameSettingInt("iXPRewardKillOpponent")
+
+  ;; XP Difficulty Multiplier
   ConfigXPDiffMultXPVE=Game.GetGameSettingFloat("fDiffMultXPVE")
   ConfigXPDiffMultXPE=Game.GetGameSettingFloat("fDiffMultXPE")
   ConfigXPDiffMultXPN=Game.GetGameSettingFloat("fDiffMultXPN")
@@ -667,7 +669,7 @@ Function StoreCurrentXPSettings()
   ConfigMQACT2Small=MainQuestAct2XPRewardSmall.GetValueInt()    ;; Default is 700
   ConfigMQACT2Medium=MainQuestAct2XPRewardMedium.GetValueInt()  ;; Default is 750
   ConfigMQACT2Large=MainQuestAct2XPRewardLarge.GetValueInt()    ;; Default is 800
-  ConfigMQACT3Small=4000                               ;; Doesn't seem to exist right now but shuld based on leveling curve
+  ConfigMQACT3Small=4000                                         ;; Doesn't seem to exist right now but shuld based on leveling curve
   ConfigMQACT3Medium=MainQuestAct3XPRewardMedium.GetValueInt()  ;; Default is 4500
   ConfigMQACT3Large=MainQuestAct3XPRewardLarge.GetValueInt()    ;; Default is 5000
 
@@ -732,14 +734,10 @@ EndFunction
 Function DisableLevelingXP()
   LevelingXPEnabled=false
 
-  ;; Base XP Settings
-  VPI_Helper.SetGameSettingFloat("fXPStart", 100000000.00)
-  VPI_Helper.SetGameSettingFloat("fXPBase", 0.00)
-  VPI_Helper.SetGameSettingFloat("fXPExpMult", 0.00)
-  VPI_Helper.SetGameSettingFloat("fXPModBase", 0.00)
-
   ;; Combat XP Settings
   VPI_Helper.SetGameSettingInt("iXPRewardKillOpponent", 0)
+
+  ;; XP Difficulty Multiplier
   VPI_Helper.SetGameSettingFloat("fDiffMultXPVE", 0.00)
   VPI_Helper.SetGameSettingFloat("fDiffMultXPE", 0.00)
   VPI_Helper.SetGameSettingFloat("fDiffMultXPN", 0.00)
@@ -755,14 +753,10 @@ EndFunction
 Function EnableLevelingXP()
   LevelingXPEnabled=true
 
-  ;; Base XP Settings
-  VPI_Helper.SetGameSettingFloat("fXPStart", ConfigXPStart)
-  VPI_Helper.SetGameSettingFloat("fXPBase", ConfigXPBase)
-  VPI_Helper.SetGameSettingFloat("fXPExpMult", ConfigXPMult)
-  VPI_Helper.SetGameSettingFloat("fXPModBase", ConfigXPModBase)
-
   ;; Combat XP Settings
   VPI_Helper.SetGameSettingInt("iXPRewardKillOpponent", ConfigXPKillOpponent)
+
+  ;; XP Difficulty Multiplier
   VPI_Helper.SetGameSettingFloat("fDiffMultXPVE", ConfigXPDiffMultXPVE)
   VPI_Helper.SetGameSettingFloat("fDiffMultXPE", ConfigXPDiffMultXPE)
   VPI_Helper.SetGameSettingFloat("fDiffMultXPN", ConfigXPDiffMultXPN)
@@ -775,21 +769,11 @@ EndFunction
 ;;
 ;; Use: player.cf "VPI_ExperienceControl.ConfigureLevelingXP" <newXPForLevel> <newXPBase> <newXPMultiplier> <newXPModBase> <newKillXPReward> <newDiffXPModVE> <newDiffXPModE> <newDiffXPModN> <newDiffXPModH> <newDiffXPModVH>
 ;; Params:
-;;   newXPForLevel = The XP needed to level
-;;   newXPBase = The base XP rewarded from stuff
-;;   newXPMultiplier = The percentage multiplier in decimal form 
-;;   newXPModBase = Not exactly sure of the point of this.... Change carfully :) 
 ;;   newKillXPReward = The XP awarded for killing stuff. Unlike normal this is an int not a float.
 ;;   newDiffXPMod* = The percentage multiplier in decimal form for the current difficulty mode. 
 ;;
-Function ConfigureLevelingXP(Float newXPForLevel, Float newXPBase, Float newXPMultiplier, Float newXPModBase, int newKillXPReward, Float newDiffXPModVE, Float newDiffXPModE, Float newDiffXPModN, Float newDiffXPModH, Float newDiffXPModVH)
-  ;; Base XP Settings
-  ConfigureLevelingXP_XPForLevel(newXPForLevel)
-  ConfigureLevelingXP_BaseXPReward(newXPBase)
-  ConfigureLevelingXP_XPMultiplier(newXPMultiplier)
-  ConfigureLevelingXP_XPBaseModifier(newXPModBase)
-
-  ;; Difficulty BAse XP Modifier (Think overrides fXPExpMult)
+Function ConfigureLevelingXP(int newKillXPReward, Float newDiffXPModVE, Float newDiffXPModE, Float newDiffXPModN, Float newDiffXPModH, Float newDiffXPModVH)
+  ;; Difficulty Base XP Modifier
   ConfigureLevelingXP_DifficultyXPMultiplier(newDiffXPModVE, newDiffXPModE, newDiffXPModN, newDiffXPModH, newDiffXPModVH)
 
   ;; Combat XP Settings
@@ -797,54 +781,6 @@ Function ConfigureLevelingXP(Float newXPForLevel, Float newXPBase, Float newXPMu
 
   ;; Apply the new settings 
   EnableLevelingXP()
-EndFunction
-
-;; ****************************************************************************
-;; Configure Level XP Settings: XP Needed For A level - Must call EnableLevelingXP manually after this completes
-;;
-;; Use: player.cf "VPI_ExperienceControl.ConfigureLevelingXP_XPForLevel" <newXPForLevel>
-;; Params:
-;;   newXPForLevel = The XP needed to level
-;;
-Function ConfigureLevelingXP_XPForLevel(Float newXPForLevel)
-  ConfigXPStart=newXPForLevel
-  ;; DO NOT CALL EnableLevelingXP ON SINGLE CHANGES you will cause a race condition
-EndFunction
-
-;; ****************************************************************************
-;; Configure Level XP Settings: Base XP - Must call EnableLevelingXP manually after this completes
-;;
-;; Use: player.cf "VPI_ExperienceControl.ConfigureLevelingXP_BaseXPReward" <newXPBase>
-;; Params:
-;;   newXPBase = The base XP rewarded from stuff
-;;
-Function ConfigureLevelingXP_BaseXPReward(Float newXPBase)
-  ConfigXPBase=newXPBase
-  ;; DO NOT CALL EnableLevelingXP ON SINGLE CHANGES you will cause a race condition
-EndFunction
-
-;; ****************************************************************************
-;; Configure Level XP Settings: XP Multiplier - Must call EnableLevelingXP manually after this completes
-;;
-;; Use: player.cf "VPI_ExperienceControl.ConfigureLevelingXP_XPMultiplier" <newXPMultiplier>
-;; Params:
-;;   newXPMultiplier = The percentage multiplier in decimal form 
-;;
-Function ConfigureLevelingXP_XPMultiplier(Float newXPMultiplier)
-  ConfigXPMult=newXPMultiplier
-  ;; DO NOT CALL EnableLevelingXP ON SINGLE CHANGES you will cause a race condition
-EndFunction
-
-;; ****************************************************************************
-;; Configure Level XP Settings: Base XP Modifier - Must call EnableLevelingXP manually after this completes
-;;
-;; Use: player.cf "VPI_ExperienceControl.ConfigureLevelingXP_XPBaseModifier" <newXPModBase>
-;; Params:
-;;   newXPModBase = Not exactly sure of the point of this.... Change carfully :) 
-;;
-Function ConfigureLevelingXP_XPBaseModifier(Float newXPModBase)
-  ConfigXPModBase=newXPModBase
-  ;; DO NOT CALL EnableLevelingXP ON SINGLE CHANGES you will cause a race condition
 EndFunction
 
 ;; ****************************************************************************
@@ -887,9 +823,7 @@ Function DumpLevelingXP()
   Int iDifficulty = Game.GetDifficulty()
   string sDifficulty = VPI_Helper.GetDifficulty(iDifficulty)
 
-  string message = "You need " + ConfigXPStart + " experience to complete a level.\n"
-  message += "Base XP Reward is " + ConfigXPBase + " experience. With a multiplier of " + ConfigXPMult + " and a modifier of " + ConfigXPModBase + "\n."
-  message += "Combat kills reware " + ConfigXPKillOpponent + " experience pre multipliers."
+  string message = "Combat kills reward " + ConfigXPKillOpponent + " experience pre-multipliers."
   
   Float activeDifficultyMultiplier = 0;
   if (iDifficulty == 0) 
@@ -905,7 +839,7 @@ Function DumpLevelingXP()
   EndIf
   message += "Running in " + sDifficulty + " so the difficulty experience multiplier is " + activeDifficultyMultiplier + "\n."
   
-  Debug.Trace("VPIXPCTRL_DMPLVLXP" + message, 1)
+  Debug.Trace("VPIXPCTRL_DEBUG" + message, 1)
   Debug.MessageBox(message)
 EndFunction
 
@@ -1006,7 +940,7 @@ Function DumpCraftingXP()
   message += "\n\n***** Workbench *****\n"
   message += "Base=" + ConfigXPCraftingBase + "; Multiplier=" + ConfigXPCraftingMult + "; Min Reward=" + ConfigXPCraftingMin + "; Max Reward=" + ConfigXPCraftingMax + ";\n"
   
-  Debug.Trace("VPIXPCTRL_DMPCFTXP: " + message, 1)
+  Debug.Trace("VPIXPCTRL_DEBUG: " + message, 1)
   Debug.MessageBox(message)
 EndFunction
 
@@ -1069,7 +1003,7 @@ Function DumpResearchXP()
   string message = ""
   message += "Research: Base=" + ConfigXPResearchBase + "; Multiplier=" + ConfigXPResearchMult + "; Min Reward=1; Max Reward=" + ConfigXPResearchMax + ";\n"
   
-  Debug.Trace("VPIXPCTRL_DMPRSCHXP: " + message, 1)
+  Debug.Trace("VPIXPCTRL_DEBUG: " + message, 1)
   Debug.MessageBox(message)
 EndFunction
 
@@ -1141,7 +1075,7 @@ Function DumpLockpickingXP()
   message += "Lockpicking: Novice=" + ConfigXPLockpickingNovice + "; Advanced=" + ConfigXPLockpickingAdvanced + "; Expert=" + ConfigXPLockpickingExpert + "; Master=" + ConfigXPLockpickingMaster + ";\n"
   message += "Hacking: Base=" + ConfigXPHackingExperienceBase + ";\n"
 
-  Debug.Trace("VPIXPCTRL_DMPLCPKXP: " + message, 1)
+  Debug.Trace("VPIXPCTRL_DEBUG: " + message, 1)
   Debug.MessageBox(message)
 EndFunction
 
@@ -1240,7 +1174,7 @@ Function DumpDiscoveryXP()
   message += "\n\n***** System Surveys (Uses Normalized Quest XP) *****\n"
   message += "Survey T1=" + ConfigQuestTN + "; Survey T2=" + ConfigQuestSM + "; Survey T3=" + ConfigQuestMD + "; Survey T4=" + ConfigQuestLG + ";\n"
 
-  Debug.Trace("VPIXPCTRL_DMPDSCXP: " + message, 1)
+  Debug.Trace("VPIXPCTRL_DEBUG: " + message, 1)
   Debug.MessageBox(message)
 EndFunction
 
@@ -1295,7 +1229,7 @@ Function DumpSpeechcraftXP()
   string message = ""
   message += "Speechcraft: Successs=" + ConfigXPSpeechcraftSuccess + ";\n"
 
-  Debug.Trace("VPIXPCTRL_DMPSPCHXP: " + message, 1)
+  Debug.Trace("VPIXPCTRL_DEBUG: " + message, 1)
   Debug.MessageBox(message)
 EndFunction
 
@@ -1538,7 +1472,7 @@ Function DumpQuestXP()
   message += "XL=" + ConfigQuestXL + "; XXL=" + ConfigQuestXXL + "; XXL=" + ConfigQuestXXXL + ";\n"
   message += "SM MSV=" + ConfigQuestMSVSM + "; MD MSV=" + ConfigQuestMSVMD + "; LG MSV=" + ConfigQuestMSVLG + ";\n"
 
-  Debug.Trace("VPIXPCTRL_DMPQUSTXP: " + message, 1)
+  Debug.Trace("VPIXPCTRL_DEBUG: " + message, 1)
   Debug.MessageBox(message)
 EndFunction
 
@@ -1554,9 +1488,6 @@ EndFunction
 ;; Use: player.cf "VPI_ExperienceControl.CurrentXPStatus"
 ;;
 Function CurrentXPStatus()
-  Float gameXPStart=Game.GetGameSettingFloat("fXPStart")
-  Float gameXPMultiplier=Game.GetGameSettingFloat("fXPExpMult")
-
   Float gameXPCookingBase=Game.GetGameSettingFloat("fCookingExpBase")
   Float gameXPCookingMult=Game.GetGameSettingFloat("fCookingExpMult")
 
@@ -1615,7 +1546,6 @@ Function CurrentXPStatus()
   EndIf    
   message += ".\n"
 
-  message += "XP per level is set to " + gameXPStart + " and the XP multiplier is set to " + gameXPMultiplier + ".\n"
   message += "Combat Kill XP is set to " + gameXPKillOpponent + ".\n"
   message += "Cooking XP is set to " + gameXPCookingBase + " and the cooking multiplier is set too " + gameXPCookingMult + ".\n"
   message += "Research XP is set to " + gameXPResearchBase + " and the research multiplier is set too " + gameXPResearchMult + ".\n"
@@ -1623,7 +1553,7 @@ Function CurrentXPStatus()
   message += "Lockpicking XP is set to " + gameXPLockpickingNovice + " for novice, " + gameXPLockpickingAdvanced + " for advanced, " + gameXPLockpickingExpert + " for expert, and finally " + gameXPLockpickingMaster + " for master.\n"
   message += "Speechcraft XP is set to " + gameXPSpeechcraftSuccess + ".\n"
   
-  Debug.Trace("VPIXPCTRL_CRXPSTS: " + message, 1)
+  Debug.Trace("VPIXPCTRL_DEBUG: " + message, 1)
   Debug.MessageBox(message)
 EndFunction
 
@@ -1634,19 +1564,17 @@ EndFunction
 ;;
 Function DumpXPMatrix()
   string message = "Configuration Data from version " + Version + ".\n"
-  message += "\n\n***** Combat/Crafting/ResearcH XP *****\n"
   message += "\n\n"
-  message += "At level one you need starting XP of " + ConfigXPStart + " XP to level from then on you get your current level * a base xp of " + ConfigXPBase + " xp as that level's needed XP to level and then the multiplier (" + ConfigXPMult + ") is appied also.\n"
-  message += "The actual function is <prevlevelexp> + round(" + ConfigXPBase + "^(1+(" + ConfigXPMult + "*currentlevel)), 5)\n"
-  message += "NOTE: If you mess with XP Start, Base, and Multiplier you can end up with a negative XP values or a bunch of unexpected levels. They should only be messed with on new characters."
-  message += "\n\n"
+  message += "***** Combat/Crafting/ResearcH XP *****\n"
   message += "______________|_____Base_____|__Multiplier__|__Minimum___|__Maximum___|\n"
   message += "    Cooking XP| " + ConfigXPCookingBase + "     | " + ConfigXPCookingMult + "     | " + ConfigXPCookingMin  + "   | " + ConfigXPCookingMax  + "  |\n"
   message += "   Research XP| " + ConfigXPResearchBase + "     | " + ConfigXPResearchMult + "     |     N/A    | " + ConfigXPResearchMax + " |\n"
   message += "   Crafting XP| " + ConfigXPCraftingBase + "     | " + ConfigXPCraftingMult + "     | " + ConfigXPCraftingMin  + "   | " + ConfigXPCraftingMax + "  |\n"
   message += "==============|==============|==============|============|============|\n"
-  message += "\n\nLockpicking/Hacking:\n Novice=" + ConfigXPLockpickingNovice + "; Advanced=" + ConfigXPLockpickingAdvanced + "; Expert=" + ConfigXPLockpickingExpert + "; Master=" + ConfigXPLockpickingMaster + "; HAcking Base=" + ConfigXPHackingExperienceBase + "\n"
-  message += "\n\n***** Discovery XP *****\n"
+  message += "\n\n"
+  message += "Lockpicking/Hacking:\n Novice=" + ConfigXPLockpickingNovice + "; Advanced=" + ConfigXPLockpickingAdvanced + "; Expert=" + ConfigXPLockpickingExpert + "; Master=" + ConfigXPLockpickingMaster + "; HAcking Base=" + ConfigXPHackingExperienceBase + "\n"
+  message += "\n\n"
+  message += "***** Discovery XP *****\n"
   message += "Map Markers: " + ConfigXPDiscoveryMapMarker + "\n"
   message += "Secret Areas: " + ConfigXPDiscoverySecretArea  + "\n"
   message += "Scan Complete: " + ConfigXPScanCompletion + "\n"
@@ -1655,7 +1583,8 @@ Function DumpXPMatrix()
   message += "Planetary Surveys|    " + PlanetarySurveyV1XPReward.GetValueInt() + "    |   " + PlanetarySurveyV2XPReward.GetValueInt() + "    |   " + PlanetarySurveyV3XPReward.GetValueInt() + "    |   " + PlanetarySurveyV4XPReward.GetValueInt() + "    |    " + PlanetarySurveyV5XPReward.GetValueInt() + "   |\n"
   message += "   System Surveys|    " + SystemSurveyV1XPReward.GetValueInt() + "    |   " + SystemSurveyV2XPReward.GetValueInt() + "    |   " + SystemSurveyV3XPReward.GetValueInt() + "    |   " + SystemSurveyV4XPReward.GetValueInt() + "    |    N/A   |\n"
   message += "=================|==========|==========|==========|==========|==========|\n"
-  message += "\n\n***** Quest XP *****\n"
+  message += "\n\n"
+  message += "***** Quest XP *****\n"
   message += "_________________|___Base___|___Tiny___|__Small___|__Medium__|__Large___|____XL____|\n"
   message += " Main Quest Act 1|    N/A   |    N/A   |    " + MainQuestAct1XPRewardSmall.GetValueInt() + "   |    " + MainQuestAct1XPRewardMedium.GetValueInt() + "   |    " + MainQuestAct1XPRewardLarge.GetValueInt() + "   |    N/A   |\n"
   message += " Main Quest Act 2|    N/A   |    N/A   |    " + MainQuestAct2XPRewardSmall.GetValueInt() + "   |    " + MainQuestAct2XPRewardMedium.GetValueInt() + "   |    " + MainQuestAct2XPRewardLarge.GetValueInt() + "   |    N/A   |\n"
@@ -1668,7 +1597,7 @@ Function DumpXPMatrix()
   message += "    Mission Board|    " + MissionBoardSurveyBaseXPReward.GetValueInt() + "   |    " + MissionBoardSurveyTraitV1XPReward.GetValueInt() + "   |    " + MissionBoardSurveyTraitV2XPReward.GetValueInt() + "   |    " + MissionBoardSurveyTraitV3XPReward.GetValueInt() + "   |    " + MissionBoardSurveyTraitV4XPReward.GetValueInt() + "   |    " + MissionBoardSurveyTraitV5XPReward.GetValueInt() + "   |\n"
   message += "=================|==========|==========|==========|==========|==========|==========|\n"
 
-  Debug.Trace("VPIXPCTRL_DMPXPMTX: " + message, 2)
+  Debug.Trace("VPIXPCTRL_DEBUG: " + message, 2)
   Debug.Messagebox("This message is too large for notification or message box so please enable and look in the papyrus Log. Sorry, I'll Look for a better way for a future version.")
 EndFunction
 
