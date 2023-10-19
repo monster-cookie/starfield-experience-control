@@ -129,7 +129,7 @@ GlobalVariable Property MissionBoardSurveyTraitV5XPReward Auto         ;; Form I
 ;;; Properties
 ;;;
 
-String Property Version="1.1.2" Auto ;; -- MOD VERSION SET HERE
+String Property Version="1.2.0" Auto ;; -- MOD VERSION SET HERE
 
 Actor Property PlayerRef Auto
 ActorValue Property Experience Auto
@@ -240,8 +240,8 @@ Event OnPlayerLoadGame()
   Debug.Notification("Experience Control version " + version + " is currently running.")
 
   ;; If Version is not set or not current update it -- MOD VERSION SET HERE
-  If (Version != "1.1.2")
-    Version = "1.1.2"
+  If (Version != "1.2.0")
+    Version = "1.2.0"
   EndIf
 
   UpdateBindings()
@@ -600,53 +600,6 @@ Function UpdateBindings()
   EndIf
 EndFunction
 
-;; ****************************************************************************
-;; Set a float based game setting 
-;;
-Function SetGameSettingFloat(String gameSetting, Float value)
-  Debug.ExecuteConsole("setgs " + gameSetting + " " + value)
-EndFunction
-
-;; ****************************************************************************
-;; Set a integer based game setting 
-;;
-Function SetGameSettingInt(String gameSetting, Int value)
-  Debug.ExecuteConsole("setgs " + gameSetting + " " + value)
-EndFunction
-
-;; ****************************************************************************
-;; Set a float based form setting 
-;;
-Function SetFormSettingFloat(String formID, Float value)
-  Debug.ExecuteConsole("set " + formID + " to " + value)
-EndFunction
-
-;; ****************************************************************************
-;; Set a integer based form setting 
-;;
-Function SetFormSettingInt(String formID, Int value)
-  Debug.ExecuteConsole("set " + formID + " to " + value)
-EndFunction
-
-;; ****************************************************************************
-;; Convert the difficulty int value to the string value
-;;
-String Function GetDifficulty(int iDifficulty)
-  if (iDifficulty == 0)
-    return "Very Easy"
-  ElseIf (iDifficulty == 1)
-    return "Easy"
-  ElseIf (iDifficulty == 2)
-    return "Normal"
-  ElseIf (iDifficulty == 3)
-    return "Hard"
-  ElseIf (iDifficulty == 4)
-    return "Very Hard"
-  Else
-    return "Unknown(" + iDifficulty +")"
-  EndIf
-EndFunction
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -767,7 +720,6 @@ Function EnableAllXP()
 EndFunction
 
 
-
 ;;
 ;; Leveling Experience Public Functions
 ;;
@@ -781,18 +733,18 @@ Function DisableLevelingXP()
   LevelingXPEnabled=false
 
   ;; Base XP Settings
-  SetGameSettingFloat("fXPStart", 100000000.00)
-  SetGameSettingFloat("fXPBase", 0.00)
-  SetGameSettingFloat("fXPExpMult", 0.00)
-  SetGameSettingFloat("fXPModBase", 0.00)
+  VPI_Helper.SetGameSettingFloat("fXPStart", 100000000.00)
+  VPI_Helper.SetGameSettingFloat("fXPBase", 0.00)
+  VPI_Helper.SetGameSettingFloat("fXPExpMult", 0.00)
+  VPI_Helper.SetGameSettingFloat("fXPModBase", 0.00)
 
   ;; Combat XP Settings
-  SetGameSettingInt("iXPRewardKillOpponent", 0)
-  SetGameSettingFloat("fDiffMultXPVE", 0.00)
-  SetGameSettingFloat("fDiffMultXPE", 0.00)
-  SetGameSettingFloat("fDiffMultXPN", 0.00)
-  SetGameSettingFloat("fDiffMultXPH", 0.00)
-  SetGameSettingFloat("fDiffMultXPVH", 0.00)
+  VPI_Helper.SetGameSettingInt("iXPRewardKillOpponent", 0)
+  VPI_Helper.SetGameSettingFloat("fDiffMultXPVE", 0.00)
+  VPI_Helper.SetGameSettingFloat("fDiffMultXPE", 0.00)
+  VPI_Helper.SetGameSettingFloat("fDiffMultXPN", 0.00)
+  VPI_Helper.SetGameSettingFloat("fDiffMultXPH", 0.00)
+  VPI_Helper.SetGameSettingFloat("fDiffMultXPVH", 0.00)
 EndFunction
 
 ;; ****************************************************************************
@@ -804,18 +756,18 @@ Function EnableLevelingXP()
   LevelingXPEnabled=true
 
   ;; Base XP Settings
-  SetGameSettingFloat("fXPStart", ConfigXPStart)
-  SetGameSettingFloat("fXPBase", ConfigXPBase)
-  SetGameSettingFloat("fXPExpMult", ConfigXPMult)
-  SetGameSettingFloat("fXPModBase", ConfigXPModBase)
+  VPI_Helper.SetGameSettingFloat("fXPStart", ConfigXPStart)
+  VPI_Helper.SetGameSettingFloat("fXPBase", ConfigXPBase)
+  VPI_Helper.SetGameSettingFloat("fXPExpMult", ConfigXPMult)
+  VPI_Helper.SetGameSettingFloat("fXPModBase", ConfigXPModBase)
 
   ;; Combat XP Settings
-  SetGameSettingInt("iXPRewardKillOpponent", ConfigXPKillOpponent)
-  SetGameSettingFloat("fDiffMultXPVE", ConfigXPDiffMultXPVE)
-  SetGameSettingFloat("fDiffMultXPE", ConfigXPDiffMultXPE)
-  SetGameSettingFloat("fDiffMultXPN", ConfigXPDiffMultXPN)
-  SetGameSettingFloat("fDiffMultXPH", ConfigXPDiffMultXPH)
-  SetGameSettingFloat("fDiffMultXPVH", ConfigXPDiffMultXPVH)
+  VPI_Helper.SetGameSettingInt("iXPRewardKillOpponent", ConfigXPKillOpponent)
+  VPI_Helper.SetGameSettingFloat("fDiffMultXPVE", ConfigXPDiffMultXPVE)
+  VPI_Helper.SetGameSettingFloat("fDiffMultXPE", ConfigXPDiffMultXPE)
+  VPI_Helper.SetGameSettingFloat("fDiffMultXPN", ConfigXPDiffMultXPN)
+  VPI_Helper.SetGameSettingFloat("fDiffMultXPH", ConfigXPDiffMultXPH)
+  VPI_Helper.SetGameSettingFloat("fDiffMultXPVH", ConfigXPDiffMultXPVH)
 EndFunction
 
 ;; ****************************************************************************
@@ -933,7 +885,7 @@ EndFunction
 ;; Use: player.cf "VPI_ExperienceControl.DumpLevelingXP"
 Function DumpLevelingXP()
   Int iDifficulty = Game.GetDifficulty()
-  string sDifficulty = GetDifficulty(iDifficulty)
+  string sDifficulty = VPI_Helper.GetDifficulty(iDifficulty)
 
   string message = "You need " + ConfigXPStart + " experience to complete a level.\n"
   message += "Base XP Reward is " + ConfigXPBase + " experience. With a multiplier of " + ConfigXPMult + " and a modifier of " + ConfigXPModBase + "\n."
@@ -972,16 +924,16 @@ Function DisableCraftingXP()
   CraftingXPEnabled=false
  
   ;; Cooking XP Settings
-  SetGameSettingFloat("fCookingExpBase", 0.00)
-  SetGameSettingFloat("fCookingExpMult", 0.00)
-  SetGameSettingFloat("fCookingExpMin", 0.00)
-  SetGameSettingFloat("fCookingExpMax", 0.00)
+  VPI_Helper.SetGameSettingFloat("fCookingExpBase", 0.00)
+  VPI_Helper.SetGameSettingFloat("fCookingExpMult", 0.00)
+  VPI_Helper.SetGameSettingFloat("fCookingExpMin", 0.00)
+  VPI_Helper.SetGameSettingFloat("fCookingExpMax", 0.00)
   
   ;; Crafting XP Settings
-  SetGameSettingFloat("fWorkbenchExperienceBase", 0.00)
-  SetGameSettingFloat("fWorkbenchExperienceMult", 0.00)
-  SetGameSettingFloat("fWorkbenchExperienceMin", 0.00)
-  SetGameSettingFloat("fWorkbenchExperienceMax", 0.00)
+  VPI_Helper.SetGameSettingFloat("fWorkbenchExperienceBase", 0.00)
+  VPI_Helper.SetGameSettingFloat("fWorkbenchExperienceMult", 0.00)
+  VPI_Helper.SetGameSettingFloat("fWorkbenchExperienceMin", 0.00)
+  VPI_Helper.SetGameSettingFloat("fWorkbenchExperienceMax", 0.00)
 EndFunction
 
 ;; ****************************************************************************
@@ -993,16 +945,16 @@ Function EnableCraftingXP()
   CraftingXPEnabled=true
   
   ;; Cooking XP Settings
-  SetGameSettingFloat("fCookingExpBase", ConfigXPCookingBase)
-  SetGameSettingFloat("fCookingExpMult", ConfigXPCookingMult)
-  SetGameSettingFloat("fCookingExpMin", ConfigXPCookingMin)
-  SetGameSettingFloat("fCookingExpMax", ConfigXPCookingMax)
+  VPI_Helper.SetGameSettingFloat("fCookingExpBase", ConfigXPCookingBase)
+  VPI_Helper.SetGameSettingFloat("fCookingExpMult", ConfigXPCookingMult)
+  VPI_Helper.SetGameSettingFloat("fCookingExpMin", ConfigXPCookingMin)
+  VPI_Helper.SetGameSettingFloat("fCookingExpMax", ConfigXPCookingMax)
   
   ;; Crafting XP Settings
-  SetGameSettingFloat("fWorkbenchExperienceBase", ConfigXPCraftingBase)
-  SetGameSettingFloat("fWorkbenchExperienceMult", ConfigXPCraftingMult)
-  SetGameSettingFloat("fWorkbenchExperienceMin", ConfigXPCraftingMin)
-  SetGameSettingFloat("fWorkbenchExperienceMax", ConfigXPCraftingMax)
+  VPI_Helper.SetGameSettingFloat("fWorkbenchExperienceBase", ConfigXPCraftingBase)
+  VPI_Helper.SetGameSettingFloat("fWorkbenchExperienceMult", ConfigXPCraftingMult)
+  VPI_Helper.SetGameSettingFloat("fWorkbenchExperienceMin", ConfigXPCraftingMin)
+  VPI_Helper.SetGameSettingFloat("fWorkbenchExperienceMax", ConfigXPCraftingMax)
 EndFunction
 
 ;; ****************************************************************************
@@ -1073,9 +1025,9 @@ Function DisableResearchXP()
   ResearchXPEnabled=false
  
   ;; Research XP Settings
-  SetGameSettingFloat("fResearchExpBase", 0.00)
-  SetGameSettingFloat("fResearchExpMult", 0.00)
-  SetGameSettingFloat("fResearchExpMax", 0.00)
+  VPI_Helper.SetGameSettingFloat("fResearchExpBase", 0.00)
+  VPI_Helper.SetGameSettingFloat("fResearchExpMult", 0.00)
+  VPI_Helper.SetGameSettingFloat("fResearchExpMax", 0.00)
 EndFunction
 
 ;; ****************************************************************************
@@ -1087,9 +1039,9 @@ Function EnableResearchXP()
   ResearchXPEnabled=true
   
   ;; Research XP Settings
-  SetGameSettingFloat("fResearchExpBase", ConfigXPResearchBase)
-  SetGameSettingFloat("fResearchExpMult", ConfigXPResearchMult)
-  SetGameSettingFloat("fResearchExpMax", ConfigXPResearchMax)
+  VPI_Helper.SetGameSettingFloat("fResearchExpBase", ConfigXPResearchBase)
+  VPI_Helper.SetGameSettingFloat("fResearchExpMult", ConfigXPResearchMult)
+  VPI_Helper.SetGameSettingFloat("fResearchExpMax", ConfigXPResearchMax)
 EndFunction
 
 ;; ****************************************************************************
@@ -1136,11 +1088,11 @@ Function DisableLockpickingXP()
   LockpickingXPEnabled=false
   
   ;; Lockpicking/Hacking XP Settings
-  SetGameSettingFloat("fLockpickXPRewardEasy", 0.00)
-  SetGameSettingFloat("fLockpickXPRewardAverage", 0.00)
-  SetGameSettingFloat("fLockpickXPRewardHard", 0.00)
-  SetGameSettingFloat("fLockpickXPRewardVeryHard", 0.00)
-  SetGameSettingFloat("fHackingExperienceBase", 0.00)
+  VPI_Helper.SetGameSettingFloat("fLockpickXPRewardEasy", 0.00)
+  VPI_Helper.SetGameSettingFloat("fLockpickXPRewardAverage", 0.00)
+  VPI_Helper.SetGameSettingFloat("fLockpickXPRewardHard", 0.00)
+  VPI_Helper.SetGameSettingFloat("fLockpickXPRewardVeryHard", 0.00)
+  VPI_Helper.SetGameSettingFloat("fHackingExperienceBase", 0.00)
 EndFunction
 
 ;; ****************************************************************************
@@ -1152,11 +1104,11 @@ Function EnableLockpickingXP()
   LockpickingXPEnabled=true
   
   ;; Lockpicking/Hacking XP Settings
-  SetGameSettingFloat("fLockpickXPRewardEasy", ConfigXPLockpickingNovice)
-  SetGameSettingFloat("fLockpickXPRewardAverage", ConfigXPLockpickingAdvanced)
-  SetGameSettingFloat("fLockpickXPRewardHard", ConfigXPLockpickingExpert)
-  SetGameSettingFloat("fLockpickXPRewardVeryHard", ConfigXPLockpickingMaster)
-  SetGameSettingFloat("fHackingExperienceBase", ConfigXPHackingExperienceBase)
+  VPI_Helper.SetGameSettingFloat("fLockpickXPRewardEasy", ConfigXPLockpickingNovice)
+  VPI_Helper.SetGameSettingFloat("fLockpickXPRewardAverage", ConfigXPLockpickingAdvanced)
+  VPI_Helper.SetGameSettingFloat("fLockpickXPRewardHard", ConfigXPLockpickingExpert)
+  VPI_Helper.SetGameSettingFloat("fLockpickXPRewardVeryHard", ConfigXPLockpickingMaster)
+  VPI_Helper.SetGameSettingFloat("fHackingExperienceBase", ConfigXPHackingExperienceBase)
 EndFunction
 
 ;; ****************************************************************************
@@ -1208,25 +1160,25 @@ Function DisableDiscoveryXP()
   DiscoveryXPEnabled=false
   
   ;; Discovery XP Settings
-  SetGameSettingInt("iXPRewardDiscoverMapMarker", 0)
-  SetGameSettingInt("iXPRewardDiscoverSecretArea", 0)
-  SetGameSettingFloat("fScanCompleteXPReward", 0.00)
+  VPI_Helper.SetGameSettingInt("iXPRewardDiscoverMapMarker", 0)
+  VPI_Helper.SetGameSettingInt("iXPRewardDiscoverSecretArea", 0)
+  VPI_Helper.SetGameSettingFloat("fScanCompleteXPReward", 0.00)
 
   ;; Planet Surveys
-  SetFormSettingInt("0x00245AB9", 0) ;; PlanetaryTraitXPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x001AEB4E", 0) ;; PlanetaryTraitSkillBonusXPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x00245AB9", 0) ;; PlanetaryTraitXPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x001AEB4E", 0) ;; PlanetaryTraitSkillBonusXPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
   ;; PlanetaryTraitAstroBonusXPReward.SetValueInt(0)
-  SetFormSettingInt("0x0030A8C5", 0) ;; PlanetarySurveyV1XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x0030A8C6", 0) ;; PlanetarySurveyV2XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x0030A8C7", 0) ;; PlanetarySurveyV3XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x00056E62", 0) ;; PlanetarySurveyV4XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x0023842C", 0) ;; PlanetarySurveyV5XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0030A8C5", 0) ;; PlanetarySurveyV1XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0030A8C6", 0) ;; PlanetarySurveyV2XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0030A8C7", 0) ;; PlanetarySurveyV3XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x00056E62", 0) ;; PlanetarySurveyV4XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0023842C", 0) ;; PlanetarySurveyV5XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
 
   ;; System Surveys
-  SetFormSettingInt("0x0030A8C8", 0) ;; SystemSurveyV1XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x0030A8C9", 0) ;; SystemSurveyV2XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x0030A8CA", 0) ;; SystemSurveyV3XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x0030A8CB", 0) ;; SystemSurveyV4XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0030A8C8", 0) ;; SystemSurveyV1XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0030A8C9", 0) ;; SystemSurveyV2XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0030A8CA", 0) ;; SystemSurveyV3XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0030A8CB", 0) ;; SystemSurveyV4XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
 EndFunction
 
 ;; ****************************************************************************
@@ -1238,25 +1190,25 @@ Function EnableDiscoveryXP()
   DiscoveryXPEnabled=true
   
   ;; Discovery XP Settings
-  SetGameSettingInt("iXPRewardDiscoverMapMarker", ConfigXPDiscoveryMapMarker)
-  SetGameSettingInt("iXPRewardDiscoverSecretArea", ConfigXPDiscoverySecretArea)
-  SetGameSettingFloat("fScanCompleteXPReward", ConfigXPScanCompletion)
+  VPI_Helper.SetGameSettingInt("iXPRewardDiscoverMapMarker", ConfigXPDiscoveryMapMarker)
+  VPI_Helper.SetGameSettingInt("iXPRewardDiscoverSecretArea", ConfigXPDiscoverySecretArea)
+  VPI_Helper.SetGameSettingFloat("fScanCompleteXPReward", ConfigXPScanCompletion)
 
   ;; Planetary Surveys
-  SetFormSettingInt("0x00245AB9", ConfigQuestSM) ;; PlanetaryTraitXPReward.SetValueInt(ConfigQuestSM) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x001AEB4E", ConfigQuestSM) ;; PlanetaryTraitSkillBonusXPReward.SetValueInt(ConfigQuestSM) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x00245AB9", ConfigQuestSM) ;; PlanetaryTraitXPReward.SetValueInt(ConfigQuestSM) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x001AEB4E", ConfigQuestSM) ;; PlanetaryTraitSkillBonusXPReward.SetValueInt(ConfigQuestSM) ;; Papyrus has this locked as a const var but set console command works
   ;; PlanetaryTraitAstroBonusXPReward.SetValueFloat(0.25)
-  SetFormSettingInt("0x0030A8C5", ConfigQuestTN) ;; PlanetarySurveyV1XPReward.SetValueInt(ConfigQuestTN) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x0030A8C6", ConfigQuestSM) ;; PlanetarySurveyV2XPReward.SetValueInt(ConfigQuestSM) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x0030A8C7", ConfigQuestMD) ;; PlanetarySurveyV3XPReward.SetValueInt(ConfigQuestMD) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x00056E62", ConfigQuestLG) ;; PlanetarySurveyV4XPReward.SetValueInt(ConfigQuestLG) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x0023842C", ConfigQuestXL) ;; PlanetarySurveyV5XPReward.SetValueInt(ConfigQuestXL) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0030A8C5", ConfigQuestTN) ;; PlanetarySurveyV1XPReward.SetValueInt(ConfigQuestTN) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0030A8C6", ConfigQuestSM) ;; PlanetarySurveyV2XPReward.SetValueInt(ConfigQuestSM) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0030A8C7", ConfigQuestMD) ;; PlanetarySurveyV3XPReward.SetValueInt(ConfigQuestMD) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x00056E62", ConfigQuestLG) ;; PlanetarySurveyV4XPReward.SetValueInt(ConfigQuestLG) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0023842C", ConfigQuestXL) ;; PlanetarySurveyV5XPReward.SetValueInt(ConfigQuestXL) ;; Papyrus has this locked as a const var but set console command works
 
   ;; System Surveys
-  SetFormSettingInt("0x0030A8C8", ConfigQuestTN) ;; SystemSurveyV1XPReward.SetValueInt(ConfigQuestTN) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x0030A8C9", ConfigQuestSM) ;; SystemSurveyV2XPReward.SetValueInt(ConfigQuestSM) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x0030A8CA", ConfigQuestMD) ;; SystemSurveyV3XPReward.SetValueInt(ConfigQuestMD) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x0030A8CB", ConfigQuestLG) ;; SystemSurveyV4XPReward.SetValueInt(ConfigQuestLG) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0030A8C8", ConfigQuestTN) ;; SystemSurveyV1XPReward.SetValueInt(ConfigQuestTN) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0030A8C9", ConfigQuestSM) ;; SystemSurveyV2XPReward.SetValueInt(ConfigQuestSM) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0030A8CA", ConfigQuestMD) ;; SystemSurveyV3XPReward.SetValueInt(ConfigQuestMD) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0030A8CB", ConfigQuestLG) ;; SystemSurveyV4XPReward.SetValueInt(ConfigQuestLG) ;; Papyrus has this locked as a const var but set console command works
 EndFunction
 
 ;; ****************************************************************************
@@ -1307,7 +1259,7 @@ Function DisableSpeechcraftXP()
   SpeechcraftXPEnabled=false
 
   ;; Speechcraft XP Settings
-  SetGameSettingFloat("fSpeechChallengeSuccessXP", 0.00)
+  VPI_Helper.SetGameSettingFloat("fSpeechChallengeSuccessXP", 0.00)
 EndFunction
 
 ;; ****************************************************************************
@@ -1319,7 +1271,7 @@ Function EnableSpeechcraftXP()
   SpeechcraftXPEnabled=true
 
   ;; Speechcraft XP Settings
-  SetGameSettingFloat("fSpeechChallengeSuccessXP", ConfigXPSpeechcraftSuccess)
+  VPI_Helper.SetGameSettingFloat("fSpeechChallengeSuccessXP", ConfigXPSpeechcraftSuccess)
 EndFunction
 
 ;; ****************************************************************************
@@ -1400,7 +1352,7 @@ Function DisableQuestXP()
   RadiantQuestVersion06XPRewardLarge.SetValueInt(0)
 
   ;; Misc Quests
-  SetFormSettingInt("0x002685E7", 0) ;; MiscQuestXPRewardTiny.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x002685E7", 0) ;; MiscQuestXPRewardTiny.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
   MiscQuestXPRewardSmall.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
   MiscQuestXPRewardMedium.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
   MiscQuestXPRewardLarge.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
@@ -1409,9 +1361,9 @@ Function DisableQuestXP()
   CompanionQuestXPReward.SetValueInt(0)
   OptionalObjectiveQuestXPReward.SetValueInt(0)
   RedMileRunQuestXPReward.SetValueInt(0)
-  SetFormSettingInt("0x0006B510", 0) ;; OESmallQuestXPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x000F3CF9", 0) ;; OEMediumQuestXPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x000F19CC", 0) ;; OELargeQuestXPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0006B510", 0) ;; OESmallQuestXPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x000F3CF9", 0) ;; OEMediumQuestXPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x000F19CC", 0) ;; OELargeQuestXPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
   StarbornTempleXPReward.SetValueInt(0)
 
   ;; Settlement Quests
@@ -1424,12 +1376,12 @@ Function DisableQuestXP()
   SettlementV1QuestXPRewardLarge.SetValueInt(0)
 
   ;; Mission Board Quests
-  SetFormSettingInt("0x0009E153", 0) ;; MissionBoardSurveyBaseXPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x0016AB84", 0) ;; MissionBoardSurveyTraitV1XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x0016AB85", 0) ;; MissionBoardSurveyTraitV2XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x0016AB86", 0) ;; MissionBoardSurveyTraitV3XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x0016AB87", 0) ;; MissionBoardSurveyTraitV4XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x0016AB88", 0) ;; MissionBoardSurveyTraitV5XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0009E153", 0) ;; MissionBoardSurveyBaseXPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0016AB84", 0) ;; MissionBoardSurveyTraitV1XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0016AB85", 0) ;; MissionBoardSurveyTraitV2XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0016AB86", 0) ;; MissionBoardSurveyTraitV3XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0016AB87", 0) ;; MissionBoardSurveyTraitV4XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0016AB88", 0) ;; MissionBoardSurveyTraitV5XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
 EndFunction
 
 ;; ****************************************************************************
@@ -1479,7 +1431,7 @@ Function EnableQuestXP()
   RadiantQuestVersion06XPRewardLarge.SetValueInt(ConfigQuestLG)
 
   ;; Misc Quests
-  SetFormSettingInt("0x002685E7", ConfigQuestTN) ;; MiscQuestXPRewardTiny.SetValueInt(ConfigQuestTN) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x002685E7", ConfigQuestTN) ;; MiscQuestXPRewardTiny.SetValueInt(ConfigQuestTN) ;; Papyrus has this locked as a const var but set console command works
   MiscQuestXPRewardSmall.SetValueInt(ConfigQuestSM)
   MiscQuestXPRewardMedium.SetValueInt(ConfigQuestMD)
   MiscQuestXPRewardLarge.SetValueInt(ConfigQuestLG)
@@ -1488,9 +1440,9 @@ Function EnableQuestXP()
   CompanionQuestXPReward.SetValueInt(ConfigQuestLG)
   OptionalObjectiveQuestXPReward.SetValueInt(ConfigQuestSM)
   RedMileRunQuestXPReward.SetValueInt(ConfigQuestSM)
-  SetFormSettingInt("0x0006B510", ConfigQuestMD) ;; OESmallQuestXPReward.SetValueInt(ConfigQuestMD) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x000F3CF9", ConfigQuestLG) ;; OEMediumQuestXPReward.SetValueInt(ConfigQuestLG) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x000F19CC", ConfigQuestXL) ;; OELargeQuestXPReward.SetValueInt(ConfigQuestXL) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0006B510", ConfigQuestMD) ;; OESmallQuestXPReward.SetValueInt(ConfigQuestMD) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x000F3CF9", ConfigQuestLG) ;; OEMediumQuestXPReward.SetValueInt(ConfigQuestLG) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x000F19CC", ConfigQuestXL) ;; OELargeQuestXPReward.SetValueInt(ConfigQuestXL) ;; Papyrus has this locked as a const var but set console command works
   StarbornTempleXPReward.SetValueInt(ConfigQuestMD)
 
   ;; Settlement Quests
@@ -1503,12 +1455,12 @@ Function EnableQuestXP()
   SettlementV1QuestXPRewardLarge.SetValueInt(ConfigQuestMD)
 
   ;; Mission Board Quests
-  SetFormSettingInt("0x0009E153", ConfigQuestSM) ;; MissionBoardSurveyBaseXPReward.SetValueInt(ConfigQuestSM) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x0016AB84", ConfigQuestTN) ;; MissionBoardSurveyTraitV1XPReward.SetValueInt(ConfigQuestTN) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x0016AB85", ConfigQuestSM) ;; MissionBoardSurveyTraitV2XPReward.SetValueInt(ConfigQuestSM) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x0016AB86", ConfigQuestMD) ;; MissionBoardSurveyTraitV3XPReward.SetValueInt(ConfigQuestMD) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x0016AB87", ConfigQuestLG) ;; MissionBoardSurveyTraitV4XPReward.SetValueInt(ConfigQuestLG) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x0016AB88", ConfigQuestXL) ;; MissionBoardSurveyTraitV5XPReward.SetValueInt(ConfigQuestXL) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0009E153", ConfigQuestSM) ;; MissionBoardSurveyBaseXPReward.SetValueInt(ConfigQuestSM) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0016AB84", ConfigQuestTN) ;; MissionBoardSurveyTraitV1XPReward.SetValueInt(ConfigQuestTN) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0016AB85", ConfigQuestSM) ;; MissionBoardSurveyTraitV2XPReward.SetValueInt(ConfigQuestSM) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0016AB86", ConfigQuestMD) ;; MissionBoardSurveyTraitV3XPReward.SetValueInt(ConfigQuestMD) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0016AB87", ConfigQuestLG) ;; MissionBoardSurveyTraitV4XPReward.SetValueInt(ConfigQuestLG) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0016AB88", ConfigQuestXL) ;; MissionBoardSurveyTraitV5XPReward.SetValueInt(ConfigQuestXL) ;; Papyrus has this locked as a const var but set console command works
 EndFunction
 
 ;; ****************************************************************************
