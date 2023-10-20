@@ -32,7 +32,7 @@ EndFunction
 ;; ****************************************************************************
 ;; Get, scale, and update a float based game setting 
 ;;
-Function ScaleGameSettingFloat(String gameSetting, Float defaultValue, Float scaleFactor)
+Function ScaleGameSettingFloat(String gameSetting, Float defaultValue, Float scaleFactor) Global
   Float scaledValue = defaultValue * scaleFactor
   SetGameSettingFloat(gameSetting, scaledValue)
 EndFunction
@@ -40,8 +40,8 @@ EndFunction
 ;; ****************************************************************************
 ;; Get, scale, and update a float based game setting 
 ;;
-Function ScaleGameSettingInt(String gameSetting, Int defaultValue, Int scaleFactor)
-  Int scaledValue = defaultValue * scaleFactor
+Function ScaleGameSettingInt(String gameSetting, Int defaultValue, Float scaleFactor) Global
+  Int scaledValue = (defaultValue * scaleFactor) as Int
   SetGameSettingInt(gameSetting, scaledValue)
 EndFunction
 

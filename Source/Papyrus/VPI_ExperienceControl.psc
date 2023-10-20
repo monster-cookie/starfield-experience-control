@@ -234,6 +234,7 @@ Event OnInit()
   StoreCurrentXPSettings()
 
   EnableAllXP()
+  ScaleForMyLevel()
 EndEvent
 
 ;; Event called when the player loads a save game. This event is only sent to the player actor. If 
@@ -310,6 +311,25 @@ Event OnPlayerLoadGame()
     Debug.Trace("VPIXPCTRL_EVENT: OnPlayerLoadGame - Reloading Speechcraft XP in disable mode", 0)
     DisableSpeechcraftXP()
   EndIf
+
+  ScaleForMyLevel()
+EndEvent
+
+Event OnDifficultyChanged(Int aOldDifficulty, Int aNewDifficulty)
+  Debug.Trace("VPIXPCTRL_EVENT: OnDifficultyChanged triggered Regenerating Scaling Values", 0)
+  ScaleForMyLevel()
+EndEvent
+
+; Using ReferenceAlias (vs Actor) this is now actually triggered so don't think I need OnEnterShipInterior/OnExitShipInterior
+Event OnLocationChange(Location akOldLoc, Location akNewLoc)
+  Debug.Trace("VPIXPCTRL_EVENT: OnLocationChange triggered Regenerating Scaling Values", 0)
+  ScaleForMyLevel()
+EndEvent
+
+;; Called on ever thinkg you kill player or beast -- probably a good tracking point as you gain XP from the kill
+Event OnKill(ObjectReference akVictim)
+  Debug.Trace("VPIXPCTRL_EVENT: OnKill triggered Regenerating Scaling Values", 1)
+  ScaleForMyLevel()
 EndEvent
 
 
@@ -613,14 +633,14 @@ Function CreateBracketArrays()
     SF_XPDifficultyMultiplier = new Float[11]
     SF_XPDifficultyMultiplier[1] = 1.00
     SF_XPDifficultyMultiplier[2] = 1.00
-    SF_XPDifficultyMultiplier[3] = 1.25
-    SF_XPDifficultyMultiplier[4] = 1.25
-    SF_XPDifficultyMultiplier[5] = 1.50
-    SF_XPDifficultyMultiplier[6] = 1.50
-    SF_XPDifficultyMultiplier[7] = 1.75
-    SF_XPDifficultyMultiplier[8] = 1.75
-    SF_XPDifficultyMultiplier[9] = 2.00
-    SF_XPDifficultyMultiplier[10] = 2.50
+    SF_XPDifficultyMultiplier[3] = 1.00
+    SF_XPDifficultyMultiplier[4] = 1.00
+    SF_XPDifficultyMultiplier[5] = 1.00
+    SF_XPDifficultyMultiplier[6] = 1.00
+    SF_XPDifficultyMultiplier[7] = 1.00
+    SF_XPDifficultyMultiplier[8] = 1.00
+    SF_XPDifficultyMultiplier[9] = 1.00
+    SF_XPDifficultyMultiplier[10] = 1.00
   EndIf
 
   If (SF_CombatXP == None)
@@ -1584,7 +1604,7 @@ EndFunction
 ;;
 Float Function GetDifficultyXPMultiplierScalingFactor(int bracket)
   Float scaleFactor = SF_XPDifficultyMultiplier[bracket];
-  Debug.Trace("VPIXPCTRL_FINAL_RESULT: Final Difficulty XP Multiplier scaling has been calculated using bracket " + bracket + " resulting in an final SF of " + scaleFactor + ".", 1)
+  Debug.Trace("VPIXPCTRL_DEBUG: Final Difficulty XP Multiplier scaling has been calculated using bracket " + bracket + " resulting in an final SF of " + scaleFactor + ".", 1)
   return scaleFactor
 EndFunction
 
@@ -1607,7 +1627,7 @@ EndFunction
 ;;
 Float Function GetCombatXPScalingFactor(int bracket)
   Float scaleFactor = SF_CombatXP[bracket];
-  Debug.Trace("VPIXPCTRL_FINAL_RESULT: Final Combat XP scaling factor has been calculated using bracket " + bracket + " resulting in an final SF of " + scaleFactor + ".", 1)
+  Debug.Trace("VPIXPCTRL_DEBUG: Final Combat XP scaling factor has been calculated using bracket " + bracket + " resulting in an final SF of " + scaleFactor + ".", 1)
   return scaleFactor
 EndFunction
 
@@ -1630,7 +1650,7 @@ EndFunction
 ;;
 Float Function GetCraftingXPScalingFactor(int bracket)
   Float scaleFactor = SF_CraftingXP[bracket];
-  Debug.Trace("VPIXPCTRL_FINAL_RESULT: Final Crafting XP scaling factor has been calculated using bracket " + bracket + " resulting in an final SF of " + scaleFactor + ".", 1)
+  Debug.Trace("VPIXPCTRL_DEBUG: Final Crafting XP scaling factor has been calculated using bracket " + bracket + " resulting in an final SF of " + scaleFactor + ".", 1)
   return scaleFactor
 EndFunction
 
@@ -1653,7 +1673,7 @@ EndFunction
 ;;
 Float Function GetResearchXPScalingFactor(int bracket)
   Float scaleFactor = SF_ResearchXP[bracket];
-  Debug.Trace("VPIXPCTRL_FINAL_RESULT: Final Research XP scaling factor has been calculated using bracket " + bracket + " resulting in an final SF of " + scaleFactor + ".", 1)
+  Debug.Trace("VPIXPCTRL_DEBUG: Final Research XP scaling factor has been calculated using bracket " + bracket + " resulting in an final SF of " + scaleFactor + ".", 1)
   return scaleFactor
 EndFunction
 
@@ -1676,7 +1696,7 @@ EndFunction
 ;;
 Float Function GetLockpickingXPScalingFactor(int bracket)
   Float scaleFactor = SF_LockpickingXP[bracket];
-  Debug.Trace("VPIXPCTRL_FINAL_RESULT: Final Lockpicking XP scaling factor has been calculated using bracket " + bracket + " resulting in an final SF of " + scaleFactor + ".", 1)
+  Debug.Trace("VPIXPCTRL_DEBUG: Final Lockpicking XP scaling factor has been calculated using bracket " + bracket + " resulting in an final SF of " + scaleFactor + ".", 1)
   return scaleFactor
 EndFunction
 
@@ -1699,7 +1719,7 @@ EndFunction
 ;;
 Float Function GetDiscoveryXPScalingFactor(int bracket)
   Float scaleFactor = SF_DiscoveryXP[bracket];
-  Debug.Trace("VPIXPCTRL_FINAL_RESULT: Final Discovery XP scaling factor has been calculated using bracket " + bracket + " resulting in an final SF of " + scaleFactor + ".", 1)
+  Debug.Trace("VPIXPCTRL_DEBUG: Final Discovery XP scaling factor has been calculated using bracket " + bracket + " resulting in an final SF of " + scaleFactor + ".", 1)
   return scaleFactor
 EndFunction
 
@@ -1722,8 +1742,72 @@ EndFunction
 ;;
 Float Function GetSpeechcraftXPScalingFactor(int bracket)
   Float scaleFactor = SF_SpeechcraftXP[bracket];
-  Debug.Trace("VPIXPCTRL_FINAL_RESULT: Final Speechcraft XP scaling factor has been calculated using bracket " + bracket + " resulting in an final SF of " + scaleFactor + ".", 1)
+  Debug.Trace("VPIXPCTRL_DEBUG: Final Speechcraft XP scaling factor has been calculated using bracket " + bracket + " resulting in an final SF of " + scaleFactor + ".", 1)
   return scaleFactor
+EndFunction
+
+;; ****************************************************************************
+;; Update Starfield XP Game Settings for my current level and the scaling factor for that level
+;;
+;; Use: player.cf "VPI_ExperienceControl.ScaleForMyLevel"
+;;
+Function ScaleForMyLevel()
+  If (PlayerRef.IsInCombat())
+    Debug.Trace("VPIXPCTRL_DEBUG: Player is in combat so no new scaling values will be calculated.", 1)
+    return
+  EndIf
+
+  Int iPlayerLevel = PlayerRef.GetLevel()
+  Int iPlayerBracket = VPI_Helper.GetBracketForPlayerLevel(iPlayerLevel)
+  Float sfDifficultyXPMultiplier = GetDifficultyXPMultiplierScalingFactor(iPlayerBracket)
+  Float sfCombatXP = GetCombatXPScalingFactor(iPlayerBracket)
+  Float sfCraftingXP = GetCraftingXPScalingFactor(iPlayerBracket)
+  Float sfResearchXP = GetResearchXPScalingFactor(iPlayerBracket)
+  Float sfLockpickingXP = GetLockpickingXPScalingFactor(iPlayerBracket)
+  Float sfDiscoveryXP = GetDiscoveryXPScalingFactor(iPlayerBracket)
+  Float sfSpeechcraftXP = GetSpeechcraftXPScalingFactor(iPlayerBracket)
+
+  ;; Scale XP Difficulty Multipliers
+  VPI_Helper.ScaleGameSettingFloat("fDiffMultXPVE", ConfigXPDiffMultXPVE, sfDifficultyXPMultiplier)
+  VPI_Helper.ScaleGameSettingFloat("fDiffMultXPE", ConfigXPDiffMultXPE, sfDifficultyXPMultiplier)
+  VPI_Helper.ScaleGameSettingFloat("fDiffMultXPN", ConfigXPDiffMultXPN, sfDifficultyXPMultiplier)
+  VPI_Helper.ScaleGameSettingFloat("fDiffMultXPH", ConfigXPDiffMultXPH, sfDifficultyXPMultiplier)
+  VPI_Helper.ScaleGameSettingFloat("fDiffMultXPVH", ConfigXPDiffMultXPVH, sfDifficultyXPMultiplier)
+
+  ;; Scale Combat XP Multipliers
+  VPI_Helper.ScaleGameSettingInt("iXPRewardKillOpponent", ConfigXPKillOpponent, sfCombatXP)
+
+  ;; Scale Crafting XP - Cooking Multipliers
+  VPI_Helper.ScaleGameSettingFloat("fCookingExpBase", ConfigXPCookingBase, sfCraftingXP)
+  VPI_Helper.ScaleGameSettingFloat("fCookingExpMult", ConfigXPCookingMult, sfCraftingXP)
+  ;; VPI_Helper.ScaleGameSettingFloat("fCookingExpMin", ConfigXPCookingMin, sfCraftingXP) ;; Minimum XP is not scaled 
+  VPI_Helper.ScaleGameSettingFloat("fCookingExpMax", ConfigXPCookingMax, sfCraftingXP)
+
+  ;; Scale Crafting XP - Workbench Multipliers
+  VPI_Helper.ScaleGameSettingFloat("fWorkbenchExperienceBase", ConfigXPWorkbenchBase, sfCraftingXP)
+  VPI_Helper.ScaleGameSettingFloat("fWorkbenchExperienceMult", ConfigXPWorkbenchMult, sfCraftingXP)
+  ;; VPI_Helper.ScaleGameSettingFloat("fWorkbenchExperienceMin", ConfigXPWorkbenchMin, sfCraftingXP) ;; Minimum XP is not scaled 
+  VPI_Helper.ScaleGameSettingFloat("fWorkbenchExperienceMax", ConfigXPWorkbenchMax, sfCraftingXP)
+
+  ;; Scale Research XP Multipliers
+  VPI_Helper.ScaleGameSettingFloat("fResearchExpBase", ConfigXPResearchBase, sfResearchXP)
+  VPI_Helper.ScaleGameSettingFloat("fResearchExpMult", ConfigXPResearchMult, sfResearchXP)
+  VPI_Helper.ScaleGameSettingFloat("fResearchExpMax", ConfigXPResearchMax, sfResearchXP)
+
+  ;; Scale Lockpicking XP Multipliers
+  VPI_Helper.ScaleGameSettingFloat("fLockpickXPRewardEasy", ConfigXPLockpickingNovice, sfLockpickingXP)
+  VPI_Helper.ScaleGameSettingFloat("fLockpickXPRewardAverage", ConfigXPLockpickingAdvanced, sfLockpickingXP)
+  VPI_Helper.ScaleGameSettingFloat("fLockpickXPRewardHard", ConfigXPLockpickingExpert, sfLockpickingXP)
+  VPI_Helper.ScaleGameSettingFloat("fLockpickXPRewardVeryHard", ConfigXPLockpickingMaster, sfLockpickingXP)
+  VPI_Helper.ScaleGameSettingFloat("fHackingExperienceBase", ConfigXPHackingExperienceBase, sfLockpickingXP)
+
+  ;; Scale Discovery XP Multipliers
+  VPI_Helper.ScaleGameSettingInt("iXPRewardDiscoverMapMarker", ConfigXPDiscoveryMapMarker, sfDiscoveryXP)
+  VPI_Helper.ScaleGameSettingInt("iXPRewardDiscoverSecretArea", ConfigXPDiscoverySecretArea, sfDiscoveryXP)
+  VPI_Helper.ScaleGameSettingFloat("fScanCompleteXPReward", ConfigXPScanCompletion, sfDiscoveryXP)
+
+  ;; Scale Speechcraft XP Multipliers
+  VPI_Helper.ScaleGameSettingFloat("fSpeechChallengeSuccessXP", ConfigXPSpeechcraftSuccess, sfSpeechcraftXP)
 EndFunction
 
 
