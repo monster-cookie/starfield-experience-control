@@ -157,10 +157,10 @@ Float Property ConfigXPResearchMult Auto
 Float Property ConfigXPResearchMax Auto
 
 ;; Crafting XP Settings
-Float Property ConfigXPCraftingBase Auto
-Float Property ConfigXPCraftingMult Auto
-Float Property ConfigXPCraftingMin Auto
-Float Property ConfigXPCraftingMax Auto
+Float Property ConfigXPWorkbenchBase Auto
+Float Property ConfigXPWorkbenchMult Auto
+Float Property ConfigXPWorkbenchMin Auto
+Float Property ConfigXPWorkbenchMax Auto
 
 ;; Lockpicking/Hacking XP Settings
 Float Property ConfigXPLockpickingNovice Auto
@@ -213,7 +213,6 @@ Float[] Property SF_ResearchXP Auto
 Float[] Property SF_CraftingXP Auto
 Float[] Property SF_LockpickingXP Auto
 Float[] Property SF_DiscoveryXP Auto
-Float[] Property SF_QuestXP Auto
 Float[] Property SF_SpeechcraftXP Auto
 
 
@@ -694,20 +693,6 @@ Function CreateBracketArrays()
     SF_DiscoveryXP[10] = 1.00
   EndIf
 
-  If (SF_QuestXP == None)
-    SF_QuestXP = new Float[11]
-    SF_QuestXP[1] = 1.00
-    SF_QuestXP[2] = 1.00
-    SF_QuestXP[3] = 1.00
-    SF_QuestXP[4] = 1.00
-    SF_QuestXP[5] = 1.00
-    SF_QuestXP[6] = 1.00
-    SF_QuestXP[7] = 1.00
-    SF_QuestXP[8] = 1.00
-    SF_QuestXP[9] = 1.00
-    SF_QuestXP[10] = 1.00
-  EndIf
-
   If (SF_SpeechcraftXP == None)
     SF_SpeechcraftXP = new Float[11]
     SF_SpeechcraftXP[1] = 1.00
@@ -749,10 +734,10 @@ Function StoreCurrentXPSettings()
   ConfigXPResearchMax=Game.GetGameSettingFloat("fResearchExpMax")
   
   ;; Crafting XP Settings
-  ConfigXPCraftingBase=Game.GetGameSettingFloat("fWorkbenchExperienceBase")
-  ConfigXPCraftingMult=Game.GetGameSettingFloat("fWorkbenchExperienceMult")
-  ConfigXPCraftingMin=Game.GetGameSettingFloat("fWorkbenchExperienceMin")
-  ConfigXPCraftingMax=Game.GetGameSettingFloat("fWorkbenchExperienceMax")
+  ConfigXPWorkbenchBase=Game.GetGameSettingFloat("fWorkbenchExperienceBase")
+  ConfigXPWorkbenchMult=Game.GetGameSettingFloat("fWorkbenchExperienceMult")
+  ConfigXPWorkbenchMin=Game.GetGameSettingFloat("fWorkbenchExperienceMin")
+  ConfigXPWorkbenchMax=Game.GetGameSettingFloat("fWorkbenchExperienceMax")
   
   ;; Lockpicking/Hacking XP Settings
   ConfigXPLockpickingNovice=Game.GetGameSettingFloat("fLockpickXPRewardEasy")
@@ -983,10 +968,10 @@ Function EnableCraftingXP()
   VPI_Helper.SetGameSettingFloat("fCookingExpMax", ConfigXPCookingMax)
   
   ;; Crafting XP Settings
-  VPI_Helper.SetGameSettingFloat("fWorkbenchExperienceBase", ConfigXPCraftingBase)
-  VPI_Helper.SetGameSettingFloat("fWorkbenchExperienceMult", ConfigXPCraftingMult)
-  VPI_Helper.SetGameSettingFloat("fWorkbenchExperienceMin", ConfigXPCraftingMin)
-  VPI_Helper.SetGameSettingFloat("fWorkbenchExperienceMax", ConfigXPCraftingMax)
+  VPI_Helper.SetGameSettingFloat("fWorkbenchExperienceBase", ConfigXPWorkbenchBase)
+  VPI_Helper.SetGameSettingFloat("fWorkbenchExperienceMult", ConfigXPWorkbenchMult)
+  VPI_Helper.SetGameSettingFloat("fWorkbenchExperienceMin", ConfigXPWorkbenchMin)
+  VPI_Helper.SetGameSettingFloat("fWorkbenchExperienceMax", ConfigXPWorkbenchMax)
 EndFunction
 
 ;; ****************************************************************************
@@ -1019,10 +1004,10 @@ EndFunction
 ;;   maxReward = The maximum ammount of XP reward you can get after the multiplier is applied. 
 ;;
 Function ConfigureWorkbenchXP(Float base, Float multiplier, Float minReward, Float maxReward)
-  ConfigXPCraftingBase=base
-  ConfigXPCraftingMult=multiplier
-  ConfigXPCraftingMin=minReward
-  ConfigXPCraftingMax=maxReward
+  ConfigXPWorkbenchBase=base
+  ConfigXPWorkbenchMult=multiplier
+  ConfigXPWorkbenchMin=minReward
+  ConfigXPWorkbenchMax=maxReward
 
   EnableCraftingXP()
 EndFunction
@@ -1036,7 +1021,7 @@ Function DumpCraftingXP()
   message += "***** Cooking *****\n"
   message += "Base=" + ConfigXPCookingBase + "; Multiplier=" + ConfigXPCookingMult + "; Min Reward=" + ConfigXPCookingMin + "; Max Reward=" + ConfigXPCookingMax + ";\n"
   message += "\n\n***** Workbench *****\n"
-  message += "Base=" + ConfigXPCraftingBase + "; Multiplier=" + ConfigXPCraftingMult + "; Min Reward=" + ConfigXPCraftingMin + "; Max Reward=" + ConfigXPCraftingMax + ";\n"
+  message += "Base=" + ConfigXPWorkbenchBase + "; Multiplier=" + ConfigXPWorkbenchMult + "; Min Reward=" + ConfigXPWorkbenchMin + "; Max Reward=" + ConfigXPWorkbenchMax + ";\n"
   
   Debug.Trace("VPIXPCTRL_DEBUG: " + message, 1)
   Debug.MessageBox(message)
@@ -1592,6 +1577,18 @@ Function SetDifficultyXPMultiplierSFForBracket(int bracket, Float newSF)
 EndFunction
 
 ;; ****************************************************************************
+;; Get the scaling factor for Difficulty XP Multiplier for the specified bracket
+;;
+;; Use: player.cf "VPI_ExperienceControl.GetDifficultyXPMultiplierScalingFactor" <bracket>
+;;   bracket -> The bracket to lookup can be 1 to 10 only
+;;
+Float Function GetDifficultyXPMultiplierScalingFactor(int bracket)
+  Float scaleFactor = SF_XPDifficultyMultiplier[bracket];
+  Debug.Trace("VPIXPCTRL_FINAL_RESULT: Final Difficulty XP Multiplier scaling has been calculated using bracket " + bracket + " resulting in an final SF of " + scaleFactor + ".", 1)
+  return scaleFactor
+EndFunction
+
+;; ****************************************************************************
 ;; Change a scaling factor in the specified level bracket for Kill XP Reward
 ;;
 ;; Use: player.cf "VPI_ExperienceControl.SetDifficultyCombatXPSFForBracket" <bracket> <newSF>
@@ -1600,6 +1597,18 @@ EndFunction
 ;;
 Function SetDifficultyCombatXPSFForBracket(int bracket, Float newSF)
   SF_CombatXP[bracket]=newSF
+EndFunction
+
+;; ****************************************************************************
+;; Get the scaling factor for Combat XP for the specified bracket
+;;
+;; Use: player.cf "VPI_ExperienceControl.GetCombatXPScalingFactor" <bracket>
+;;   bracket -> The bracket to lookup can be 1 to 10 only
+;;
+Float Function GetCombatXPScalingFactor(int bracket)
+  Float scaleFactor = SF_CombatXP[bracket];
+  Debug.Trace("VPIXPCTRL_FINAL_RESULT: Final Combat XP scaling factor has been calculated using bracket " + bracket + " resulting in an final SF of " + scaleFactor + ".", 1)
+  return scaleFactor
 EndFunction
 
 ;; ****************************************************************************
@@ -1614,6 +1623,18 @@ Function SetDifficultyCraftingXPSFForBracket(int bracket, Float newSF)
 EndFunction
 
 ;; ****************************************************************************
+;; Get the scaling factor for Crafting XP for the specified bracket
+;;
+;; Use: player.cf "VPI_ExperienceControl.GetCraftingXPScalingFactor" <bracket>
+;;   bracket -> The bracket to lookup can be 1 to 10 only
+;;
+Float Function GetCraftingXPScalingFactor(int bracket)
+  Float scaleFactor = SF_CraftingXP[bracket];
+  Debug.Trace("VPIXPCTRL_FINAL_RESULT: Final Crafting XP scaling factor has been calculated using bracket " + bracket + " resulting in an final SF of " + scaleFactor + ".", 1)
+  return scaleFactor
+EndFunction
+
+;; ****************************************************************************
 ;; Change a scaling factor in the specified level bracket for Research XP Reward
 ;;
 ;; Use: player.cf "VPI_ExperienceControl.SetDifficultyResearchXPSFForBracket" <bracket> <newSF>
@@ -1622,6 +1643,18 @@ EndFunction
 ;;
 Function SetDifficultyResearchXPSFForBracket(int bracket, Float newSF)
   SF_ResearchXP[bracket]=newSF
+EndFunction
+
+;; ****************************************************************************
+;; Get the scaling factor for Research XP for the specified bracket
+;;
+;; Use: player.cf "VPI_ExperienceControl.GetResearchXPScalingFactor" <bracket>
+;;   bracket -> The bracket to lookup can be 1 to 10 only
+;;
+Float Function GetResearchXPScalingFactor(int bracket)
+  Float scaleFactor = SF_ResearchXP[bracket];
+  Debug.Trace("VPIXPCTRL_FINAL_RESULT: Final Research XP scaling factor has been calculated using bracket " + bracket + " resulting in an final SF of " + scaleFactor + ".", 1)
+  return scaleFactor
 EndFunction
 
 ;; ****************************************************************************
@@ -1636,6 +1669,18 @@ Function SetDifficultyLockpickingXPSFForBracket(int bracket, Float newSF)
 EndFunction
 
 ;; ****************************************************************************
+;; Get the scaling factor for Lockpicking XP for the specified bracket
+;;
+;; Use: player.cf "VPI_ExperienceControl.GetLockpickingXPScalingFactor" <bracket>
+;;   bracket -> The bracket to lookup can be 1 to 10 only
+;;
+Float Function GetLockpickingXPScalingFactor(int bracket)
+  Float scaleFactor = SF_LockpickingXP[bracket];
+  Debug.Trace("VPIXPCTRL_FINAL_RESULT: Final Lockpicking XP scaling factor has been calculated using bracket " + bracket + " resulting in an final SF of " + scaleFactor + ".", 1)
+  return scaleFactor
+EndFunction
+
+;; ****************************************************************************
 ;; Change a scaling factor in the specified level bracket for Discovery XP Reward
 ;;
 ;; Use: player.cf "VPI_ExperienceControl.SetDifficultyDiscoveryXPSFForBracket" <bracket> <newSF>
@@ -1644,6 +1689,18 @@ EndFunction
 ;;
 Function SetDifficultyDiscoveryXPSFForBracket(int bracket, Float newSF)
   SF_DiscoveryXP[bracket]=newSF
+EndFunction
+
+;; ****************************************************************************
+;; Get the scaling factor for Discovery XP for the specified bracket
+;;
+;; Use: player.cf "VPI_ExperienceControl.GetDiscoveryXPScalingFactor" <bracket>
+;;   bracket -> The bracket to lookup can be 1 to 10 only
+;;
+Float Function GetDiscoveryXPScalingFactor(int bracket)
+  Float scaleFactor = SF_DiscoveryXP[bracket];
+  Debug.Trace("VPIXPCTRL_FINAL_RESULT: Final Discovery XP scaling factor has been calculated using bracket " + bracket + " resulting in an final SF of " + scaleFactor + ".", 1)
+  return scaleFactor
 EndFunction
 
 ;; ****************************************************************************
@@ -1658,16 +1715,16 @@ Function SetDifficultySpeechcraftXPSFForBracket(int bracket, Float newSF)
 EndFunction
 
 ;; ****************************************************************************
-;; Change a scaling factor in the specified level bracket for Quest XP Reward
+;; Get the scaling factor for Speechcraft XP for the specified bracket
 ;;
-;; Use: player.cf "VPI_ExperienceControl.SetDifficultyQuestXPSFForBracket" <bracket> <newSF>
-;;   bracket -> The bracket to change can be 1 to 10 only
-;;   newSF -> The new scale factor to set for the bracket
+;; Use: player.cf "VPI_ExperienceControl.GetSpeechcraftXPScalingFactor" <bracket>
+;;   bracket -> The bracket to lookup can be 1 to 10 only
 ;;
-Function SetDifficultyQuestXPSFForBracket(int bracket, Float newSF)
-  SF_QuestXP[bracket]=newSF
+Float Function GetSpeechcraftXPScalingFactor(int bracket)
+  Float scaleFactor = SF_SpeechcraftXP[bracket];
+  Debug.Trace("VPIXPCTRL_FINAL_RESULT: Final Speechcraft XP scaling factor has been calculated using bracket " + bracket + " resulting in an final SF of " + scaleFactor + ".", 1)
+  return scaleFactor
 EndFunction
-
 
 
 ;;
@@ -1761,7 +1818,7 @@ Function DumpXPMatrix()
   message += "______________|_____Base_____|__Multiplier__|__Minimum___|__Maximum___|\n"
   message += "    Cooking XP| " + ConfigXPCookingBase + "     | " + ConfigXPCookingMult + "     | " + ConfigXPCookingMin  + "   | " + ConfigXPCookingMax  + "  |\n"
   message += "   Research XP| " + ConfigXPResearchBase + "     | " + ConfigXPResearchMult + "     |     N/A    | " + ConfigXPResearchMax + " |\n"
-  message += "   Crafting XP| " + ConfigXPCraftingBase + "     | " + ConfigXPCraftingMult + "     | " + ConfigXPCraftingMin  + "   | " + ConfigXPCraftingMax + "  |\n"
+  message += "   Crafting XP| " + ConfigXPWorkbenchBase + "     | " + ConfigXPWorkbenchMult + "     | " + ConfigXPWorkbenchMin  + "   | " + ConfigXPWorkbenchMax + "  |\n"
   message += "==============|==============|==============|============|============|\n"
   message += "\n\n"
   message += "Lockpicking/Hacking:\n Novice=" + ConfigXPLockpickingNovice + "; Advanced=" + ConfigXPLockpickingAdvanced + "; Expert=" + ConfigXPLockpickingExpert + "; Master=" + ConfigXPLockpickingMaster + "; HAcking Base=" + ConfigXPHackingExperienceBase + "\n"
@@ -1791,6 +1848,130 @@ Function DumpXPMatrix()
 
   Debug.Trace("VPIXPCTRL_DEBUG: " + message, 2)
   Debug.Messagebox("This message is too large for notification or message box so please enable and look in the papyrus Log. Sorry, I'll Look for a better way for a future version.")
+EndFunction
+
+;; ****************************************************************************
+;; Get the current level scaling config from the player object
+;;
+;; Use: player.cf "VPI_ExperienceControl.DumpLevelScalingConfig"
+;;
+Function DumpLevelScalingConfig() 
+  String message = ""
+
+  message += "\n\n*** Scaling Factors ***\n\n"
+  message += "_________________________|____01____|____02____|____03____|____04____|____05____|____06____|____07____|____08____|____09____|____10____|\n"
+  message += "XP Difficulty Multiplier | " + SF_XPDifficultyMultiplier[1] + " | " + SF_XPDifficultyMultiplier[2] + " | " + SF_XPDifficultyMultiplier[3] + " | " + SF_XPDifficultyMultiplier[4] + " | " + SF_XPDifficultyMultiplier[5] + " | " + SF_XPDifficultyMultiplier[6] + " | " + SF_XPDifficultyMultiplier[7] + " | " + SF_XPDifficultyMultiplier[8] + " | " + SF_XPDifficultyMultiplier[9] + " | " + SF_XPDifficultyMultiplier[10] + " |\n"
+  message += "               Combat XP | " + SF_CombatXP[1] + " | " + SF_CombatXP[2] + " | " + SF_CombatXP[3] + " | " + SF_CombatXP[4] + " | " + SF_CombatXP[5] + " | " + SF_CombatXP[6] + " | " + SF_CombatXP[7] + " | " + SF_CombatXP[8] + " | " + SF_CombatXP[9] + " | " + SF_CombatXP[10] + " |\n"
+  message += "             Crafting XP | " + SF_CraftingXP[1] + " | " + SF_CraftingXP[2] + " | " + SF_CraftingXP[3] + " | " + SF_CraftingXP[4] + " | " + SF_CraftingXP[5] + " | " + SF_CraftingXP[6] + " | " + SF_CraftingXP[7] + " | " + SF_CraftingXP[8] + " | " + SF_CraftingXP[9] + " | " + SF_CraftingXP[10] + " |\n"
+  message += "             Research XP | " + SF_ResearchXP[1] + " | " + SF_ResearchXP[2] + " | " + SF_ResearchXP[3] + " | " + SF_ResearchXP[4] + " | " + SF_ResearchXP[5] + " | " + SF_ResearchXP[6] + " | " + SF_ResearchXP[7] + " | " + SF_ResearchXP[8] + " | " + SF_ResearchXP[9] + " | " + SF_ResearchXP[10] + " |\n"
+  message += "          Lockpicking XP | " + SF_LockpickingXP[1] + " | " + SF_LockpickingXP[2] + " | " + SF_LockpickingXP[3] + " | " + SF_LockpickingXP[4] + " | " + SF_LockpickingXP[5] + " | " + SF_LockpickingXP[6] + " | " + SF_LockpickingXP[7] + " | " + SF_LockpickingXP[8] + " | " + SF_LockpickingXP[9] + " | " + SF_LockpickingXP[10] + " |\n"
+  message += "            Discovery XP | " + SF_DiscoveryXP[1] + " | " + SF_DiscoveryXP[2] + " | " + SF_DiscoveryXP[3] + " | " + SF_DiscoveryXP[4] + " | " + SF_DiscoveryXP[5] + " | " + SF_DiscoveryXP[6] + " | " + SF_DiscoveryXP[7] + " | " + SF_DiscoveryXP[8] + " | " + SF_DiscoveryXP[9] + " | " + SF_DiscoveryXP[10] + " |\n"
+  message += "          Speechcraft XP | " + SF_SpeechcraftXP[1] + " | " + SF_SpeechcraftXP[2] + " | " + SF_SpeechcraftXP[3] + " | " + SF_SpeechcraftXP[4] + " | " + SF_SpeechcraftXP[5] + " | " + SF_SpeechcraftXP[6] + " | " + SF_SpeechcraftXP[7] + " | " + SF_SpeechcraftXP[8] + " | " + SF_SpeechcraftXP[9] + " | " + SF_SpeechcraftXP[10] + " |\n"
+
+  Debug.Trace("VPIXPCTRL_DEBUG: " + message, 2)
+  Debug.Messagebox(message)
+EndFunction
+;; ****************************************************************************
+;; Get current scaling settings for your level and difficulty mode
+;;
+;; Use: player.cf "VPI_ExperienceControl.GetScalingMatrix"
+;;
+Function GetScalingMatrix()
+  Int iPlayerLevel = PlayerRef.GetLevel()
+  Int iPlayerBracket = VPI_Helper.GetBracketForPlayerLevel(iPlayerLevel)
+  Int iDifficulty = Game.GetDifficulty()
+  string sDifficulty = VPI_Helper.GetDifficulty(iDifficulty)
+
+  String message = "Scaling for a player level of " + iPlayerLevel + " using scaling data from the level " + iPlayerBracket + " bracket.\n"
+
+  ;; 
+  ;; Difficulty XP Multiplier Scaling Data
+  ;;
+  Float sfDifficultyXPMultiplier = GetDifficultyXPMultiplierScalingFactor(iPlayerBracket)
+  Float scaledDifficultyXPMultiplierVE = Game.GetGameSettingFloat("fDiffMultXPVE")
+  Float scaledDifficultyXPMultiplierE = Game.GetGameSettingFloat("fDiffMultXPE")
+  Float scaledDifficultyXPMultiplierN = Game.GetGameSettingFloat("fDiffMultXPN")
+  Float scaledDifficultyXPMultiplierH = Game.GetGameSettingFloat("fDiffMultXPH")
+  Float scaledDifficultyXPMultiplierVH = Game.GetGameSettingFloat("fDiffMultXPVH")
+
+  if (iDifficulty == 0)
+    ;; Very Easy Difficulty
+    message += "For the " + sDifficulty + " mode the XP Multiplier is " + scaledDifficultyXPMultiplierVE + " (Default:" + ConfigXPDiffMultXPVE + " X SF:" + sfDifficultyXPMultiplier + ").\n"
+  ElseIf (iDifficulty == 1)
+    ;; Easy Difficulty
+    message += "For the " + sDifficulty + " mode the XP Multiplier is " + scaledDifficultyXPMultiplierE + " (Default:" + ConfigXPDiffMultXPE + " X SF:" + sfDifficultyXPMultiplier + ").\n"
+  ElseIf (iDifficulty == 2)
+    ;; Normal Difficulty
+    message += "For the " + sDifficulty + " mode the XP Multiplier is " + scaledDifficultyXPMultiplierN + " (Default:" + ConfigXPDiffMultXPN + " X SF:" + sfDifficultyXPMultiplier + ").\n"
+  ElseIf (iDifficulty == 3)
+    ;; Hard Difficulty
+    message += "For the " + sDifficulty + " mode the XP Multiplier is " + scaledDifficultyXPMultiplierH + " (Default:" + ConfigXPDiffMultXPH + " X SF:" + sfDifficultyXPMultiplier + ").\n"
+  ElseIf (iDifficulty == 4)
+    ;; Very Hard Difficulty
+    message += "For the " + sDifficulty + " mode the XP Multiplier is " + scaledDifficultyXPMultiplierVH + " (Default:" + ConfigXPDiffMultXPVH + " X SF:" + sfDifficultyXPMultiplier + ").\n"
+  EndIf
+
+  ;; 
+  ;; Combat XP Scaling Data
+  ;;
+  Float sfCombatXP = GetCombatXPScalingFactor(iPlayerBracket)
+  Float scaledKillXPReward = Game.GetGameSettingInt("iXPRewardKillOpponent")
+  message += "Combat XP reward is " + scaledKillXPReward + " (Default:" + ConfigXPKillOpponent + " X SF:" + sfCombatXP + ").\n"
+
+  ;; 
+  ;; Crafting XP Scaling Data
+  ;;
+  Float sfCraftingXP = GetCraftingXPScalingFactor(iPlayerBracket)
+  Float scaledCookingBase = Game.GetGameSettingFloat("fCookingExpBase")
+  Float scaledCookingMultiplier = Game.GetGameSettingFloat("fCookingExpMult")
+  Float scaledCookingMinXP = Game.GetGameSettingFloat("fCookingExpMin")
+  Float scaledCookingMaxXP = Game.GetGameSettingFloat("fCookingExpMax")
+  message += "Cooking XP base is " + scaledCookingBase + " (Default:" + ConfigXPCookingBase + " X SF:" + sfCraftingXP + "), the Multiplier is " + scaledCookingMultiplier + " (Default:" + ConfigXPCookingMult + " X SF:" + sfCraftingXP + "), min XP is not scaled so remains " + scaledCookingMinXP + " and max is "+ scaledCookingMaxXP + " (Default:" + ConfigXPCookingMax + " X SF:" + sfCraftingXP + ").\n"
+  Float scaledWorkbenchBase = Game.GetGameSettingFloat("fWorkbenchExperienceBase")
+  Float scaledWorkbenchMultiplier = Game.GetGameSettingFloat("fWorkbenchExperienceMult")
+  Float scaledWorkbenchMinXP = Game.GetGameSettingFloat("fWorkbenchExperienceMin")
+  Float scaledWorkbenchMaxXP = Game.GetGameSettingFloat("fWorkbenchExperienceMax")
+  message += "Workbench XP base is " + scaledWorkbenchBase + " (Default:" + ConfigXPWorkbenchBase + " X SF:" + sfCraftingXP + "), the Multiplier is " + scaledWorkbenchMultiplier + " (Default:" + ConfigXPWorkbenchMult + " X SF:" + sfCraftingXP + "), min XP is not scaled so remains " + scaledWorkbenchMinXP + " and max is "+ scaledWorkbenchMaxXP + " (Default:" + ConfigXPWorkbenchMax + " X SF:" + sfCraftingXP + ").\n"
+
+  ;; 
+  ;; Research XP Scaling Data
+  ;;
+  Float sfResearchXP = GetResearchXPScalingFactor(iPlayerBracket)
+  Float scaledResearchBase = Game.GetGameSettingFloat("fResearchExpBase")
+  Float scaledResearchMultiplier = Game.GetGameSettingFloat("fResearchExpMult")
+  Float scaledResearchMinXP = 1.0000
+  Float scaledResearchMaxXP = Game.GetGameSettingFloat("fResearchExpMax")
+  message += "Research XP base is " + scaledResearchBase + " (Default:" + ConfigXPResearchBase + " X SF:" + sfCraftingXP + "), the Multiplier is " + scaledResearchMultiplier + " (Default:" + ConfigXPResearchMult + " X SF:" + sfCraftingXP + "), min XP is not scaled so remains " + scaledResearchMinXP + " and max is "+ scaledResearchMaxXP + " (Default:" + ConfigXPResearchMax + " X SF:" + sfCraftingXP + ").\n"
+
+  ;; 
+  ;; Lockpicking XP Scaling Data
+  ;;
+  Float sfLockpickingXP = GetLockpickingXPScalingFactor(iPlayerBracket)
+  Float scaledLockpickingNoviceXP = Game.GetGameSettingFloat("fLockpickXPRewardEasy")
+  Float scaledLockpickingAdvancedXP = Game.GetGameSettingFloat("fLockpickXPRewardAverage")
+  Float scaledLockpickingExpertXP = Game.GetGameSettingFloat("fLockpickXPRewardHard")
+  Float scaledLockpickingMasterXP = Game.GetGameSettingFloat("fLockpickXPRewardVeryHard")
+  Float scaledHackingXP = Game.GetGameSettingFloat("fHackingExperienceBase")
+  message += "Lockpicking XP reward for Novice is " + scaledLockpickingNoviceXP + " (Default:" + ConfigXPLockpickingNovice + " X SF:" + sfLockpickingXP + ", for Advanced is " + scaledLockpickingAdvancedXP + " (Default:" + ConfigXPLockpickingAdvanced + " X SF:" + sfLockpickingXP + ", for Expert is " + scaledLockpickingExpertXP + " (Default:" + ConfigXPLockpickingExpert + " X SF:" + sfLockpickingXP + ", for Master is " + scaledLockpickingMasterXP + " (Default:" + ConfigXPLockpickingMaster + " X SF:" + sfLockpickingXP + ", and finally for hacking is " + scaledHackingXP + " (Default:" + ConfigXPHackingExperienceBase + " X SF:" + sfLockpickingXP + ").\n"
+
+  ;; 
+  ;; Disovery XP Scaling Data
+  ;;
+  Float sfDiscoveryXP = GetDiscoveryXPScalingFactor(iPlayerBracket)
+  Float scaledMapMarkerReward = Game.GetGameSettingInt("iXPRewardDiscoverMapMarker")
+  Float scaledSecretAreaReward = Game.GetGameSettingInt("iXPRewardDiscoverSecretArea")
+  Float scaledScanCompletionReward = Game.GetGameSettingFloat("fScanCompleteXPReward")
+  message += "Discovery XP reward for map marker discovery is " + scaledMapMarkerReward + " (Default:" + ConfigXPDiscoveryMapMarker + " X SF:" + sfDiscoveryXP + ", for secret area discovery is" + scaledSecretAreaReward + " (Default:" + ConfigXPDiscoverySecretArea + " X SF:" + sfDiscoveryXP +  "), and finally for scan completion is " + scaledScanCompletionReward + " (Default:" + ConfigXPScanCompletion + " X SF:" + sfDiscoveryXP + ").\n"
+
+  ;; 
+  ;; Speechcraft XP Scaling Data
+  ;;
+  Float sfSpeechcraftXP = GetSpeechcraftXPScalingFactor(iPlayerBracket)
+  Float scaledSpeechcraftSuccessReward = Game.GetGameSettingFloat("fSpeechChallengeSuccessXP")
+  message += "Speechcraft XP reward is " + scaledSpeechcraftSuccessReward + " (Default:" + ConfigXPSpeechcraftSuccess + " X SF:" + sfSpeechcraftXP + ").\n"
+
+  Debug.Trace("VPILBS_DEBUG: " + message, 2)
+  Debug.Messagebox(message)
 EndFunction
 
 ;; ****************************************************************************

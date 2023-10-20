@@ -1,5 +1,10 @@
 ScriptName VPI_Helper 
 
+;;
+;; MAJOR NOTE: ALL HELPER FUNCTIONS MUST BE GLOBAL WITHOUT CREATION KIT
+;;
+
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -61,7 +66,7 @@ EndFunction
 ;; ****************************************************************************
 ;; Get, scale, and update a float based game setting 
 ;;
-Function ScaleFormSettingFloat(String formID, Float defaultValue, Float scaleFactor)
+Function ScaleFormSettingFloat(String formID, Float defaultValue, Float scaleFactor) Global
   Float scaledValue = defaultValue * scaleFactor
   SetFormSettingFloat(formID, scaledValue)
 EndFunction
@@ -69,7 +74,7 @@ EndFunction
 ;; ****************************************************************************
 ;; Get, scale, and update a float based game setting 
 ;;
-Function ScaleFormSettingInt(String formID, Int defaultValue, Int scaleFactor)
+Function ScaleFormSettingInt(String formID, Int defaultValue, Int scaleFactor) Global
   Int scaledValue = defaultValue * scaleFactor
   SetFormSettingInt(formID, scaledValue)
 EndFunction
@@ -104,7 +109,7 @@ EndFunction
 ;; ****************************************************************************
 ;; Get the bracket that applies to the player's current level
 ;;
-Int Function GetBracketForPlayerLevel(int playerLevel)
+Int Function GetBracketForPlayerLevel(int playerLevel) Global
   If (1 <= playerLevel && playerLevel <= 25)
     return 1
   ElseIf (26 <= playerLevel && playerLevel <= 50)
