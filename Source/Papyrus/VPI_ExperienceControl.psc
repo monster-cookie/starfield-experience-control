@@ -1632,7 +1632,7 @@ Float Function GetCombatXPScalingFactor(int bracket)
 EndFunction
 
 ;; ****************************************************************************
-;; Change a scaling factor in the specified level bracket for Crafting XP Reward
+;; Change a scaling factor in the specified level bracket for Crafting XP
 ;;
 ;; Use: player.cf "VPI_ExperienceControl.SetDifficultyCraftingXPSFForBracket" <bracket> <newSF>
 ;;   bracket -> The bracket to change can be 1 to 10 only
@@ -1655,7 +1655,7 @@ Float Function GetCraftingXPScalingFactor(int bracket)
 EndFunction
 
 ;; ****************************************************************************
-;; Change a scaling factor in the specified level bracket for Research XP Reward
+;; Change a scaling factor in the specified level bracket for Research XP
 ;;
 ;; Use: player.cf "VPI_ExperienceControl.SetDifficultyResearchXPSFForBracket" <bracket> <newSF>
 ;;   bracket -> The bracket to change can be 1 to 10 only
@@ -1678,7 +1678,7 @@ Float Function GetResearchXPScalingFactor(int bracket)
 EndFunction
 
 ;; ****************************************************************************
-;; Change a scaling factor in the specified level bracket for Lockpicking XP Reward
+;; Change a scaling factor in the specified level bracket for Lockpicking XP
 ;;
 ;; Use: player.cf "VPI_ExperienceControl.SetDifficultyLockpickingXPSFForBracket" <bracket> <newSF>
 ;;   bracket -> The bracket to change can be 1 to 10 only
@@ -1701,7 +1701,7 @@ Float Function GetLockpickingXPScalingFactor(int bracket)
 EndFunction
 
 ;; ****************************************************************************
-;; Change a scaling factor in the specified level bracket for Discovery XP Reward
+;; Change a scaling factor in the specified level bracket for Discovery XP
 ;;
 ;; Use: player.cf "VPI_ExperienceControl.SetDifficultyDiscoveryXPSFForBracket" <bracket> <newSF>
 ;;   bracket -> The bracket to change can be 1 to 10 only
@@ -1724,7 +1724,7 @@ Float Function GetDiscoveryXPScalingFactor(int bracket)
 EndFunction
 
 ;; ****************************************************************************
-;; Change a scaling factor in the specified level bracket for Speechcraft XP Reward
+;; Change a scaling factor in the specified level bracket for Speechcraft XP
 ;;
 ;; Use: player.cf "VPI_ExperienceControl.SetDifficultySpeechcraftXPSFForBracket" <bracket> <newSF>
 ;;   bracket -> The bracket to change can be 1 to 10 only
