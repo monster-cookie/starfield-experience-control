@@ -129,7 +129,7 @@ GlobalVariable Property MissionBoardSurveyTraitV5XPReward Auto         ;; Form I
 ;;; Properties
 ;;;
 
-String Property Version="1.2.0" Auto ;; -- MOD VERSION SET HERE
+String Property Version="1.2.1" Auto ;; -- MOD VERSION SET HERE
 
 Actor Property PlayerRef Auto
 ActorValue Property Experience Auto
@@ -247,8 +247,8 @@ Event OnPlayerLoadGame()
   Debug.Notification("Experience Control version " + version + " is currently running.")
 
   ;; If Version is not set or not current update it -- MOD VERSION SET HERE
-  If (Version != "1.2.0")
-    Version = "1.2.0"
+  If (Version != "1.2.1")
+    Version = "1.2.1"
   EndIf
 
   UpdateBindings()
