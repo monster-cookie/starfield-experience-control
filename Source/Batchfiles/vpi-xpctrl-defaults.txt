@@ -103,6 +103,11 @@ player.cf "VPI_ExperienceControl.ConfigureMainQuestXP" 300 350 400 450 700 750 8
 ;;   largeMassiveReward = Awards a large massively large amount of XP for quest completion (Default 5000)
 player.cf "VPI_ExperienceControl.ConfigureNormalizedQuestXP" 50 100 200 300 500 750 1000 4000 4500 5000
 
+;; Apply The Above Changes
+player.cf "VPI_ExperienceControl.EnableAllXP"
+
+
+
 ;;
 ;; Configure Scaling Settings
 ;;
@@ -193,3 +198,6 @@ player.cf "VPI_ExperienceControl.SetDifficultySpeechcraftXPSFForBracket" 7 1.0
 player.cf "VPI_ExperienceControl.SetDifficultySpeechcraftXPSFForBracket" 8 1.0
 player.cf "VPI_ExperienceControl.SetDifficultySpeechcraftXPSFForBracket" 9 1.0
 player.cf "VPI_ExperienceControl.SetDifficultySpeechcraftXPSFForBracket" 10 1.0
+
+;; Apply The Above Changes
+player.cf "VPI_ExperienceControl.ScaleForMyLevel"
