@@ -3,10 +3,13 @@
 ;;
 ;; Run using "bat vpi-xpctrl-reset-vanilla" in the console
 ;;
-setgs fXPStart 200.00                   ;; Base XP needed for every level (Default 200 Max 10000000 can go higher but some functions/UI give negative results 999999999 is the actual max) 
-setgs fXPBase 75.00                     ;; Base ammount XP goes up by every level (Default 75)
-setgs fXPExpMult 0.0015                 ;; XP Multiplier for each level up (Default 0.0015)
-setgs fXPModBase 1.00                   ;; XP Gain Multiplier (Default 1)
+setgs fDiffMultXPVE 1                   ;; XP Gain from combat success in Very Easy difficulty (Default 1)
+setgs fDiffMultXPE 1                    ;; XP Gain from combat success in Easy difficulty (Default 1)
+setgs fDiffMultXPN 1                    ;; XP Gain from combat success in Normal difficulty (Default 1)
+setgs fDiffMultXPH 1                    ;; XP Gain from combat success in Hard difficulty (Default 1)
+setgs fDiffMultXPVH 1                   ;; XP Gain from combat success in Very Hard difficulty (Default 1)
+
+setgs iXPRewardKillOpponent 20          ;; XP Gain from killing an opponent (Default 20)
 
 setgs fCookingExpBase 1.00              ;; Base XP gain from cooking (Default 1)
 setgs fCookingExpMult 0.01              ;; Cooking XP Gain Multiplier (Default 0.01)
@@ -33,13 +36,6 @@ setgs iXPRewardDiscoverSecretArea 20    ;; XP gain from discovering a secret are
 setgs fScanCompleteXPReward 20.00       ;; XP gain from completing scans (Default 20)
 
 setgs fSpeechChallengeSuccessXP 10.00   ;; XP Gain from speechcraft success (Default 10)
-
-setgs iXPRewardKillOpponent 20          ;; XP Gain from killing an opponent (Default 20)
-setgs fDiffMultXPVE 1                   ;; XP Gain from combat success in Very Easy difficulty (Default 1)
-setgs fDiffMultXPE 1                    ;; XP Gain from combat success in Easy difficulty (Default 1)
-setgs fDiffMultXPN 1                    ;; XP Gain from combat success in Normal difficulty (Default 1)
-setgs fDiffMultXPH 1                    ;; XP Gain from combat success in Hard difficulty (Default 1)
-setgs fDiffMultXPVH 1                   ;; XP Gain from combat success in Very Hard difficulty (Default 1)
 
 ;; The Remaining Settings WILL HAVE TO BE REVERSED IF UNINSTALLED OR WILL NEED TO START A NEW GAME
 

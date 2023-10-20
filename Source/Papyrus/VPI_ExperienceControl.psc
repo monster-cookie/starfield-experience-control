@@ -129,7 +129,7 @@ GlobalVariable Property MissionBoardSurveyTraitV5XPReward Auto         ;; Form I
 ;;; Properties
 ;;;
 
-String Property Version="1.1.2" Auto ;; -- MOD VERSION SET HERE
+String Property Version="1.2.0" Auto ;; -- MOD VERSION SET HERE
 
 Actor Property PlayerRef Auto
 ActorValue Property Experience Auto
@@ -142,11 +142,8 @@ Bool Property DiscoveryXPEnabled=true Auto
 Bool Property QuestXPEnabled=true Auto
 Bool Property SpeechcraftXPEnabled=true Auto
 
-;; Base XP Settings
-Float Property ConfigXPStart Auto
-Float Property ConfigXPBase Auto
-Float Property ConfigXPMult Auto
-Float Property ConfigXPModBase Auto
+;; Leveling XP Settings
+Int Property ConfigXPKillOpponent Auto
 
 ;; Cooking XP Settings
 Float Property ConfigXPCookingBase Auto
@@ -160,10 +157,10 @@ Float Property ConfigXPResearchMult Auto
 Float Property ConfigXPResearchMax Auto
 
 ;; Crafting XP Settings
-Float Property ConfigXPCraftingBase Auto
-Float Property ConfigXPCraftingMult Auto
-Float Property ConfigXPCraftingMin Auto
-Float Property ConfigXPCraftingMax Auto
+Float Property ConfigXPWorkbenchBase Auto
+Float Property ConfigXPWorkbenchMult Auto
+Float Property ConfigXPWorkbenchMin Auto
+Float Property ConfigXPWorkbenchMax Auto
 
 ;; Lockpicking/Hacking XP Settings
 Float Property ConfigXPLockpickingNovice Auto
@@ -180,8 +177,7 @@ Float Property ConfigXPScanCompletion Auto
 ;; Speechcraft XP Settings
 Float Property ConfigXPSpeechcraftSuccess Auto
 
-;; Combat XP Settings
-Int Property ConfigXPKillOpponent Auto
+;; XP Difficulty Multiplier
 Float Property ConfigXPDiffMultXPVE Auto
 Float Property ConfigXPDiffMultXPE Auto
 Float Property ConfigXPDiffMultXPN Auto
@@ -210,6 +206,15 @@ Int Property ConfigQuestMSVSM Auto ;; GEnerally 4000
 Int Property ConfigQuestMSVMD Auto ;; GEnerally 4500
 Int Property ConfigQuestMSVLG Auto ;; GEnerally 5000
 
+;; Scaling Bracket Variables
+Float[] Property SF_XPDifficultyMultiplier Auto
+Float[] Property SF_CombatXP Auto
+Float[] Property SF_ResearchXP Auto
+Float[] Property SF_CraftingXP Auto
+Float[] Property SF_LockpickingXP Auto
+Float[] Property SF_DiscoveryXP Auto
+Float[] Property SF_SpeechcraftXP Auto
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -223,11 +228,13 @@ Event OnInit()
   Debug.Notification("Experience Control version " + version + " is currently running.")
 
   UpdateBindings()
+  CreateBracketArrays()
 
   ;; Store Current XP Settings
   StoreCurrentXPSettings()
 
   EnableAllXP()
+  ScaleForMyLevel()
 EndEvent
 
 ;; Event called when the player loads a save game. This event is only sent to the player actor. If 
@@ -240,11 +247,12 @@ Event OnPlayerLoadGame()
   Debug.Notification("Experience Control version " + version + " is currently running.")
 
   ;; If Version is not set or not current update it -- MOD VERSION SET HERE
-  If (Version != "1.1.2")
-    Version = "1.1.2"
+  If (Version != "1.2.0")
+    Version = "1.2.0"
   EndIf
 
   UpdateBindings()
+  CreateBracketArrays()
 
   ;; DO NOT STORE CURRENT SETTINGS THEY WILL WIPE OLD SETTINGS with game defaults and/or garbage
 
@@ -303,6 +311,25 @@ Event OnPlayerLoadGame()
     Debug.Trace("VPIXPCTRL_EVENT: OnPlayerLoadGame - Reloading Speechcraft XP in disable mode", 0)
     DisableSpeechcraftXP()
   EndIf
+
+  ScaleForMyLevel()
+EndEvent
+
+Event OnDifficultyChanged(Int aOldDifficulty, Int aNewDifficulty)
+  Debug.Trace("VPIXPCTRL_EVENT: OnDifficultyChanged triggered Regenerating Scaling Values", 0)
+  ScaleForMyLevel()
+EndEvent
+
+; Using ReferenceAlias (vs Actor) this is now actually triggered so don't think I need OnEnterShipInterior/OnExitShipInterior
+Event OnLocationChange(Location akOldLoc, Location akNewLoc)
+  Debug.Trace("VPIXPCTRL_EVENT: OnLocationChange triggered Regenerating Scaling Values", 0)
+  ScaleForMyLevel()
+EndEvent
+
+;; Called on ever thinkg you kill player or beast -- probably a good tracking point as you gain XP from the kill
+Event OnKill(ObjectReference akVictim)
+  Debug.Trace("VPIXPCTRL_EVENT: OnKill triggered Regenerating Scaling Values", 1)
+  ScaleForMyLevel()
 EndEvent
 
 
@@ -600,50 +627,104 @@ Function UpdateBindings()
   EndIf
 EndFunction
 
-;; ****************************************************************************
-;; Set a float based game setting 
-;;
-Function SetGameSettingFloat(String gameSetting, Float value)
-  Debug.ExecuteConsole("setgs " + gameSetting + " " + value)
-EndFunction
 
-;; ****************************************************************************
-;; Set a integer based game setting 
-;;
-Function SetGameSettingInt(String gameSetting, Int value)
-  Debug.ExecuteConsole("setgs " + gameSetting + " " + value)
-EndFunction
+Function CreateBracketArrays() 
+  If (SF_XPDifficultyMultiplier == None)
+    SF_XPDifficultyMultiplier = new Float[11]
+    SF_XPDifficultyMultiplier[1] = 1.00
+    SF_XPDifficultyMultiplier[2] = 1.00
+    SF_XPDifficultyMultiplier[3] = 1.00
+    SF_XPDifficultyMultiplier[4] = 1.00
+    SF_XPDifficultyMultiplier[5] = 1.00
+    SF_XPDifficultyMultiplier[6] = 1.00
+    SF_XPDifficultyMultiplier[7] = 1.00
+    SF_XPDifficultyMultiplier[8] = 1.00
+    SF_XPDifficultyMultiplier[9] = 1.00
+    SF_XPDifficultyMultiplier[10] = 1.00
+  EndIf
 
-;; ****************************************************************************
-;; Set a float based form setting 
-;;
-Function SetFormSettingFloat(String formID, Float value)
-  Debug.ExecuteConsole("set " + formID + " to " + value)
-EndFunction
+  If (SF_CombatXP == None)
+    SF_CombatXP = new Float[11]
+    SF_CombatXP[1] = 1.00
+    SF_CombatXP[2] = 1.00
+    SF_CombatXP[3] = 1.00
+    SF_CombatXP[4] = 1.00
+    SF_CombatXP[5] = 1.00
+    SF_CombatXP[6] = 1.00
+    SF_CombatXP[7] = 1.00
+    SF_CombatXP[8] = 1.00
+    SF_CombatXP[9] = 1.00
+    SF_CombatXP[10] = 1.00
+  EndIf
 
-;; ****************************************************************************
-;; Set a integer based form setting 
-;;
-Function SetFormSettingInt(String formID, Int value)
-  Debug.ExecuteConsole("set " + formID + " to " + value)
-EndFunction
+  If (SF_ResearchXP == None)
+    SF_ResearchXP = new Float[11]
+    SF_ResearchXP[1] = 1.00
+    SF_ResearchXP[2] = 1.00
+    SF_ResearchXP[3] = 1.00
+    SF_ResearchXP[4] = 1.00
+    SF_ResearchXP[5] = 1.00
+    SF_ResearchXP[6] = 1.00
+    SF_ResearchXP[7] = 1.00
+    SF_ResearchXP[8] = 1.00
+    SF_ResearchXP[9] = 1.00
+    SF_ResearchXP[10] = 1.00
+  EndIf
 
-;; ****************************************************************************
-;; Convert the difficulty int value to the string value
-;;
-String Function GetDifficulty(int iDifficulty)
-  if (iDifficulty == 0)
-    return "Very Easy"
-  ElseIf (iDifficulty == 1)
-    return "Easy"
-  ElseIf (iDifficulty == 2)
-    return "Normal"
-  ElseIf (iDifficulty == 3)
-    return "Hard"
-  ElseIf (iDifficulty == 4)
-    return "Very Hard"
-  Else
-    return "Unknown(" + iDifficulty +")"
+  If (SF_CraftingXP == None)
+    SF_CraftingXP = new Float[11]
+    SF_CraftingXP[1] = 1.00
+    SF_CraftingXP[2] = 1.00
+    SF_CraftingXP[3] = 1.00
+    SF_CraftingXP[4] = 1.00
+    SF_CraftingXP[5] = 1.00
+    SF_CraftingXP[6] = 1.00
+    SF_CraftingXP[7] = 1.00
+    SF_CraftingXP[8] = 1.00
+    SF_CraftingXP[9] = 1.00
+    SF_CraftingXP[10] = 1.00
+  EndIf
+
+  If (SF_LockpickingXP == None)
+    SF_LockpickingXP = new Float[11]
+    SF_LockpickingXP[1] = 1.00
+    SF_LockpickingXP[2] = 1.00
+    SF_LockpickingXP[3] = 1.00
+    SF_LockpickingXP[4] = 1.00
+    SF_LockpickingXP[5] = 1.00
+    SF_LockpickingXP[6] = 1.00
+    SF_LockpickingXP[7] = 1.00
+    SF_LockpickingXP[8] = 1.00
+    SF_LockpickingXP[9] = 1.00
+    SF_LockpickingXP[10] = 1.00
+  EndIf
+
+  If (SF_DiscoveryXP == None)
+    SF_DiscoveryXP = new Float[11]
+    SF_DiscoveryXP[1] = 1.00
+    SF_DiscoveryXP[2] = 1.00
+    SF_DiscoveryXP[3] = 1.00
+    SF_DiscoveryXP[4] = 1.00
+    SF_DiscoveryXP[5] = 1.00
+    SF_DiscoveryXP[6] = 1.00
+    SF_DiscoveryXP[7] = 1.00
+    SF_DiscoveryXP[8] = 1.00
+    SF_DiscoveryXP[9] = 1.00
+    SF_DiscoveryXP[10] = 1.00
+  EndIf
+
+  If (SF_SpeechcraftXP == None)
+    SF_SpeechcraftXP = new Float[11]
+    SF_SpeechcraftXP[1] = 1.00
+    SF_SpeechcraftXP[2] = 1.00
+    SF_SpeechcraftXP[3] = 1.00
+    SF_SpeechcraftXP[4] = 1.00
+    SF_SpeechcraftXP[5] = 1.00
+    SF_SpeechcraftXP[6] = 1.00
+    SF_SpeechcraftXP[7] = 1.00
+    SF_SpeechcraftXP[8] = 1.00
+    SF_SpeechcraftXP[9] = 1.00
+    SF_SpeechcraftXP[10] = 1.00
   EndIf
 EndFunction
 
@@ -660,12 +741,6 @@ EndFunction
 ;;
 Function StoreCurrentXPSettings()
   Debug.MessageBox("Current Game XP settings (except quest values) hav been backed up to your save and can be restored by using EnableXP")
-
-  ;; Base XP Settings
-  ConfigXPStart=Game.GetGameSettingFloat("fXPStart")
-  ConfigXPBase=Game.GetGameSettingFloat("fXPBase")
-  ConfigXPMult=Game.GetGameSettingFloat("fXPExpMult")
-  ConfigXPModBase=Game.GetGameSettingFloat("fXPModBase")
   
   ;; Cooking XP Settings
   ConfigXPCookingBase=Game.GetGameSettingFloat("fCookingExpBase")
@@ -679,10 +754,10 @@ Function StoreCurrentXPSettings()
   ConfigXPResearchMax=Game.GetGameSettingFloat("fResearchExpMax")
   
   ;; Crafting XP Settings
-  ConfigXPCraftingBase=Game.GetGameSettingFloat("fWorkbenchExperienceBase")
-  ConfigXPCraftingMult=Game.GetGameSettingFloat("fWorkbenchExperienceMult")
-  ConfigXPCraftingMin=Game.GetGameSettingFloat("fWorkbenchExperienceMin")
-  ConfigXPCraftingMax=Game.GetGameSettingFloat("fWorkbenchExperienceMax")
+  ConfigXPWorkbenchBase=Game.GetGameSettingFloat("fWorkbenchExperienceBase")
+  ConfigXPWorkbenchMult=Game.GetGameSettingFloat("fWorkbenchExperienceMult")
+  ConfigXPWorkbenchMin=Game.GetGameSettingFloat("fWorkbenchExperienceMin")
+  ConfigXPWorkbenchMax=Game.GetGameSettingFloat("fWorkbenchExperienceMax")
   
   ;; Lockpicking/Hacking XP Settings
   ConfigXPLockpickingNovice=Game.GetGameSettingFloat("fLockpickXPRewardEasy")
@@ -701,6 +776,8 @@ Function StoreCurrentXPSettings()
 
   ;; Combat XP Settings
   ConfigXPKillOpponent=Game.GetGameSettingInt("iXPRewardKillOpponent")
+
+  ;; XP Difficulty Multiplier
   ConfigXPDiffMultXPVE=Game.GetGameSettingFloat("fDiffMultXPVE")
   ConfigXPDiffMultXPE=Game.GetGameSettingFloat("fDiffMultXPE")
   ConfigXPDiffMultXPN=Game.GetGameSettingFloat("fDiffMultXPN")
@@ -714,7 +791,7 @@ Function StoreCurrentXPSettings()
   ConfigMQACT2Small=MainQuestAct2XPRewardSmall.GetValueInt()    ;; Default is 700
   ConfigMQACT2Medium=MainQuestAct2XPRewardMedium.GetValueInt()  ;; Default is 750
   ConfigMQACT2Large=MainQuestAct2XPRewardLarge.GetValueInt()    ;; Default is 800
-  ConfigMQACT3Small=4000                               ;; Doesn't seem to exist right now but shuld based on leveling curve
+  ConfigMQACT3Small=4000                                         ;; Doesn't seem to exist right now but shuld based on leveling curve
   ConfigMQACT3Medium=MainQuestAct3XPRewardMedium.GetValueInt()  ;; Default is 4500
   ConfigMQACT3Large=MainQuestAct3XPRewardLarge.GetValueInt()    ;; Default is 5000
 
@@ -767,7 +844,6 @@ Function EnableAllXP()
 EndFunction
 
 
-
 ;;
 ;; Leveling Experience Public Functions
 ;;
@@ -780,19 +856,15 @@ EndFunction
 Function DisableLevelingXP()
   LevelingXPEnabled=false
 
-  ;; Base XP Settings
-  SetGameSettingFloat("fXPStart", 100000000.00)
-  SetGameSettingFloat("fXPBase", 0.00)
-  SetGameSettingFloat("fXPExpMult", 0.00)
-  SetGameSettingFloat("fXPModBase", 0.00)
-
   ;; Combat XP Settings
-  SetGameSettingInt("iXPRewardKillOpponent", 0)
-  SetGameSettingFloat("fDiffMultXPVE", 0.00)
-  SetGameSettingFloat("fDiffMultXPE", 0.00)
-  SetGameSettingFloat("fDiffMultXPN", 0.00)
-  SetGameSettingFloat("fDiffMultXPH", 0.00)
-  SetGameSettingFloat("fDiffMultXPVH", 0.00)
+  VPI_Helper.SetGameSettingInt("iXPRewardKillOpponent", 0)
+
+  ;; XP Difficulty Multiplier
+  VPI_Helper.SetGameSettingFloat("fDiffMultXPVE", 0.00)
+  VPI_Helper.SetGameSettingFloat("fDiffMultXPE", 0.00)
+  VPI_Helper.SetGameSettingFloat("fDiffMultXPN", 0.00)
+  VPI_Helper.SetGameSettingFloat("fDiffMultXPH", 0.00)
+  VPI_Helper.SetGameSettingFloat("fDiffMultXPVH", 0.00)
 EndFunction
 
 ;; ****************************************************************************
@@ -803,102 +875,21 @@ EndFunction
 Function EnableLevelingXP()
   LevelingXPEnabled=true
 
-  ;; Base XP Settings
-  SetGameSettingFloat("fXPStart", ConfigXPStart)
-  SetGameSettingFloat("fXPBase", ConfigXPBase)
-  SetGameSettingFloat("fXPExpMult", ConfigXPMult)
-  SetGameSettingFloat("fXPModBase", ConfigXPModBase)
-
   ;; Combat XP Settings
-  SetGameSettingInt("iXPRewardKillOpponent", ConfigXPKillOpponent)
-  SetGameSettingFloat("fDiffMultXPVE", ConfigXPDiffMultXPVE)
-  SetGameSettingFloat("fDiffMultXPE", ConfigXPDiffMultXPE)
-  SetGameSettingFloat("fDiffMultXPN", ConfigXPDiffMultXPN)
-  SetGameSettingFloat("fDiffMultXPH", ConfigXPDiffMultXPH)
-  SetGameSettingFloat("fDiffMultXPVH", ConfigXPDiffMultXPVH)
-EndFunction
+  VPI_Helper.SetGameSettingInt("iXPRewardKillOpponent", ConfigXPKillOpponent)
 
-;; ****************************************************************************
-;; Configure All Leveling XP Settings
-;;
-;; Use: player.cf "VPI_ExperienceControl.ConfigureLevelingXP" <newXPForLevel> <newXPBase> <newXPMultiplier> <newXPModBase> <newKillXPReward> <newDiffXPModVE> <newDiffXPModE> <newDiffXPModN> <newDiffXPModH> <newDiffXPModVH>
-;; Params:
-;;   newXPForLevel = The XP needed to level
-;;   newXPBase = The base XP rewarded from stuff
-;;   newXPMultiplier = The percentage multiplier in decimal form 
-;;   newXPModBase = Not exactly sure of the point of this.... Change carfully :) 
-;;   newKillXPReward = The XP awarded for killing stuff. Unlike normal this is an int not a float.
-;;   newDiffXPMod* = The percentage multiplier in decimal form for the current difficulty mode. 
-;;
-Function ConfigureLevelingXP(Float newXPForLevel, Float newXPBase, Float newXPMultiplier, Float newXPModBase, int newKillXPReward, Float newDiffXPModVE, Float newDiffXPModE, Float newDiffXPModN, Float newDiffXPModH, Float newDiffXPModVH)
-  ;; Base XP Settings
-  ConfigureLevelingXP_XPForLevel(newXPForLevel)
-  ConfigureLevelingXP_BaseXPReward(newXPBase)
-  ConfigureLevelingXP_XPMultiplier(newXPMultiplier)
-  ConfigureLevelingXP_XPBaseModifier(newXPModBase)
-
-  ;; Difficulty BAse XP Modifier (Think overrides fXPExpMult)
-  ConfigureLevelingXP_DifficultyXPMultiplier(newDiffXPModVE, newDiffXPModE, newDiffXPModN, newDiffXPModH, newDiffXPModVH)
-
-  ;; Combat XP Settings
-  ConfigureLevelingXP_KillXPReward(newKillXPReward)
-
-  ;; Apply the new settings 
-  EnableLevelingXP()
-EndFunction
-
-;; ****************************************************************************
-;; Configure Level XP Settings: XP Needed For A level - Must call EnableLevelingXP manually after this completes
-;;
-;; Use: player.cf "VPI_ExperienceControl.ConfigureLevelingXP_XPForLevel" <newXPForLevel>
-;; Params:
-;;   newXPForLevel = The XP needed to level
-;;
-Function ConfigureLevelingXP_XPForLevel(Float newXPForLevel)
-  ConfigXPStart=newXPForLevel
-  ;; DO NOT CALL EnableLevelingXP ON SINGLE CHANGES you will cause a race condition
-EndFunction
-
-;; ****************************************************************************
-;; Configure Level XP Settings: Base XP - Must call EnableLevelingXP manually after this completes
-;;
-;; Use: player.cf "VPI_ExperienceControl.ConfigureLevelingXP_BaseXPReward" <newXPBase>
-;; Params:
-;;   newXPBase = The base XP rewarded from stuff
-;;
-Function ConfigureLevelingXP_BaseXPReward(Float newXPBase)
-  ConfigXPBase=newXPBase
-  ;; DO NOT CALL EnableLevelingXP ON SINGLE CHANGES you will cause a race condition
-EndFunction
-
-;; ****************************************************************************
-;; Configure Level XP Settings: XP Multiplier - Must call EnableLevelingXP manually after this completes
-;;
-;; Use: player.cf "VPI_ExperienceControl.ConfigureLevelingXP_XPMultiplier" <newXPMultiplier>
-;; Params:
-;;   newXPMultiplier = The percentage multiplier in decimal form 
-;;
-Function ConfigureLevelingXP_XPMultiplier(Float newXPMultiplier)
-  ConfigXPMult=newXPMultiplier
-  ;; DO NOT CALL EnableLevelingXP ON SINGLE CHANGES you will cause a race condition
-EndFunction
-
-;; ****************************************************************************
-;; Configure Level XP Settings: Base XP Modifier - Must call EnableLevelingXP manually after this completes
-;;
-;; Use: player.cf "VPI_ExperienceControl.ConfigureLevelingXP_XPBaseModifier" <newXPModBase>
-;; Params:
-;;   newXPModBase = Not exactly sure of the point of this.... Change carfully :) 
-;;
-Function ConfigureLevelingXP_XPBaseModifier(Float newXPModBase)
-  ConfigXPModBase=newXPModBase
-  ;; DO NOT CALL EnableLevelingXP ON SINGLE CHANGES you will cause a race condition
+  ;; XP Difficulty Multiplier
+  VPI_Helper.SetGameSettingFloat("fDiffMultXPVE", ConfigXPDiffMultXPVE)
+  VPI_Helper.SetGameSettingFloat("fDiffMultXPE", ConfigXPDiffMultXPE)
+  VPI_Helper.SetGameSettingFloat("fDiffMultXPN", ConfigXPDiffMultXPN)
+  VPI_Helper.SetGameSettingFloat("fDiffMultXPH", ConfigXPDiffMultXPH)
+  VPI_Helper.SetGameSettingFloat("fDiffMultXPVH", ConfigXPDiffMultXPVH)
 EndFunction
 
 ;; ****************************************************************************
 ;; Configure Level XP Settings: Difficulty Multiplier - Must call EnableLevelingXP manually after this completes
 ;;
-;; Use: player.cf "VPI_ExperienceControl.ConfigureLevelingXP_DifficultyXPMultiplier" <newDiffXPModVE> <newDiffXPModE> <newDiffXPModN> <newDiffXPModH> <newDiffXPModVH>
+;; Use: player.cf "VPI_ExperienceControl.ConfigureDifficultyXPMultiplier" <newDiffXPModVE> <newDiffXPModE> <newDiffXPModN> <newDiffXPModH> <newDiffXPModVH>
 ;; Params:
 ;;   newDiffXPModVE = The percentage multiplier in decimal form for the very easy difficulty mode. 
 ;;   newDiffXPModE = The percentage multiplier in decimal form for the easy difficulty mode. 
@@ -906,7 +897,7 @@ EndFunction
 ;;   newDiffXPModH = The percentage multiplier in decimal form for the hard difficulty mode. 
 ;;   newDiffXPModVH = The percentage multiplier in decimal form for the very hard difficulty mode. 
 ;;
-Function ConfigureLevelingXP_DifficultyXPMultiplier(Float newDiffXPModVE, Float newDiffXPModE, Float newDiffXPModN, Float newDiffXPModH, Float newDiffXPModVH)
+Function ConfigureDifficultyXPMultiplier(Float newDiffXPModVE, Float newDiffXPModE, Float newDiffXPModN, Float newDiffXPModH, Float newDiffXPModVH)
   ConfigXPDiffMultXPVE=newDiffXPModVE
   ConfigXPDiffMultXPE=newDiffXPModE
   ConfigXPDiffMultXPN=newDiffXPModN
@@ -918,11 +909,11 @@ EndFunction
 ;; ****************************************************************************
 ;; Configure Level XP Settings: Kill XP - Must call EnableLevelingXP manually after this completes
 ;;
-;; Use: player.cf "VPI_ExperienceControl.ConfigureLevelingXP_KillXPReward" <newKillXPReward>
+;; Use: player.cf "VPI_ExperienceControl.ConfigureCombatXP" <newKillXPReward>
 ;; Params:
 ;;   newKillXPReward = The XP awarded for killing stuff. Unlike normal this is an int not a float.
 ;;
-Function ConfigureLevelingXP_KillXPReward(int newKillXPReward)
+Function ConfigureCombatXP(int newKillXPReward)
   ConfigXPKillOpponent=newKillXPReward
   ;; DO NOT CALL EnableLevelingXP ON SINGLE CHANGES you will cause a race condition
 EndFunction
@@ -933,11 +924,9 @@ EndFunction
 ;; Use: player.cf "VPI_ExperienceControl.DumpLevelingXP"
 Function DumpLevelingXP()
   Int iDifficulty = Game.GetDifficulty()
-  string sDifficulty = GetDifficulty(iDifficulty)
+  string sDifficulty = VPI_Helper.GetDifficulty(iDifficulty)
 
-  string message = "You need " + ConfigXPStart + " experience to complete a level.\n"
-  message += "Base XP Reward is " + ConfigXPBase + " experience. With a multiplier of " + ConfigXPMult + " and a modifier of " + ConfigXPModBase + "\n."
-  message += "Combat kills reware " + ConfigXPKillOpponent + " experience pre multipliers."
+  string message = "Combat kills reward " + ConfigXPKillOpponent + " experience pre-multipliers."
   
   Float activeDifficultyMultiplier = 0;
   if (iDifficulty == 0) 
@@ -953,7 +942,7 @@ Function DumpLevelingXP()
   EndIf
   message += "Running in " + sDifficulty + " so the difficulty experience multiplier is " + activeDifficultyMultiplier + "\n."
   
-  Debug.Trace("VPIXPCTRL_DMPLVLXP" + message, 1)
+  Debug.Trace("VPIXPCTRL_DEBUG" + message, 1)
   Debug.MessageBox(message)
 EndFunction
 
@@ -972,16 +961,16 @@ Function DisableCraftingXP()
   CraftingXPEnabled=false
  
   ;; Cooking XP Settings
-  SetGameSettingFloat("fCookingExpBase", 0.00)
-  SetGameSettingFloat("fCookingExpMult", 0.00)
-  SetGameSettingFloat("fCookingExpMin", 0.00)
-  SetGameSettingFloat("fCookingExpMax", 0.00)
+  VPI_Helper.SetGameSettingFloat("fCookingExpBase", 0.00)
+  VPI_Helper.SetGameSettingFloat("fCookingExpMult", 0.00)
+  VPI_Helper.SetGameSettingFloat("fCookingExpMin", 0.00)
+  VPI_Helper.SetGameSettingFloat("fCookingExpMax", 0.00)
   
   ;; Crafting XP Settings
-  SetGameSettingFloat("fWorkbenchExperienceBase", 0.00)
-  SetGameSettingFloat("fWorkbenchExperienceMult", 0.00)
-  SetGameSettingFloat("fWorkbenchExperienceMin", 0.00)
-  SetGameSettingFloat("fWorkbenchExperienceMax", 0.00)
+  VPI_Helper.SetGameSettingFloat("fWorkbenchExperienceBase", 0.00)
+  VPI_Helper.SetGameSettingFloat("fWorkbenchExperienceMult", 0.00)
+  VPI_Helper.SetGameSettingFloat("fWorkbenchExperienceMin", 0.00)
+  VPI_Helper.SetGameSettingFloat("fWorkbenchExperienceMax", 0.00)
 EndFunction
 
 ;; ****************************************************************************
@@ -993,16 +982,16 @@ Function EnableCraftingXP()
   CraftingXPEnabled=true
   
   ;; Cooking XP Settings
-  SetGameSettingFloat("fCookingExpBase", ConfigXPCookingBase)
-  SetGameSettingFloat("fCookingExpMult", ConfigXPCookingMult)
-  SetGameSettingFloat("fCookingExpMin", ConfigXPCookingMin)
-  SetGameSettingFloat("fCookingExpMax", ConfigXPCookingMax)
+  VPI_Helper.SetGameSettingFloat("fCookingExpBase", ConfigXPCookingBase)
+  VPI_Helper.SetGameSettingFloat("fCookingExpMult", ConfigXPCookingMult)
+  VPI_Helper.SetGameSettingFloat("fCookingExpMin", ConfigXPCookingMin)
+  VPI_Helper.SetGameSettingFloat("fCookingExpMax", ConfigXPCookingMax)
   
   ;; Crafting XP Settings
-  SetGameSettingFloat("fWorkbenchExperienceBase", ConfigXPCraftingBase)
-  SetGameSettingFloat("fWorkbenchExperienceMult", ConfigXPCraftingMult)
-  SetGameSettingFloat("fWorkbenchExperienceMin", ConfigXPCraftingMin)
-  SetGameSettingFloat("fWorkbenchExperienceMax", ConfigXPCraftingMax)
+  VPI_Helper.SetGameSettingFloat("fWorkbenchExperienceBase", ConfigXPWorkbenchBase)
+  VPI_Helper.SetGameSettingFloat("fWorkbenchExperienceMult", ConfigXPWorkbenchMult)
+  VPI_Helper.SetGameSettingFloat("fWorkbenchExperienceMin", ConfigXPWorkbenchMin)
+  VPI_Helper.SetGameSettingFloat("fWorkbenchExperienceMax", ConfigXPWorkbenchMax)
 EndFunction
 
 ;; ****************************************************************************
@@ -1035,10 +1024,10 @@ EndFunction
 ;;   maxReward = The maximum ammount of XP reward you can get after the multiplier is applied. 
 ;;
 Function ConfigureWorkbenchXP(Float base, Float multiplier, Float minReward, Float maxReward)
-  ConfigXPCraftingBase=base
-  ConfigXPCraftingMult=multiplier
-  ConfigXPCraftingMin=minReward
-  ConfigXPCraftingMax=maxReward
+  ConfigXPWorkbenchBase=base
+  ConfigXPWorkbenchMult=multiplier
+  ConfigXPWorkbenchMin=minReward
+  ConfigXPWorkbenchMax=maxReward
 
   EnableCraftingXP()
 EndFunction
@@ -1052,9 +1041,9 @@ Function DumpCraftingXP()
   message += "***** Cooking *****\n"
   message += "Base=" + ConfigXPCookingBase + "; Multiplier=" + ConfigXPCookingMult + "; Min Reward=" + ConfigXPCookingMin + "; Max Reward=" + ConfigXPCookingMax + ";\n"
   message += "\n\n***** Workbench *****\n"
-  message += "Base=" + ConfigXPCraftingBase + "; Multiplier=" + ConfigXPCraftingMult + "; Min Reward=" + ConfigXPCraftingMin + "; Max Reward=" + ConfigXPCraftingMax + ";\n"
+  message += "Base=" + ConfigXPWorkbenchBase + "; Multiplier=" + ConfigXPWorkbenchMult + "; Min Reward=" + ConfigXPWorkbenchMin + "; Max Reward=" + ConfigXPWorkbenchMax + ";\n"
   
-  Debug.Trace("VPIXPCTRL_DMPCFTXP: " + message, 1)
+  Debug.Trace("VPIXPCTRL_DEBUG: " + message, 1)
   Debug.MessageBox(message)
 EndFunction
 
@@ -1073,9 +1062,9 @@ Function DisableResearchXP()
   ResearchXPEnabled=false
  
   ;; Research XP Settings
-  SetGameSettingFloat("fResearchExpBase", 0.00)
-  SetGameSettingFloat("fResearchExpMult", 0.00)
-  SetGameSettingFloat("fResearchExpMax", 0.00)
+  VPI_Helper.SetGameSettingFloat("fResearchExpBase", 0.00)
+  VPI_Helper.SetGameSettingFloat("fResearchExpMult", 0.00)
+  VPI_Helper.SetGameSettingFloat("fResearchExpMax", 0.00)
 EndFunction
 
 ;; ****************************************************************************
@@ -1087,9 +1076,9 @@ Function EnableResearchXP()
   ResearchXPEnabled=true
   
   ;; Research XP Settings
-  SetGameSettingFloat("fResearchExpBase", ConfigXPResearchBase)
-  SetGameSettingFloat("fResearchExpMult", ConfigXPResearchMult)
-  SetGameSettingFloat("fResearchExpMax", ConfigXPResearchMax)
+  VPI_Helper.SetGameSettingFloat("fResearchExpBase", ConfigXPResearchBase)
+  VPI_Helper.SetGameSettingFloat("fResearchExpMult", ConfigXPResearchMult)
+  VPI_Helper.SetGameSettingFloat("fResearchExpMax", ConfigXPResearchMax)
 EndFunction
 
 ;; ****************************************************************************
@@ -1117,7 +1106,7 @@ Function DumpResearchXP()
   string message = ""
   message += "Research: Base=" + ConfigXPResearchBase + "; Multiplier=" + ConfigXPResearchMult + "; Min Reward=1; Max Reward=" + ConfigXPResearchMax + ";\n"
   
-  Debug.Trace("VPIXPCTRL_DMPRSCHXP: " + message, 1)
+  Debug.Trace("VPIXPCTRL_DEBUG: " + message, 1)
   Debug.MessageBox(message)
 EndFunction
 
@@ -1136,11 +1125,11 @@ Function DisableLockpickingXP()
   LockpickingXPEnabled=false
   
   ;; Lockpicking/Hacking XP Settings
-  SetGameSettingFloat("fLockpickXPRewardEasy", 0.00)
-  SetGameSettingFloat("fLockpickXPRewardAverage", 0.00)
-  SetGameSettingFloat("fLockpickXPRewardHard", 0.00)
-  SetGameSettingFloat("fLockpickXPRewardVeryHard", 0.00)
-  SetGameSettingFloat("fHackingExperienceBase", 0.00)
+  VPI_Helper.SetGameSettingFloat("fLockpickXPRewardEasy", 0.00)
+  VPI_Helper.SetGameSettingFloat("fLockpickXPRewardAverage", 0.00)
+  VPI_Helper.SetGameSettingFloat("fLockpickXPRewardHard", 0.00)
+  VPI_Helper.SetGameSettingFloat("fLockpickXPRewardVeryHard", 0.00)
+  VPI_Helper.SetGameSettingFloat("fHackingExperienceBase", 0.00)
 EndFunction
 
 ;; ****************************************************************************
@@ -1152,11 +1141,11 @@ Function EnableLockpickingXP()
   LockpickingXPEnabled=true
   
   ;; Lockpicking/Hacking XP Settings
-  SetGameSettingFloat("fLockpickXPRewardEasy", ConfigXPLockpickingNovice)
-  SetGameSettingFloat("fLockpickXPRewardAverage", ConfigXPLockpickingAdvanced)
-  SetGameSettingFloat("fLockpickXPRewardHard", ConfigXPLockpickingExpert)
-  SetGameSettingFloat("fLockpickXPRewardVeryHard", ConfigXPLockpickingMaster)
-  SetGameSettingFloat("fHackingExperienceBase", ConfigXPHackingExperienceBase)
+  VPI_Helper.SetGameSettingFloat("fLockpickXPRewardEasy", ConfigXPLockpickingNovice)
+  VPI_Helper.SetGameSettingFloat("fLockpickXPRewardAverage", ConfigXPLockpickingAdvanced)
+  VPI_Helper.SetGameSettingFloat("fLockpickXPRewardHard", ConfigXPLockpickingExpert)
+  VPI_Helper.SetGameSettingFloat("fLockpickXPRewardVeryHard", ConfigXPLockpickingMaster)
+  VPI_Helper.SetGameSettingFloat("fHackingExperienceBase", ConfigXPHackingExperienceBase)
 EndFunction
 
 ;; ****************************************************************************
@@ -1189,7 +1178,7 @@ Function DumpLockpickingXP()
   message += "Lockpicking: Novice=" + ConfigXPLockpickingNovice + "; Advanced=" + ConfigXPLockpickingAdvanced + "; Expert=" + ConfigXPLockpickingExpert + "; Master=" + ConfigXPLockpickingMaster + ";\n"
   message += "Hacking: Base=" + ConfigXPHackingExperienceBase + ";\n"
 
-  Debug.Trace("VPIXPCTRL_DMPLCPKXP: " + message, 1)
+  Debug.Trace("VPIXPCTRL_DEBUG: " + message, 1)
   Debug.MessageBox(message)
 EndFunction
 
@@ -1208,25 +1197,25 @@ Function DisableDiscoveryXP()
   DiscoveryXPEnabled=false
   
   ;; Discovery XP Settings
-  SetGameSettingInt("iXPRewardDiscoverMapMarker", 0)
-  SetGameSettingInt("iXPRewardDiscoverSecretArea", 0)
-  SetGameSettingFloat("fScanCompleteXPReward", 0.00)
+  VPI_Helper.SetGameSettingInt("iXPRewardDiscoverMapMarker", 0)
+  VPI_Helper.SetGameSettingInt("iXPRewardDiscoverSecretArea", 0)
+  VPI_Helper.SetGameSettingFloat("fScanCompleteXPReward", 0.00)
 
   ;; Planet Surveys
-  SetFormSettingInt("0x00245AB9", 0) ;; PlanetaryTraitXPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x001AEB4E", 0) ;; PlanetaryTraitSkillBonusXPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x00245AB9", 0) ;; PlanetaryTraitXPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x001AEB4E", 0) ;; PlanetaryTraitSkillBonusXPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
   ;; PlanetaryTraitAstroBonusXPReward.SetValueInt(0)
-  SetFormSettingInt("0x0030A8C5", 0) ;; PlanetarySurveyV1XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x0030A8C6", 0) ;; PlanetarySurveyV2XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x0030A8C7", 0) ;; PlanetarySurveyV3XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x00056E62", 0) ;; PlanetarySurveyV4XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x0023842C", 0) ;; PlanetarySurveyV5XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0030A8C5", 0) ;; PlanetarySurveyV1XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0030A8C6", 0) ;; PlanetarySurveyV2XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0030A8C7", 0) ;; PlanetarySurveyV3XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x00056E62", 0) ;; PlanetarySurveyV4XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0023842C", 0) ;; PlanetarySurveyV5XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
 
   ;; System Surveys
-  SetFormSettingInt("0x0030A8C8", 0) ;; SystemSurveyV1XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x0030A8C9", 0) ;; SystemSurveyV2XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x0030A8CA", 0) ;; SystemSurveyV3XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x0030A8CB", 0) ;; SystemSurveyV4XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0030A8C8", 0) ;; SystemSurveyV1XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0030A8C9", 0) ;; SystemSurveyV2XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0030A8CA", 0) ;; SystemSurveyV3XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0030A8CB", 0) ;; SystemSurveyV4XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
 EndFunction
 
 ;; ****************************************************************************
@@ -1238,25 +1227,25 @@ Function EnableDiscoveryXP()
   DiscoveryXPEnabled=true
   
   ;; Discovery XP Settings
-  SetGameSettingInt("iXPRewardDiscoverMapMarker", ConfigXPDiscoveryMapMarker)
-  SetGameSettingInt("iXPRewardDiscoverSecretArea", ConfigXPDiscoverySecretArea)
-  SetGameSettingFloat("fScanCompleteXPReward", ConfigXPScanCompletion)
+  VPI_Helper.SetGameSettingInt("iXPRewardDiscoverMapMarker", ConfigXPDiscoveryMapMarker)
+  VPI_Helper.SetGameSettingInt("iXPRewardDiscoverSecretArea", ConfigXPDiscoverySecretArea)
+  VPI_Helper.SetGameSettingFloat("fScanCompleteXPReward", ConfigXPScanCompletion)
 
   ;; Planetary Surveys
-  SetFormSettingInt("0x00245AB9", ConfigQuestSM) ;; PlanetaryTraitXPReward.SetValueInt(ConfigQuestSM) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x001AEB4E", ConfigQuestSM) ;; PlanetaryTraitSkillBonusXPReward.SetValueInt(ConfigQuestSM) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x00245AB9", ConfigQuestSM) ;; PlanetaryTraitXPReward.SetValueInt(ConfigQuestSM) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x001AEB4E", ConfigQuestSM) ;; PlanetaryTraitSkillBonusXPReward.SetValueInt(ConfigQuestSM) ;; Papyrus has this locked as a const var but set console command works
   ;; PlanetaryTraitAstroBonusXPReward.SetValueFloat(0.25)
-  SetFormSettingInt("0x0030A8C5", ConfigQuestTN) ;; PlanetarySurveyV1XPReward.SetValueInt(ConfigQuestTN) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x0030A8C6", ConfigQuestSM) ;; PlanetarySurveyV2XPReward.SetValueInt(ConfigQuestSM) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x0030A8C7", ConfigQuestMD) ;; PlanetarySurveyV3XPReward.SetValueInt(ConfigQuestMD) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x00056E62", ConfigQuestLG) ;; PlanetarySurveyV4XPReward.SetValueInt(ConfigQuestLG) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x0023842C", ConfigQuestXL) ;; PlanetarySurveyV5XPReward.SetValueInt(ConfigQuestXL) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0030A8C5", ConfigQuestTN) ;; PlanetarySurveyV1XPReward.SetValueInt(ConfigQuestTN) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0030A8C6", ConfigQuestSM) ;; PlanetarySurveyV2XPReward.SetValueInt(ConfigQuestSM) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0030A8C7", ConfigQuestMD) ;; PlanetarySurveyV3XPReward.SetValueInt(ConfigQuestMD) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x00056E62", ConfigQuestLG) ;; PlanetarySurveyV4XPReward.SetValueInt(ConfigQuestLG) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0023842C", ConfigQuestXL) ;; PlanetarySurveyV5XPReward.SetValueInt(ConfigQuestXL) ;; Papyrus has this locked as a const var but set console command works
 
   ;; System Surveys
-  SetFormSettingInt("0x0030A8C8", ConfigQuestTN) ;; SystemSurveyV1XPReward.SetValueInt(ConfigQuestTN) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x0030A8C9", ConfigQuestSM) ;; SystemSurveyV2XPReward.SetValueInt(ConfigQuestSM) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x0030A8CA", ConfigQuestMD) ;; SystemSurveyV3XPReward.SetValueInt(ConfigQuestMD) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x0030A8CB", ConfigQuestLG) ;; SystemSurveyV4XPReward.SetValueInt(ConfigQuestLG) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0030A8C8", ConfigQuestTN) ;; SystemSurveyV1XPReward.SetValueInt(ConfigQuestTN) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0030A8C9", ConfigQuestSM) ;; SystemSurveyV2XPReward.SetValueInt(ConfigQuestSM) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0030A8CA", ConfigQuestMD) ;; SystemSurveyV3XPReward.SetValueInt(ConfigQuestMD) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0030A8CB", ConfigQuestLG) ;; SystemSurveyV4XPReward.SetValueInt(ConfigQuestLG) ;; Papyrus has this locked as a const var but set console command works
 EndFunction
 
 ;; ****************************************************************************
@@ -1288,7 +1277,7 @@ Function DumpDiscoveryXP()
   message += "\n\n***** System Surveys (Uses Normalized Quest XP) *****\n"
   message += "Survey T1=" + ConfigQuestTN + "; Survey T2=" + ConfigQuestSM + "; Survey T3=" + ConfigQuestMD + "; Survey T4=" + ConfigQuestLG + ";\n"
 
-  Debug.Trace("VPIXPCTRL_DMPDSCXP: " + message, 1)
+  Debug.Trace("VPIXPCTRL_DEBUG: " + message, 1)
   Debug.MessageBox(message)
 EndFunction
 
@@ -1307,7 +1296,7 @@ Function DisableSpeechcraftXP()
   SpeechcraftXPEnabled=false
 
   ;; Speechcraft XP Settings
-  SetGameSettingFloat("fSpeechChallengeSuccessXP", 0.00)
+  VPI_Helper.SetGameSettingFloat("fSpeechChallengeSuccessXP", 0.00)
 EndFunction
 
 ;; ****************************************************************************
@@ -1319,7 +1308,7 @@ Function EnableSpeechcraftXP()
   SpeechcraftXPEnabled=true
 
   ;; Speechcraft XP Settings
-  SetGameSettingFloat("fSpeechChallengeSuccessXP", ConfigXPSpeechcraftSuccess)
+  VPI_Helper.SetGameSettingFloat("fSpeechChallengeSuccessXP", ConfigXPSpeechcraftSuccess)
 EndFunction
 
 ;; ****************************************************************************
@@ -1343,7 +1332,7 @@ Function DumpSpeechcraftXP()
   string message = ""
   message += "Speechcraft: Successs=" + ConfigXPSpeechcraftSuccess + ";\n"
 
-  Debug.Trace("VPIXPCTRL_DMPSPCHXP: " + message, 1)
+  Debug.Trace("VPIXPCTRL_DEBUG: " + message, 1)
   Debug.MessageBox(message)
 EndFunction
 
@@ -1400,7 +1389,7 @@ Function DisableQuestXP()
   RadiantQuestVersion06XPRewardLarge.SetValueInt(0)
 
   ;; Misc Quests
-  SetFormSettingInt("0x002685E7", 0) ;; MiscQuestXPRewardTiny.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x002685E7", 0) ;; MiscQuestXPRewardTiny.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
   MiscQuestXPRewardSmall.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
   MiscQuestXPRewardMedium.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
   MiscQuestXPRewardLarge.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
@@ -1409,9 +1398,9 @@ Function DisableQuestXP()
   CompanionQuestXPReward.SetValueInt(0)
   OptionalObjectiveQuestXPReward.SetValueInt(0)
   RedMileRunQuestXPReward.SetValueInt(0)
-  SetFormSettingInt("0x0006B510", 0) ;; OESmallQuestXPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x000F3CF9", 0) ;; OEMediumQuestXPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x000F19CC", 0) ;; OELargeQuestXPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0006B510", 0) ;; OESmallQuestXPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x000F3CF9", 0) ;; OEMediumQuestXPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x000F19CC", 0) ;; OELargeQuestXPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
   StarbornTempleXPReward.SetValueInt(0)
 
   ;; Settlement Quests
@@ -1424,12 +1413,12 @@ Function DisableQuestXP()
   SettlementV1QuestXPRewardLarge.SetValueInt(0)
 
   ;; Mission Board Quests
-  SetFormSettingInt("0x0009E153", 0) ;; MissionBoardSurveyBaseXPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x0016AB84", 0) ;; MissionBoardSurveyTraitV1XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x0016AB85", 0) ;; MissionBoardSurveyTraitV2XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x0016AB86", 0) ;; MissionBoardSurveyTraitV3XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x0016AB87", 0) ;; MissionBoardSurveyTraitV4XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x0016AB88", 0) ;; MissionBoardSurveyTraitV5XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0009E153", 0) ;; MissionBoardSurveyBaseXPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0016AB84", 0) ;; MissionBoardSurveyTraitV1XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0016AB85", 0) ;; MissionBoardSurveyTraitV2XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0016AB86", 0) ;; MissionBoardSurveyTraitV3XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0016AB87", 0) ;; MissionBoardSurveyTraitV4XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0016AB88", 0) ;; MissionBoardSurveyTraitV5XPReward.SetValueInt(0) ;; Papyrus has this locked as a const var but set console command works
 EndFunction
 
 ;; ****************************************************************************
@@ -1479,7 +1468,7 @@ Function EnableQuestXP()
   RadiantQuestVersion06XPRewardLarge.SetValueInt(ConfigQuestLG)
 
   ;; Misc Quests
-  SetFormSettingInt("0x002685E7", ConfigQuestTN) ;; MiscQuestXPRewardTiny.SetValueInt(ConfigQuestTN) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x002685E7", ConfigQuestTN) ;; MiscQuestXPRewardTiny.SetValueInt(ConfigQuestTN) ;; Papyrus has this locked as a const var but set console command works
   MiscQuestXPRewardSmall.SetValueInt(ConfigQuestSM)
   MiscQuestXPRewardMedium.SetValueInt(ConfigQuestMD)
   MiscQuestXPRewardLarge.SetValueInt(ConfigQuestLG)
@@ -1488,9 +1477,9 @@ Function EnableQuestXP()
   CompanionQuestXPReward.SetValueInt(ConfigQuestLG)
   OptionalObjectiveQuestXPReward.SetValueInt(ConfigQuestSM)
   RedMileRunQuestXPReward.SetValueInt(ConfigQuestSM)
-  SetFormSettingInt("0x0006B510", ConfigQuestMD) ;; OESmallQuestXPReward.SetValueInt(ConfigQuestMD) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x000F3CF9", ConfigQuestLG) ;; OEMediumQuestXPReward.SetValueInt(ConfigQuestLG) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x000F19CC", ConfigQuestXL) ;; OELargeQuestXPReward.SetValueInt(ConfigQuestXL) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0006B510", ConfigQuestMD) ;; OESmallQuestXPReward.SetValueInt(ConfigQuestMD) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x000F3CF9", ConfigQuestLG) ;; OEMediumQuestXPReward.SetValueInt(ConfigQuestLG) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x000F19CC", ConfigQuestXL) ;; OELargeQuestXPReward.SetValueInt(ConfigQuestXL) ;; Papyrus has this locked as a const var but set console command works
   StarbornTempleXPReward.SetValueInt(ConfigQuestMD)
 
   ;; Settlement Quests
@@ -1503,12 +1492,12 @@ Function EnableQuestXP()
   SettlementV1QuestXPRewardLarge.SetValueInt(ConfigQuestMD)
 
   ;; Mission Board Quests
-  SetFormSettingInt("0x0009E153", ConfigQuestSM) ;; MissionBoardSurveyBaseXPReward.SetValueInt(ConfigQuestSM) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x0016AB84", ConfigQuestTN) ;; MissionBoardSurveyTraitV1XPReward.SetValueInt(ConfigQuestTN) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x0016AB85", ConfigQuestSM) ;; MissionBoardSurveyTraitV2XPReward.SetValueInt(ConfigQuestSM) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x0016AB86", ConfigQuestMD) ;; MissionBoardSurveyTraitV3XPReward.SetValueInt(ConfigQuestMD) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x0016AB87", ConfigQuestLG) ;; MissionBoardSurveyTraitV4XPReward.SetValueInt(ConfigQuestLG) ;; Papyrus has this locked as a const var but set console command works
-  SetFormSettingInt("0x0016AB88", ConfigQuestXL) ;; MissionBoardSurveyTraitV5XPReward.SetValueInt(ConfigQuestXL) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0009E153", ConfigQuestSM) ;; MissionBoardSurveyBaseXPReward.SetValueInt(ConfigQuestSM) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0016AB84", ConfigQuestTN) ;; MissionBoardSurveyTraitV1XPReward.SetValueInt(ConfigQuestTN) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0016AB85", ConfigQuestSM) ;; MissionBoardSurveyTraitV2XPReward.SetValueInt(ConfigQuestSM) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0016AB86", ConfigQuestMD) ;; MissionBoardSurveyTraitV3XPReward.SetValueInt(ConfigQuestMD) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0016AB87", ConfigQuestLG) ;; MissionBoardSurveyTraitV4XPReward.SetValueInt(ConfigQuestLG) ;; Papyrus has this locked as a const var but set console command works
+  VPI_Helper.SetFormSettingInt("0x0016AB88", ConfigQuestXL) ;; MissionBoardSurveyTraitV5XPReward.SetValueInt(ConfigQuestXL) ;; Papyrus has this locked as a const var but set console command works
 EndFunction
 
 ;; ****************************************************************************
@@ -1586,10 +1575,240 @@ Function DumpQuestXP()
   message += "XL=" + ConfigQuestXL + "; XXL=" + ConfigQuestXXL + "; XXL=" + ConfigQuestXXXL + ";\n"
   message += "SM MSV=" + ConfigQuestMSVSM + "; MD MSV=" + ConfigQuestMSVMD + "; LG MSV=" + ConfigQuestMSVLG + ";\n"
 
-  Debug.Trace("VPIXPCTRL_DMPQUSTXP: " + message, 1)
+  Debug.Trace("VPIXPCTRL_DEBUG: " + message, 1)
   Debug.MessageBox(message)
 EndFunction
 
+
+
+;;
+;; Scaling Public Functions
+;;
+
+;; ****************************************************************************
+;; Change a scaling factor in the specified level bracket for Difficulty Based XP Multiplier
+;;
+;; Use: player.cf "VPI_ExperienceControl.SetDifficultyXPMultiplierSFForBracket" <bracket> <newSF>
+;;   bracket -> The bracket to change can be 1 to 10 only
+;;   newSF -> The new scale factor to set for the bracket
+;;
+Function SetDifficultyXPMultiplierSFForBracket(int bracket, Float newSF)
+  SF_XPDifficultyMultiplier[bracket]=newSF
+EndFunction
+
+;; ****************************************************************************
+;; Get the scaling factor for Difficulty XP Multiplier for the specified bracket
+;;
+;; Use: player.cf "VPI_ExperienceControl.GetDifficultyXPMultiplierScalingFactor" <bracket>
+;;   bracket -> The bracket to lookup can be 1 to 10 only
+;;
+Float Function GetDifficultyXPMultiplierScalingFactor(int bracket)
+  Float scaleFactor = SF_XPDifficultyMultiplier[bracket];
+  Debug.Trace("VPIXPCTRL_DEBUG: Final Difficulty XP Multiplier scaling has been calculated using bracket " + bracket + " resulting in an final SF of " + scaleFactor + ".", 1)
+  return scaleFactor
+EndFunction
+
+;; ****************************************************************************
+;; Change a scaling factor in the specified level bracket for Kill XP Reward
+;;
+;; Use: player.cf "VPI_ExperienceControl.SetDifficultyCombatXPSFForBracket" <bracket> <newSF>
+;;   bracket -> The bracket to change can be 1 to 10 only
+;;   newSF -> The new scale factor to set for the bracket
+;;
+Function SetDifficultyCombatXPSFForBracket(int bracket, Float newSF)
+  SF_CombatXP[bracket]=newSF
+EndFunction
+
+;; ****************************************************************************
+;; Get the scaling factor for Combat XP for the specified bracket
+;;
+;; Use: player.cf "VPI_ExperienceControl.GetCombatXPScalingFactor" <bracket>
+;;   bracket -> The bracket to lookup can be 1 to 10 only
+;;
+Float Function GetCombatXPScalingFactor(int bracket)
+  Float scaleFactor = SF_CombatXP[bracket];
+  Debug.Trace("VPIXPCTRL_DEBUG: Final Combat XP scaling factor has been calculated using bracket " + bracket + " resulting in an final SF of " + scaleFactor + ".", 1)
+  return scaleFactor
+EndFunction
+
+;; ****************************************************************************
+;; Change a scaling factor in the specified level bracket for Crafting XP Reward
+;;
+;; Use: player.cf "VPI_ExperienceControl.SetDifficultyCraftingXPSFForBracket" <bracket> <newSF>
+;;   bracket -> The bracket to change can be 1 to 10 only
+;;   newSF -> The new scale factor to set for the bracket
+;;
+Function SetDifficultyCraftingXPSFForBracket(int bracket, Float newSF)
+  SF_CraftingXP[bracket]=newSF
+EndFunction
+
+;; ****************************************************************************
+;; Get the scaling factor for Crafting XP for the specified bracket
+;;
+;; Use: player.cf "VPI_ExperienceControl.GetCraftingXPScalingFactor" <bracket>
+;;   bracket -> The bracket to lookup can be 1 to 10 only
+;;
+Float Function GetCraftingXPScalingFactor(int bracket)
+  Float scaleFactor = SF_CraftingXP[bracket];
+  Debug.Trace("VPIXPCTRL_DEBUG: Final Crafting XP scaling factor has been calculated using bracket " + bracket + " resulting in an final SF of " + scaleFactor + ".", 1)
+  return scaleFactor
+EndFunction
+
+;; ****************************************************************************
+;; Change a scaling factor in the specified level bracket for Research XP Reward
+;;
+;; Use: player.cf "VPI_ExperienceControl.SetDifficultyResearchXPSFForBracket" <bracket> <newSF>
+;;   bracket -> The bracket to change can be 1 to 10 only
+;;   newSF -> The new scale factor to set for the bracket
+;;
+Function SetDifficultyResearchXPSFForBracket(int bracket, Float newSF)
+  SF_ResearchXP[bracket]=newSF
+EndFunction
+
+;; ****************************************************************************
+;; Get the scaling factor for Research XP for the specified bracket
+;;
+;; Use: player.cf "VPI_ExperienceControl.GetResearchXPScalingFactor" <bracket>
+;;   bracket -> The bracket to lookup can be 1 to 10 only
+;;
+Float Function GetResearchXPScalingFactor(int bracket)
+  Float scaleFactor = SF_ResearchXP[bracket];
+  Debug.Trace("VPIXPCTRL_DEBUG: Final Research XP scaling factor has been calculated using bracket " + bracket + " resulting in an final SF of " + scaleFactor + ".", 1)
+  return scaleFactor
+EndFunction
+
+;; ****************************************************************************
+;; Change a scaling factor in the specified level bracket for Lockpicking XP Reward
+;;
+;; Use: player.cf "VPI_ExperienceControl.SetDifficultyLockpickingXPSFForBracket" <bracket> <newSF>
+;;   bracket -> The bracket to change can be 1 to 10 only
+;;   newSF -> The new scale factor to set for the bracket
+;;
+Function SetDifficultyLockpickingXPSFForBracket(int bracket, Float newSF)
+  SF_LockpickingXP[bracket]=newSF
+EndFunction
+
+;; ****************************************************************************
+;; Get the scaling factor for Lockpicking XP for the specified bracket
+;;
+;; Use: player.cf "VPI_ExperienceControl.GetLockpickingXPScalingFactor" <bracket>
+;;   bracket -> The bracket to lookup can be 1 to 10 only
+;;
+Float Function GetLockpickingXPScalingFactor(int bracket)
+  Float scaleFactor = SF_LockpickingXP[bracket];
+  Debug.Trace("VPIXPCTRL_DEBUG: Final Lockpicking XP scaling factor has been calculated using bracket " + bracket + " resulting in an final SF of " + scaleFactor + ".", 1)
+  return scaleFactor
+EndFunction
+
+;; ****************************************************************************
+;; Change a scaling factor in the specified level bracket for Discovery XP Reward
+;;
+;; Use: player.cf "VPI_ExperienceControl.SetDifficultyDiscoveryXPSFForBracket" <bracket> <newSF>
+;;   bracket -> The bracket to change can be 1 to 10 only
+;;   newSF -> The new scale factor to set for the bracket
+;;
+Function SetDifficultyDiscoveryXPSFForBracket(int bracket, Float newSF)
+  SF_DiscoveryXP[bracket]=newSF
+EndFunction
+
+;; ****************************************************************************
+;; Get the scaling factor for Discovery XP for the specified bracket
+;;
+;; Use: player.cf "VPI_ExperienceControl.GetDiscoveryXPScalingFactor" <bracket>
+;;   bracket -> The bracket to lookup can be 1 to 10 only
+;;
+Float Function GetDiscoveryXPScalingFactor(int bracket)
+  Float scaleFactor = SF_DiscoveryXP[bracket];
+  Debug.Trace("VPIXPCTRL_DEBUG: Final Discovery XP scaling factor has been calculated using bracket " + bracket + " resulting in an final SF of " + scaleFactor + ".", 1)
+  return scaleFactor
+EndFunction
+
+;; ****************************************************************************
+;; Change a scaling factor in the specified level bracket for Speechcraft XP Reward
+;;
+;; Use: player.cf "VPI_ExperienceControl.SetDifficultySpeechcraftXPSFForBracket" <bracket> <newSF>
+;;   bracket -> The bracket to change can be 1 to 10 only
+;;   newSF -> The new scale factor to set for the bracket
+;;
+Function SetDifficultySpeechcraftXPSFForBracket(int bracket, Float newSF)
+  SF_SpeechcraftXP[bracket]=newSF
+EndFunction
+
+;; ****************************************************************************
+;; Get the scaling factor for Speechcraft XP for the specified bracket
+;;
+;; Use: player.cf "VPI_ExperienceControl.GetSpeechcraftXPScalingFactor" <bracket>
+;;   bracket -> The bracket to lookup can be 1 to 10 only
+;;
+Float Function GetSpeechcraftXPScalingFactor(int bracket)
+  Float scaleFactor = SF_SpeechcraftXP[bracket];
+  Debug.Trace("VPIXPCTRL_DEBUG: Final Speechcraft XP scaling factor has been calculated using bracket " + bracket + " resulting in an final SF of " + scaleFactor + ".", 1)
+  return scaleFactor
+EndFunction
+
+;; ****************************************************************************
+;; Update Starfield XP Game Settings for my current level and the scaling factor for that level
+;;
+;; Use: player.cf "VPI_ExperienceControl.ScaleForMyLevel"
+;;
+Function ScaleForMyLevel()
+  If (PlayerRef.IsInCombat())
+    Debug.Trace("VPIXPCTRL_DEBUG: Player is in combat so no new scaling values will be calculated.", 1)
+    return
+  EndIf
+
+  Int iPlayerLevel = PlayerRef.GetLevel()
+  Int iPlayerBracket = VPI_Helper.GetBracketForPlayerLevel(iPlayerLevel)
+  Float sfDifficultyXPMultiplier = GetDifficultyXPMultiplierScalingFactor(iPlayerBracket)
+  Float sfCombatXP = GetCombatXPScalingFactor(iPlayerBracket)
+  Float sfCraftingXP = GetCraftingXPScalingFactor(iPlayerBracket)
+  Float sfResearchXP = GetResearchXPScalingFactor(iPlayerBracket)
+  Float sfLockpickingXP = GetLockpickingXPScalingFactor(iPlayerBracket)
+  Float sfDiscoveryXP = GetDiscoveryXPScalingFactor(iPlayerBracket)
+  Float sfSpeechcraftXP = GetSpeechcraftXPScalingFactor(iPlayerBracket)
+
+  ;; Scale XP Difficulty Multipliers
+  VPI_Helper.ScaleGameSettingFloat("fDiffMultXPVE", ConfigXPDiffMultXPVE, sfDifficultyXPMultiplier)
+  VPI_Helper.ScaleGameSettingFloat("fDiffMultXPE", ConfigXPDiffMultXPE, sfDifficultyXPMultiplier)
+  VPI_Helper.ScaleGameSettingFloat("fDiffMultXPN", ConfigXPDiffMultXPN, sfDifficultyXPMultiplier)
+  VPI_Helper.ScaleGameSettingFloat("fDiffMultXPH", ConfigXPDiffMultXPH, sfDifficultyXPMultiplier)
+  VPI_Helper.ScaleGameSettingFloat("fDiffMultXPVH", ConfigXPDiffMultXPVH, sfDifficultyXPMultiplier)
+
+  ;; Scale Combat XP Multipliers
+  VPI_Helper.ScaleGameSettingInt("iXPRewardKillOpponent", ConfigXPKillOpponent, sfCombatXP)
+
+  ;; Scale Crafting XP - Cooking Multipliers
+  VPI_Helper.ScaleGameSettingFloat("fCookingExpBase", ConfigXPCookingBase, sfCraftingXP)
+  VPI_Helper.ScaleGameSettingFloat("fCookingExpMult", ConfigXPCookingMult, sfCraftingXP)
+  ;; VPI_Helper.ScaleGameSettingFloat("fCookingExpMin", ConfigXPCookingMin, sfCraftingXP) ;; Minimum XP is not scaled 
+  VPI_Helper.ScaleGameSettingFloat("fCookingExpMax", ConfigXPCookingMax, sfCraftingXP)
+
+  ;; Scale Crafting XP - Workbench Multipliers
+  VPI_Helper.ScaleGameSettingFloat("fWorkbenchExperienceBase", ConfigXPWorkbenchBase, sfCraftingXP)
+  VPI_Helper.ScaleGameSettingFloat("fWorkbenchExperienceMult", ConfigXPWorkbenchMult, sfCraftingXP)
+  ;; VPI_Helper.ScaleGameSettingFloat("fWorkbenchExperienceMin", ConfigXPWorkbenchMin, sfCraftingXP) ;; Minimum XP is not scaled 
+  VPI_Helper.ScaleGameSettingFloat("fWorkbenchExperienceMax", ConfigXPWorkbenchMax, sfCraftingXP)
+
+  ;; Scale Research XP Multipliers
+  VPI_Helper.ScaleGameSettingFloat("fResearchExpBase", ConfigXPResearchBase, sfResearchXP)
+  VPI_Helper.ScaleGameSettingFloat("fResearchExpMult", ConfigXPResearchMult, sfResearchXP)
+  VPI_Helper.ScaleGameSettingFloat("fResearchExpMax", ConfigXPResearchMax, sfResearchXP)
+
+  ;; Scale Lockpicking XP Multipliers
+  VPI_Helper.ScaleGameSettingFloat("fLockpickXPRewardEasy", ConfigXPLockpickingNovice, sfLockpickingXP)
+  VPI_Helper.ScaleGameSettingFloat("fLockpickXPRewardAverage", ConfigXPLockpickingAdvanced, sfLockpickingXP)
+  VPI_Helper.ScaleGameSettingFloat("fLockpickXPRewardHard", ConfigXPLockpickingExpert, sfLockpickingXP)
+  VPI_Helper.ScaleGameSettingFloat("fLockpickXPRewardVeryHard", ConfigXPLockpickingMaster, sfLockpickingXP)
+  VPI_Helper.ScaleGameSettingFloat("fHackingExperienceBase", ConfigXPHackingExperienceBase, sfLockpickingXP)
+
+  ;; Scale Discovery XP Multipliers
+  VPI_Helper.ScaleGameSettingInt("iXPRewardDiscoverMapMarker", ConfigXPDiscoveryMapMarker, sfDiscoveryXP)
+  VPI_Helper.ScaleGameSettingInt("iXPRewardDiscoverSecretArea", ConfigXPDiscoverySecretArea, sfDiscoveryXP)
+  VPI_Helper.ScaleGameSettingFloat("fScanCompleteXPReward", ConfigXPScanCompletion, sfDiscoveryXP)
+
+  ;; Scale Speechcraft XP Multipliers
+  VPI_Helper.ScaleGameSettingFloat("fSpeechChallengeSuccessXP", ConfigXPSpeechcraftSuccess, sfSpeechcraftXP)
+EndFunction
 
 
 ;;
@@ -1602,9 +1821,6 @@ EndFunction
 ;; Use: player.cf "VPI_ExperienceControl.CurrentXPStatus"
 ;;
 Function CurrentXPStatus()
-  Float gameXPStart=Game.GetGameSettingFloat("fXPStart")
-  Float gameXPMultiplier=Game.GetGameSettingFloat("fXPExpMult")
-
   Float gameXPCookingBase=Game.GetGameSettingFloat("fCookingExpBase")
   Float gameXPCookingMult=Game.GetGameSettingFloat("fCookingExpMult")
 
@@ -1663,7 +1879,6 @@ Function CurrentXPStatus()
   EndIf    
   message += ".\n"
 
-  message += "XP per level is set to " + gameXPStart + " and the XP multiplier is set to " + gameXPMultiplier + ".\n"
   message += "Combat Kill XP is set to " + gameXPKillOpponent + ".\n"
   message += "Cooking XP is set to " + gameXPCookingBase + " and the cooking multiplier is set too " + gameXPCookingMult + ".\n"
   message += "Research XP is set to " + gameXPResearchBase + " and the research multiplier is set too " + gameXPResearchMult + ".\n"
@@ -1671,7 +1886,7 @@ Function CurrentXPStatus()
   message += "Lockpicking XP is set to " + gameXPLockpickingNovice + " for novice, " + gameXPLockpickingAdvanced + " for advanced, " + gameXPLockpickingExpert + " for expert, and finally " + gameXPLockpickingMaster + " for master.\n"
   message += "Speechcraft XP is set to " + gameXPSpeechcraftSuccess + ".\n"
   
-  Debug.Trace("VPIXPCTRL_CRXPSTS: " + message, 1)
+  Debug.Trace("VPIXPCTRL_DEBUG: " + message, 1)
   Debug.MessageBox(message)
 EndFunction
 
@@ -1682,19 +1897,17 @@ EndFunction
 ;;
 Function DumpXPMatrix()
   string message = "Configuration Data from version " + Version + ".\n"
-  message += "\n\n***** Combat/Crafting/ResearcH XP *****\n"
   message += "\n\n"
-  message += "At level one you need starting XP of " + ConfigXPStart + " XP to level from then on you get your current level * a base xp of " + ConfigXPBase + " xp as that level's needed XP to level and then the multiplier (" + ConfigXPMult + ") is appied also.\n"
-  message += "The actual function is <prevlevelexp> + round(" + ConfigXPBase + "^(1+(" + ConfigXPMult + "*currentlevel)), 5)\n"
-  message += "NOTE: If you mess with XP Start, Base, and Multiplier you can end up with a negative XP values or a bunch of unexpected levels. They should only be messed with on new characters."
-  message += "\n\n"
+  message += "***** Combat/Crafting/ResearcH XP *****\n"
   message += "______________|_____Base_____|__Multiplier__|__Minimum___|__Maximum___|\n"
   message += "    Cooking XP| " + ConfigXPCookingBase + "     | " + ConfigXPCookingMult + "     | " + ConfigXPCookingMin  + "   | " + ConfigXPCookingMax  + "  |\n"
   message += "   Research XP| " + ConfigXPResearchBase + "     | " + ConfigXPResearchMult + "     |     N/A    | " + ConfigXPResearchMax + " |\n"
-  message += "   Crafting XP| " + ConfigXPCraftingBase + "     | " + ConfigXPCraftingMult + "     | " + ConfigXPCraftingMin  + "   | " + ConfigXPCraftingMax + "  |\n"
+  message += "   Crafting XP| " + ConfigXPWorkbenchBase + "     | " + ConfigXPWorkbenchMult + "     | " + ConfigXPWorkbenchMin  + "   | " + ConfigXPWorkbenchMax + "  |\n"
   message += "==============|==============|==============|============|============|\n"
-  message += "\n\nLockpicking/Hacking:\n Novice=" + ConfigXPLockpickingNovice + "; Advanced=" + ConfigXPLockpickingAdvanced + "; Expert=" + ConfigXPLockpickingExpert + "; Master=" + ConfigXPLockpickingMaster + "; HAcking Base=" + ConfigXPHackingExperienceBase + "\n"
-  message += "\n\n***** Discovery XP *****\n"
+  message += "\n\n"
+  message += "Lockpicking/Hacking:\n Novice=" + ConfigXPLockpickingNovice + "; Advanced=" + ConfigXPLockpickingAdvanced + "; Expert=" + ConfigXPLockpickingExpert + "; Master=" + ConfigXPLockpickingMaster + "; HAcking Base=" + ConfigXPHackingExperienceBase + "\n"
+  message += "\n\n"
+  message += "***** Discovery XP *****\n"
   message += "Map Markers: " + ConfigXPDiscoveryMapMarker + "\n"
   message += "Secret Areas: " + ConfigXPDiscoverySecretArea  + "\n"
   message += "Scan Complete: " + ConfigXPScanCompletion + "\n"
@@ -1703,7 +1916,8 @@ Function DumpXPMatrix()
   message += "Planetary Surveys|    " + PlanetarySurveyV1XPReward.GetValueInt() + "    |   " + PlanetarySurveyV2XPReward.GetValueInt() + "    |   " + PlanetarySurveyV3XPReward.GetValueInt() + "    |   " + PlanetarySurveyV4XPReward.GetValueInt() + "    |    " + PlanetarySurveyV5XPReward.GetValueInt() + "   |\n"
   message += "   System Surveys|    " + SystemSurveyV1XPReward.GetValueInt() + "    |   " + SystemSurveyV2XPReward.GetValueInt() + "    |   " + SystemSurveyV3XPReward.GetValueInt() + "    |   " + SystemSurveyV4XPReward.GetValueInt() + "    |    N/A   |\n"
   message += "=================|==========|==========|==========|==========|==========|\n"
-  message += "\n\n***** Quest XP *****\n"
+  message += "\n\n"
+  message += "***** Quest XP *****\n"
   message += "_________________|___Base___|___Tiny___|__Small___|__Medium__|__Large___|____XL____|\n"
   message += " Main Quest Act 1|    N/A   |    N/A   |    " + MainQuestAct1XPRewardSmall.GetValueInt() + "   |    " + MainQuestAct1XPRewardMedium.GetValueInt() + "   |    " + MainQuestAct1XPRewardLarge.GetValueInt() + "   |    N/A   |\n"
   message += " Main Quest Act 2|    N/A   |    N/A   |    " + MainQuestAct2XPRewardSmall.GetValueInt() + "   |    " + MainQuestAct2XPRewardMedium.GetValueInt() + "   |    " + MainQuestAct2XPRewardLarge.GetValueInt() + "   |    N/A   |\n"
@@ -1716,8 +1930,132 @@ Function DumpXPMatrix()
   message += "    Mission Board|    " + MissionBoardSurveyBaseXPReward.GetValueInt() + "   |    " + MissionBoardSurveyTraitV1XPReward.GetValueInt() + "   |    " + MissionBoardSurveyTraitV2XPReward.GetValueInt() + "   |    " + MissionBoardSurveyTraitV3XPReward.GetValueInt() + "   |    " + MissionBoardSurveyTraitV4XPReward.GetValueInt() + "   |    " + MissionBoardSurveyTraitV5XPReward.GetValueInt() + "   |\n"
   message += "=================|==========|==========|==========|==========|==========|==========|\n"
 
-  Debug.Trace("VPIXPCTRL_DMPXPMTX: " + message, 2)
+  Debug.Trace("VPIXPCTRL_DEBUG: " + message, 2)
   Debug.Messagebox("This message is too large for notification or message box so please enable and look in the papyrus Log. Sorry, I'll Look for a better way for a future version.")
+EndFunction
+
+;; ****************************************************************************
+;; Get the current level scaling config from the player object
+;;
+;; Use: player.cf "VPI_ExperienceControl.DumpLevelScalingConfig"
+;;
+Function DumpLevelScalingConfig() 
+  String message = ""
+
+  message += "\n\n*** Scaling Factors ***\n\n"
+  message += "_________________________|____01____|____02____|____03____|____04____|____05____|____06____|____07____|____08____|____09____|____10____|\n"
+  message += "XP Difficulty Multiplier | " + SF_XPDifficultyMultiplier[1] + " | " + SF_XPDifficultyMultiplier[2] + " | " + SF_XPDifficultyMultiplier[3] + " | " + SF_XPDifficultyMultiplier[4] + " | " + SF_XPDifficultyMultiplier[5] + " | " + SF_XPDifficultyMultiplier[6] + " | " + SF_XPDifficultyMultiplier[7] + " | " + SF_XPDifficultyMultiplier[8] + " | " + SF_XPDifficultyMultiplier[9] + " | " + SF_XPDifficultyMultiplier[10] + " |\n"
+  message += "               Combat XP | " + SF_CombatXP[1] + " | " + SF_CombatXP[2] + " | " + SF_CombatXP[3] + " | " + SF_CombatXP[4] + " | " + SF_CombatXP[5] + " | " + SF_CombatXP[6] + " | " + SF_CombatXP[7] + " | " + SF_CombatXP[8] + " | " + SF_CombatXP[9] + " | " + SF_CombatXP[10] + " |\n"
+  message += "             Crafting XP | " + SF_CraftingXP[1] + " | " + SF_CraftingXP[2] + " | " + SF_CraftingXP[3] + " | " + SF_CraftingXP[4] + " | " + SF_CraftingXP[5] + " | " + SF_CraftingXP[6] + " | " + SF_CraftingXP[7] + " | " + SF_CraftingXP[8] + " | " + SF_CraftingXP[9] + " | " + SF_CraftingXP[10] + " |\n"
+  message += "             Research XP | " + SF_ResearchXP[1] + " | " + SF_ResearchXP[2] + " | " + SF_ResearchXP[3] + " | " + SF_ResearchXP[4] + " | " + SF_ResearchXP[5] + " | " + SF_ResearchXP[6] + " | " + SF_ResearchXP[7] + " | " + SF_ResearchXP[8] + " | " + SF_ResearchXP[9] + " | " + SF_ResearchXP[10] + " |\n"
+  message += "          Lockpicking XP | " + SF_LockpickingXP[1] + " | " + SF_LockpickingXP[2] + " | " + SF_LockpickingXP[3] + " | " + SF_LockpickingXP[4] + " | " + SF_LockpickingXP[5] + " | " + SF_LockpickingXP[6] + " | " + SF_LockpickingXP[7] + " | " + SF_LockpickingXP[8] + " | " + SF_LockpickingXP[9] + " | " + SF_LockpickingXP[10] + " |\n"
+  message += "            Discovery XP | " + SF_DiscoveryXP[1] + " | " + SF_DiscoveryXP[2] + " | " + SF_DiscoveryXP[3] + " | " + SF_DiscoveryXP[4] + " | " + SF_DiscoveryXP[5] + " | " + SF_DiscoveryXP[6] + " | " + SF_DiscoveryXP[7] + " | " + SF_DiscoveryXP[8] + " | " + SF_DiscoveryXP[9] + " | " + SF_DiscoveryXP[10] + " |\n"
+  message += "          Speechcraft XP | " + SF_SpeechcraftXP[1] + " | " + SF_SpeechcraftXP[2] + " | " + SF_SpeechcraftXP[3] + " | " + SF_SpeechcraftXP[4] + " | " + SF_SpeechcraftXP[5] + " | " + SF_SpeechcraftXP[6] + " | " + SF_SpeechcraftXP[7] + " | " + SF_SpeechcraftXP[8] + " | " + SF_SpeechcraftXP[9] + " | " + SF_SpeechcraftXP[10] + " |\n"
+
+  Debug.Trace("VPIXPCTRL_DEBUG: " + message, 2)
+  Debug.Messagebox(message)
+EndFunction
+;; ****************************************************************************
+;; Get current scaling settings for your level and difficulty mode
+;;
+;; Use: player.cf "VPI_ExperienceControl.GetScalingMatrix"
+;;
+Function GetScalingMatrix()
+  Int iPlayerLevel = PlayerRef.GetLevel()
+  Int iPlayerBracket = VPI_Helper.GetBracketForPlayerLevel(iPlayerLevel)
+  Int iDifficulty = Game.GetDifficulty()
+  string sDifficulty = VPI_Helper.GetDifficulty(iDifficulty)
+
+  String message = "Scaling for a player level of " + iPlayerLevel + " using scaling data from the level " + iPlayerBracket + " bracket.\n"
+
+  ;; 
+  ;; Difficulty XP Multiplier Scaling Data
+  ;;
+  Float sfDifficultyXPMultiplier = GetDifficultyXPMultiplierScalingFactor(iPlayerBracket)
+  Float scaledDifficultyXPMultiplierVE = Game.GetGameSettingFloat("fDiffMultXPVE")
+  Float scaledDifficultyXPMultiplierE = Game.GetGameSettingFloat("fDiffMultXPE")
+  Float scaledDifficultyXPMultiplierN = Game.GetGameSettingFloat("fDiffMultXPN")
+  Float scaledDifficultyXPMultiplierH = Game.GetGameSettingFloat("fDiffMultXPH")
+  Float scaledDifficultyXPMultiplierVH = Game.GetGameSettingFloat("fDiffMultXPVH")
+
+  if (iDifficulty == 0)
+    ;; Very Easy Difficulty
+    message += "For the " + sDifficulty + " mode the XP Multiplier is " + scaledDifficultyXPMultiplierVE + " (Default:" + ConfigXPDiffMultXPVE + " X SF:" + sfDifficultyXPMultiplier + ").\n"
+  ElseIf (iDifficulty == 1)
+    ;; Easy Difficulty
+    message += "For the " + sDifficulty + " mode the XP Multiplier is " + scaledDifficultyXPMultiplierE + " (Default:" + ConfigXPDiffMultXPE + " X SF:" + sfDifficultyXPMultiplier + ").\n"
+  ElseIf (iDifficulty == 2)
+    ;; Normal Difficulty
+    message += "For the " + sDifficulty + " mode the XP Multiplier is " + scaledDifficultyXPMultiplierN + " (Default:" + ConfigXPDiffMultXPN + " X SF:" + sfDifficultyXPMultiplier + ").\n"
+  ElseIf (iDifficulty == 3)
+    ;; Hard Difficulty
+    message += "For the " + sDifficulty + " mode the XP Multiplier is " + scaledDifficultyXPMultiplierH + " (Default:" + ConfigXPDiffMultXPH + " X SF:" + sfDifficultyXPMultiplier + ").\n"
+  ElseIf (iDifficulty == 4)
+    ;; Very Hard Difficulty
+    message += "For the " + sDifficulty + " mode the XP Multiplier is " + scaledDifficultyXPMultiplierVH + " (Default:" + ConfigXPDiffMultXPVH + " X SF:" + sfDifficultyXPMultiplier + ").\n"
+  EndIf
+
+  ;; 
+  ;; Combat XP Scaling Data
+  ;;
+  Float sfCombatXP = GetCombatXPScalingFactor(iPlayerBracket)
+  Float scaledKillXPReward = Game.GetGameSettingInt("iXPRewardKillOpponent")
+  message += "Combat XP reward is " + scaledKillXPReward + " (Default:" + ConfigXPKillOpponent + " X SF:" + sfCombatXP + ").\n"
+
+  ;; 
+  ;; Crafting XP Scaling Data
+  ;;
+  Float sfCraftingXP = GetCraftingXPScalingFactor(iPlayerBracket)
+  Float scaledCookingBase = Game.GetGameSettingFloat("fCookingExpBase")
+  Float scaledCookingMultiplier = Game.GetGameSettingFloat("fCookingExpMult")
+  Float scaledCookingMinXP = Game.GetGameSettingFloat("fCookingExpMin")
+  Float scaledCookingMaxXP = Game.GetGameSettingFloat("fCookingExpMax")
+  message += "Cooking XP base is " + scaledCookingBase + " (Default:" + ConfigXPCookingBase + " X SF:" + sfCraftingXP + "), the Multiplier is " + scaledCookingMultiplier + " (Default:" + ConfigXPCookingMult + " X SF:" + sfCraftingXP + "), min XP is not scaled so remains " + scaledCookingMinXP + " and max is "+ scaledCookingMaxXP + " (Default:" + ConfigXPCookingMax + " X SF:" + sfCraftingXP + ").\n"
+  Float scaledWorkbenchBase = Game.GetGameSettingFloat("fWorkbenchExperienceBase")
+  Float scaledWorkbenchMultiplier = Game.GetGameSettingFloat("fWorkbenchExperienceMult")
+  Float scaledWorkbenchMinXP = Game.GetGameSettingFloat("fWorkbenchExperienceMin")
+  Float scaledWorkbenchMaxXP = Game.GetGameSettingFloat("fWorkbenchExperienceMax")
+  message += "Workbench XP base is " + scaledWorkbenchBase + " (Default:" + ConfigXPWorkbenchBase + " X SF:" + sfCraftingXP + "), the Multiplier is " + scaledWorkbenchMultiplier + " (Default:" + ConfigXPWorkbenchMult + " X SF:" + sfCraftingXP + "), min XP is not scaled so remains " + scaledWorkbenchMinXP + " and max is "+ scaledWorkbenchMaxXP + " (Default:" + ConfigXPWorkbenchMax + " X SF:" + sfCraftingXP + ").\n"
+
+  ;; 
+  ;; Research XP Scaling Data
+  ;;
+  Float sfResearchXP = GetResearchXPScalingFactor(iPlayerBracket)
+  Float scaledResearchBase = Game.GetGameSettingFloat("fResearchExpBase")
+  Float scaledResearchMultiplier = Game.GetGameSettingFloat("fResearchExpMult")
+  Float scaledResearchMinXP = 1.0000
+  Float scaledResearchMaxXP = Game.GetGameSettingFloat("fResearchExpMax")
+  message += "Research XP base is " + scaledResearchBase + " (Default:" + ConfigXPResearchBase + " X SF:" + sfCraftingXP + "), the Multiplier is " + scaledResearchMultiplier + " (Default:" + ConfigXPResearchMult + " X SF:" + sfCraftingXP + "), min XP is not scaled so remains " + scaledResearchMinXP + " and max is "+ scaledResearchMaxXP + " (Default:" + ConfigXPResearchMax + " X SF:" + sfCraftingXP + ").\n"
+
+  ;; 
+  ;; Lockpicking XP Scaling Data
+  ;;
+  Float sfLockpickingXP = GetLockpickingXPScalingFactor(iPlayerBracket)
+  Float scaledLockpickingNoviceXP = Game.GetGameSettingFloat("fLockpickXPRewardEasy")
+  Float scaledLockpickingAdvancedXP = Game.GetGameSettingFloat("fLockpickXPRewardAverage")
+  Float scaledLockpickingExpertXP = Game.GetGameSettingFloat("fLockpickXPRewardHard")
+  Float scaledLockpickingMasterXP = Game.GetGameSettingFloat("fLockpickXPRewardVeryHard")
+  Float scaledHackingXP = Game.GetGameSettingFloat("fHackingExperienceBase")
+  message += "Lockpicking XP reward for Novice is " + scaledLockpickingNoviceXP + " (Default:" + ConfigXPLockpickingNovice + " X SF:" + sfLockpickingXP + ", for Advanced is " + scaledLockpickingAdvancedXP + " (Default:" + ConfigXPLockpickingAdvanced + " X SF:" + sfLockpickingXP + ", for Expert is " + scaledLockpickingExpertXP + " (Default:" + ConfigXPLockpickingExpert + " X SF:" + sfLockpickingXP + ", for Master is " + scaledLockpickingMasterXP + " (Default:" + ConfigXPLockpickingMaster + " X SF:" + sfLockpickingXP + ", and finally for hacking is " + scaledHackingXP + " (Default:" + ConfigXPHackingExperienceBase + " X SF:" + sfLockpickingXP + ").\n"
+
+  ;; 
+  ;; Disovery XP Scaling Data
+  ;;
+  Float sfDiscoveryXP = GetDiscoveryXPScalingFactor(iPlayerBracket)
+  Float scaledMapMarkerReward = Game.GetGameSettingInt("iXPRewardDiscoverMapMarker")
+  Float scaledSecretAreaReward = Game.GetGameSettingInt("iXPRewardDiscoverSecretArea")
+  Float scaledScanCompletionReward = Game.GetGameSettingFloat("fScanCompleteXPReward")
+  message += "Discovery XP reward for map marker discovery is " + scaledMapMarkerReward + " (Default:" + ConfigXPDiscoveryMapMarker + " X SF:" + sfDiscoveryXP + ", for secret area discovery is" + scaledSecretAreaReward + " (Default:" + ConfigXPDiscoverySecretArea + " X SF:" + sfDiscoveryXP +  "), and finally for scan completion is " + scaledScanCompletionReward + " (Default:" + ConfigXPScanCompletion + " X SF:" + sfDiscoveryXP + ").\n"
+
+  ;; 
+  ;; Speechcraft XP Scaling Data
+  ;;
+  Float sfSpeechcraftXP = GetSpeechcraftXPScalingFactor(iPlayerBracket)
+  Float scaledSpeechcraftSuccessReward = Game.GetGameSettingFloat("fSpeechChallengeSuccessXP")
+  message += "Speechcraft XP reward is " + scaledSpeechcraftSuccessReward + " (Default:" + ConfigXPSpeechcraftSuccess + " X SF:" + sfSpeechcraftXP + ").\n"
+
+  Debug.Trace("VPILBS_DEBUG: " + message, 2)
+  Debug.Messagebox(message)
 EndFunction
 
 ;; ****************************************************************************
